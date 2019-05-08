@@ -1,36 +1,21 @@
-/*
-	orm := db.OnCreatDB()
-	var sum int64 = 0
-	for {
-		sum++
-		var user User_account_tbl
-		user.Id = sum
-
-		orm.SetTable("user_account_tbls")
-		err := orm.Where("id=?", sum).Find(&user)
-		if err != nil {
-			log.Println("-----------:", err)
-		} else {
-			log.Println(user)
-		}
-
-		time.Sleep(time.Second * 2)
-	}
-*/
 package mysqldb
 
 import (
 	"fmt"
 	"public/mylog"
 
-	"data/config"
-
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 )
 
 type MySqlDB struct {
-	DB *gorm.DB
+	*gorm.DB
+}
+
+func OnInitDBOrm(dataSourceName string) (orm *MySqlDB) {
+	orm = new(MySqlDB)
+	orm.OnGetDBOrm(dataSourceName)
+	return
 }
 
 func (i *MySqlDB) OnGetDBOrm(dataSourceName string) (orm *gorm.DB) {
@@ -44,14 +29,20 @@ func (i *MySqlDB) OnGetDBOrm(dataSourceName string) (orm *gorm.DB) {
 
 	i.DB.SingularTable(true) //全局禁用表名复数
 	orm = i.DB
-
-	if config.OnIsDev() {
-		orm.LogMode(true)
+	if isDev {
+		i.DB.LogMode(true)
 		//beedb.OnDebug = true
 	} else {
-		orm.SetLogger(DbLog{})
+		i.DB.SetLogger(DbLog{})
 	}
 	return
+}
+
+var isDev bool = false
+
+//是否调试
+func (i *MySqlDB) SetIsDev(b bool) {
+	isDev = b
 }
 
 func (i *MySqlDB) OnDestoryDB() {
@@ -59,8 +50,4 @@ func (i *MySqlDB) OnDestoryDB() {
 		i.DB.Close()
 		i.DB = nil
 	}
-}
-
-func init() {
-
 }

@@ -8,19 +8,12 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"html/template"
 	"io"
-	"net/http"
 	"os"
 	"path/filepath"
-	"public/mylog"
 	"reflect"
 	"sort"
 	"strings"
-
-	"data/config"
-
-	"github.com/ant0ine/go-json-rest/rest"
 )
 
 /*
@@ -99,18 +92,18 @@ func MinimumInt(rest []int) int {
 	return minimum
 }
 
-func LoadTemplate(list ...string) *template.Template {
-	var tmp []string
-	for _, v := range list {
-		if CheckFileIsExist(GetModelPath() + config.Static_host[0] + v) {
-			tmp = append(tmp, GetModelPath()+config.Static_host[0]+v)
-		} else {
-			mylog.Debug("file does not exist:" + GetModelPath() + config.Static_host[0] + v)
-			panic(GetModelPath() + config.Static_host[0] + v)
-		}
-	}
-	return template.Must(template.ParseFiles(tmp...))
-}
+// func LoadTemplate(list ...string) *template.Template {
+// 	var tmp []string
+// 	for _, v := range list {
+// 		if CheckFileIsExist(GetModelPath() + config.Static_host[0] + v) {
+// 			tmp = append(tmp, GetModelPath()+config.Static_host[0]+v)
+// 		} else {
+// 			mylog.Debug("file does not exist:" + GetModelPath() + config.Static_host[0] + v)
+// 			panic(GetModelPath() + config.Static_host[0] + v)
+// 		}
+// 	}
+// 	return template.Must(template.ParseFiles(tmp...))
+// }
 
 /*
 	执行模版渲染，
@@ -118,16 +111,16 @@ func LoadTemplate(list ...string) *template.Template {
 	data:传参列表
 	list:模版列表
 */
-func ExecuteTemplate(w rest.ResponseWriter, name string, data interface{}, list ...string) error {
-	t := LoadTemplate(list...)
-	w.(http.ResponseWriter).Header().Set("Content-Type", "text/html; charset=utf-8")
+// func ExecuteTemplate(w rest.ResponseWriter, name string, data interface{}, list ...string) error {
+// 	t := LoadTemplate(list...)
+// 	w.(http.ResponseWriter).Header().Set("Content-Type", "text/html; charset=utf-8")
 
-	if len(name) == 0 {
-		return t.Execute(w.(http.ResponseWriter), data)
-	} else {
-		return t.ExecuteTemplate(w.(http.ResponseWriter), name, data)
-	}
-}
+// 	if len(name) == 0 {
+// 		return t.Execute(w.(http.ResponseWriter), data)
+// 	} else {
+// 		return t.ExecuteTemplate(w.(http.ResponseWriter), name, data)
+// 	}
+// }
 
 //按字典顺序排序
 func DictSort(res []string) (str string) {
