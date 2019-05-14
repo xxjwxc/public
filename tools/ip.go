@@ -5,8 +5,9 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
-	"public/mylog"
 	"strings"
+
+	"github.com/xie1xiao1jun/public/mylog"
 )
 
 ///*

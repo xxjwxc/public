@@ -1,16 +1,17 @@
 package mylog
 
 import (
-	"data/config"
 	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
-	"public/myelastic"
-	"public/myqueue"
 	"time"
+
+	"github.com/xie1xiao1jun/public/dev"
+	"github.com/xie1xiao1jun/public/myelastic"
+	"github.com/xie1xiao1jun/public/myqueue"
 )
 
 var ptr_que *myqueue.MyQueue = nil
@@ -21,7 +22,7 @@ var local_Log_file string = "log" //默认存放文件的目录
 var exe_path string
 
 func init() {
-	if config.IsRunTesting() { //测试时候不创建
+	if dev.IsRunTesting() { //测试时候不创建
 		return
 	}
 
@@ -31,7 +32,7 @@ func init() {
 
 	BuildDir(local_Log_file)
 	ptr_que = myqueue.NewSyncQueue()
-	es_path := config.GetEsAddrUrl()
+	es_path := ""
 	if len(es_path) > 0 {
 		elastic = myelastic.OnInitES(es_path)
 		elastic.CreateIndex(Http_log_index, mapping)

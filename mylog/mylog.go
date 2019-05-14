@@ -1,7 +1,6 @@
 package mylog
 
 import (
-	"data/config"
 	"fmt"
 	"log"
 	"os"
@@ -9,6 +8,8 @@ import (
 	"path/filepath"
 	"runtime/debug"
 	"time"
+
+	"github.com/xie1xiao1jun/public/dev"
 )
 
 func init() {
@@ -81,7 +82,7 @@ func SaveError(errstring, flag string) {
 
 //
 func Debug(describ ...interface{}) {
-	if config.OnIsDev() {
+	if dev.OnIsDev() {
 		for _, e := range describ {
 			switch v := e.(type) {
 			case string:

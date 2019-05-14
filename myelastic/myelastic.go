@@ -101,12 +101,12 @@ func (es *MyElastic) SortQuery(index_name string, builder []elastic.Sorter, quer
 	}
 	//log.Println("Found a total of %d entity\n", es_result.TotalHits())
 
-	if es_result.Hits.TotalHits > 0 {
+	if es_result.Hits.TotalHits.Value > 0 {
 		var result []string
 		//log.Println("Found a total of %d entity\n", searchResult.Hits.TotalHits)
 		for _, hit := range es_result.Hits.Hits {
 
-			result = append(result, string(*hit.Source))
+			result = append(result, string(hit.Source))
 
 		}
 		return true, result
@@ -148,7 +148,7 @@ func (es *MyElastic) SortQueryReturnHits(index_name string, from, size int, buil
 	}
 
 	//	log.Println("wwwwww", es_result.Aggregations)
-	if es_result.Hits.TotalHits > 0 {
+	if es_result.Hits.TotalHits.Value > 0 {
 
 		return true, es_result.Hits.Hits
 	} else {
@@ -218,7 +218,7 @@ func (es *MyElastic) SearchMap(index_name, type_name string, query interface{}, 
 
 	for _, hit := range es_result.Hits.Hits {
 		tmp := make(map[string]interface{})
-		err := json.Unmarshal(*hit.Source, &tmp)
+		err := json.Unmarshal(hit.Source, &tmp)
 		if err != nil {
 			log.Println(es.Err)
 		} else {
@@ -268,7 +268,7 @@ func (es *MyElastic) Search(index_name, type_name string, query interface{}, out
 		newValue := reflect.New(sliceElementType)
 
 		item := make(map[string]interface{})
-		err := json.Unmarshal(*hit.Source, &item)
+		err := json.Unmarshal(hit.Source, &item)
 		//fmt.Println(string(*hit.Source))
 
 		err = scanMapIntoStruct(newValue.Interface(), item)

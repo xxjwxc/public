@@ -6,11 +6,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"public/mylog"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/xie1xiao1jun/public/mylog"
 )
 
 type RawBytes []byte

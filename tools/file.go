@@ -5,7 +5,8 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"public/mylog"
+
+	"github.com/xie1xiao1jun/public/mylog"
 )
 
 //检查目录是否存在
