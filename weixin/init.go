@@ -1,8 +1,7 @@
 package weixin
 
 import (
-	"data/config"
-	"public/tools"
+	"github.com/xxjwxc/public/tools"
 
 	"github.com/silenceper/wechat"
 	wxpay "gopkg.in/go-with/wxpay.v1"
@@ -18,28 +17,15 @@ const (
 var cfg wechat.Config
 var client *wxpay.Client
 
-var pay_appId string // 微信公众平台应用ID
-var mchId string     // 微信支付商户平台商户号
-var apiKey string    // 微信支付商户平台API密钥
-var secret string
-var notify_url string
-var token string
-var encodingAESKey string
+var wxInfo WxInfo
 
 var certFile string // 微信支付商户平台证书路径
 var keyFile string
 var rootcaFile string
 
-func init() {
-	wx_info := config.GetWxInfo()
-	//配置微信支付参数
-	pay_appId = wx_info.AppID
-	mchId = wx_info.MchId
-	apiKey = wx_info.Key
-	secret = wx_info.AppSecret
-	notify_url = wx_info.NotifyUrl
-	token = wx_info.Token
-	encodingAESKey = wx_info.EncodingAESKey
+// InitWxinfo 初始化配置信息
+func InitWxinfo(info WxInfo) {
+	wxInfo = info
 
 	certFile = tools.GetModelPath() + certFileLoc
 	keyFile = tools.GetModelPath() + keyFileLoc
@@ -49,12 +35,12 @@ func init() {
 	memCache := NewGocache("_winxin_access")
 	//配置微信参数
 	cfg = wechat.Config{
-		AppID:          pay_appId,
-		AppSecret:      secret,
-		Token:          token,
-		EncodingAESKey: encodingAESKey,
+		AppID:          wxInfo.APIKey,
+		AppSecret:      wxInfo.AppSecret,
+		Token:          wxInfo.Token,
+		EncodingAESKey: wxInfo.EncodingAESKey,
 		Cache:          memCache,
 	}
-	client = wxpay.NewClient(pay_appId, mchId, apiKey)
+	client = wxpay.NewClient(wxInfo.AppID, wxInfo.MchID, wxInfo.APIKey)
 	client.WithCert(certFile, keyFile, rootcaFile)
 }

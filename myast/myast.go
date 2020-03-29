@@ -1,0 +1,139 @@
+package myast
+
+import (
+	"fmt"
+	"go/ast"
+	"go/token"
+	"strings"
+
+	"github.com/xxjwxc/public/mydoc"
+	"github.com/xxjwxc/public/tools"
+)
+
+type structAnalys struct {
+	ModPkg, ModFile string
+}
+
+// NewStructAnalys 新建一个导出结构体类
+func NewStructAnalys(modPkg, modFile string) *structAnalys {
+	result := &structAnalys{ModPkg: modPkg, ModFile: modFile}
+	return result
+}
+
+// ParserStruct 解析结构体定义及相关信息
+func (a *structAnalys) ParserStruct(astPkg *ast.Package, structName string) (info *mydoc.StructInfo) {
+	if astPkg == nil {
+		return nil
+	}
+
+	// ast.Print(token.NewFileSet(), astPkg)
+
+	for _, fl := range astPkg.Files {
+		for _, d := range fl.Decls {
+			switch specDecl := d.(type) {
+			case *ast.GenDecl:
+				for _, subitem := range specDecl.Specs {
+					switch specDecl.Tok {
+					case token.TYPE:
+						spec := subitem.(*ast.TypeSpec)
+						switch st := spec.Type.(type) {
+						case *ast.StructType:
+							if spec.Name.Name == structName { // find it
+								info = new(mydoc.StructInfo)
+								info.Pkg = astPkg.Name
+								for _, v := range specDecl.Doc.List { // 结构体注释
+									t := strings.TrimSpace(strings.TrimPrefix(v.Text, "//"))
+									if strings.HasPrefix(t, structName) { // find note
+										t = strings.TrimSpace(strings.TrimPrefix(t, structName))
+										info.Note += t
+									}
+								}
+								info.Name = structName
+								info.Items = a.structFieldInfo(astPkg, st)
+								return
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	return nil
+}
+
+func (a *structAnalys) structFieldInfo(astPkg *ast.Package, sinfo *ast.StructType) (items []mydoc.ElementInfo) {
+	if sinfo == nil || sinfo.Fields == nil {
+		return
+	}
+
+	importMP := AnalysisImport(astPkg)
+
+	var info mydoc.ElementInfo
+	for _, field := range sinfo.Fields.List {
+		info = mydoc.ElementInfo{}
+		for _, fnames := range field.Names {
+			info.Name += fnames.Name
+		}
+		if field.Tag != nil {
+			info.Tag = strings.Trim(field.Tag.Value, "`")
+		}
+		if field.Comment != nil {
+			info.Note = strings.TrimSpace(field.Comment.Text())
+		}
+		if field.Doc != nil {
+			info.Note += strings.TrimSpace(field.Doc.List[0].Text)
+		}
+
+		switch exp := field.Type.(type) {
+		case *ast.SelectorExpr: // 非本文件包
+			a.dealSelectorExpr(exp, &info, importMP)
+		case *ast.ArrayType:
+			info.IsArray = true
+			switch x := exp.Elt.(type) {
+			case *ast.SelectorExpr: // 非本文件包
+				a.dealSelectorExpr(x, &info, importMP)
+			case *ast.Ident:
+				a.dealIdent(astPkg, x, &info)
+			}
+		case *ast.StarExpr:
+			switch x := exp.X.(type) {
+			case *ast.SelectorExpr: // 非本文件包
+				a.dealSelectorExpr(x, &info, importMP)
+			case *ast.Ident:
+				a.dealIdent(astPkg, x, &info)
+			}
+		case *ast.Ident: // 本文件
+			a.dealIdent(astPkg, exp, &info)
+		}
+
+		if len(info.Type) == 0 {
+			panic(fmt.Sprintf("can not deal the type : %v", field.Type))
+		}
+
+		items = append(items, info)
+	}
+	return items
+}
+
+func (a *structAnalys) dealSelectorExpr(exp *ast.SelectorExpr, info *mydoc.ElementInfo, importMP map[string]string) { // 非本文件包
+	info.Type = exp.Sel.Name
+	if !tools.IsInternalType(info.Type) { // 非基础类型(time)
+		if x, ok := exp.X.(*ast.Ident); ok {
+			if v, ok := importMP[x.Name]; ok {
+				objFile := EvalSymlinks(a.ModPkg, a.ModFile, v)
+				objPkg := GetImportPkg(v)
+				astFile, _b := GetAstPkgs(objPkg, objFile)
+				if _b {
+					info.TypeRef = a.ParserStruct(astFile, info.Type)
+				}
+			}
+		}
+	}
+}
+
+func (a *structAnalys) dealIdent(astPkg *ast.Package, exp *ast.Ident, info *mydoc.ElementInfo) { // 本文件
+	info.Type = exp.Name
+	if !tools.IsInternalType(info.Type) { // 非基础类型
+		info.TypeRef = a.ParserStruct(astPkg, info.Type)
+	}
+}

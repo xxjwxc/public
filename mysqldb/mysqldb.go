@@ -1,36 +1,24 @@
-/*
-	orm := db.OnCreatDB()
-	var sum int64 = 0
-	for {
-		sum++
-		var user User_account_tbl
-		user.Id = sum
-
-		orm.SetTable("user_account_tbls")
-		err := orm.Where("id=?", sum).Find(&user)
-		if err != nil {
-			log.Println("-----------:", err)
-		} else {
-			log.Println(user)
-		}
-
-		time.Sleep(time.Second * 2)
-	}
-*/
 package mysqldb
 
 import (
-	"fmt"
-	"public/mylog"
+	"github.com/xxjwxc/public/dev"
+	"github.com/xxjwxc/public/errors"
 
-	"data/config"
+	"github.com/xxjwxc/public/mylog"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 )
 
 type MySqlDB struct {
-	DB *gorm.DB
+	*gorm.DB
+	IsInit bool
+}
+
+func OnInitDBOrm(dataSourceName string) (orm *MySqlDB) {
+	orm = new(MySqlDB)
+	orm.OnGetDBOrm(dataSourceName)
+	return
 }
 
 func (i *MySqlDB) OnGetDBOrm(dataSourceName string) (orm *gorm.DB) {
@@ -38,19 +26,20 @@ func (i *MySqlDB) OnGetDBOrm(dataSourceName string) (orm *gorm.DB) {
 		var err error
 		i.DB, err = gorm.Open("mysql", dataSourceName)
 		if err != nil {
-			mylog.Print(mylog.Log_Error, fmt.Sprintf("Got error when connect database, the error is '%v'", err))
+			mylog.Error(errors.Wrap(err, "Got error when connect database:"+dataSourceName))
+			return nil
 		}
+		i.IsInit = true
 	}
 
 	i.DB.SingularTable(true) //全局禁用表名复数
-	orm = i.DB
-
-	if config.OnIsDev() {
-		orm.LogMode(true)
+	if dev.OnIsDev() {
+		i.DB.LogMode(true)
 		//beedb.OnDebug = true
 	} else {
-		orm.SetLogger(DbLog{})
+		i.DB.SetLogger(DbLog{})
 	}
+	orm = i.DB
 	return
 }
 
@@ -59,8 +48,4 @@ func (i *MySqlDB) OnDestoryDB() {
 		i.DB.Close()
 		i.DB = nil
 	}
-}
-
-func init() {
-
 }

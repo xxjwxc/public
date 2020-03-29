@@ -4,11 +4,10 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-
-	"github.com/ant0ine/go-json-rest/rest"
 )
 
-func JsonToForm(r *http.Request) {
+// JSONToForm tag json str to form
+func JSONToForm(r *http.Request) {
 	//添加支持json 操作
 	r.ParseForm()
 	if len(r.Form) == 1 { //可能是json 支持json
@@ -26,8 +25,8 @@ func JsonToForm(r *http.Request) {
 	}
 
 	body, _ := ioutil.ReadAll(r.Body)
-	body_str := string(body)
-	if len(body_str) > 0 {
+	bodyStr := string(body)
+	if len(bodyStr) > 0 {
 		var m map[string]string
 		if err := json.Unmarshal(body, &m); err == nil {
 			for k, v := range m {
@@ -39,30 +38,40 @@ func JsonToForm(r *http.Request) {
 	return
 }
 
-func GetRequestJsonObj(r *rest.Request, v interface{}) error {
+// "github.com/ant0ine/go-json-rest/rest"
+// func GetRequestJsonObj(r *rest.Request, v interface{}) error {
 
-	//添加支持json 操作
-	body, err := ioutil.ReadAll(r.Body)
-	r.Body.Close()
-	json.Unmarshal(body, &v)
-	//-----------------------------end
-	return err
-}
+// 	//添加支持json 操作
+// 	body, err := ioutil.ReadAll(r.Body)
+// 	r.Body.Close()
+// 	json.Unmarshal(body, &v)
+// 	//-----------------------------end
+// 	return err
+// }
 
-func GetJsonStr(obj interface{}) string {
-	b, _ := json.Marshal(obj)
+// GetJSONStr obj to json string
+func GetJSONStr(obj interface{}, isFormat bool) string {
+	var b []byte
+	if isFormat {
+		b, _ = json.MarshalIndent(obj, "", "     ")
+	} else {
+		b, _ = json.Marshal(obj)
+	}
 	return string(b)
 }
 
-func JsonDecode(obj interface{}) string {
-	return GetJsonStr(obj)
+// JSONDecode Json Decode
+func JSONDecode(obj interface{}) string {
+	return GetJSONStr(obj, false)
 }
 
-func GetJsonObj(str string, out interface{}) {
+// GetJSONObj string convert to obj
+func GetJSONObj(str string, out interface{}) {
 	json.Unmarshal([]byte(str), out)
 	return
 }
 
-func JsonEncode(str string, out interface{}) {
-	GetJsonObj(str, out)
+// JSONEncode string convert to obj
+func JSONEncode(str string, out interface{}) {
+	GetJSONObj(str, out)
 }

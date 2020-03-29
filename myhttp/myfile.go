@@ -2,7 +2,6 @@ package myhttp
 
 import (
 	"bytes"
-	"data/config"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -10,15 +9,16 @@ import (
 	"net/http"
 	"os"
 	"path"
-	"public/mylog"
-	"public/tools"
+
+	"github.com/xxjwxc/public/dev"
+
 	"time"
+
+	"github.com/xxjwxc/public/mylog"
+	"github.com/xxjwxc/public/tools"
 )
 
-/*
-多文件上传
-dir:空则使用文件后缀做dir
-*/
+//UploadMoreFile 多文件上传,dir:空则使用文件后缀做dir
 func UploadMoreFile(r *http.Request, dir string) (result bool, optionDirs []string) {
 	//接受post请求
 	if r.Method == "POST" {
@@ -39,15 +39,14 @@ func UploadMoreFile(r *http.Request, dir string) (result bool, optionDirs []stri
 						_dir = ext
 					}
 
-					abs_dir := tools.GetModelPath() + config.File_host + "/" + _dir + "/"
-					file_name := getFileName(ext)
-					if !tools.CheckFileIsExist(abs_dir) {
-						tools.BuildDir(abs_dir)
-						//err := os.MkdirAll(tools.GetModelPath()+config.File_host+"/"+_dir+"/", os.ModePerm) //生成多级目录
+					absDir := tools.GetCurrentDirectory() + "/" + dev.GetFileHost() + "/" + _dir + "/"
+					fileName := getFileName(ext)
+					if !tools.CheckFileIsExist(absDir) {
+						tools.BuildDir(absDir)
 					}
 
 					//存在则覆盖
-					f, err := os.OpenFile(abs_dir+file_name,
+					f, err := os.OpenFile(absDir+fileName,
 						os.O_WRONLY|os.O_CREATE, 0666)
 					defer f.Close()
 					if err != nil {
@@ -57,7 +56,7 @@ func UploadMoreFile(r *http.Request, dir string) (result bool, optionDirs []stri
 					}
 
 					io.Copy(f, file)
-					optionDirs = append(optionDirs, config.Url_host+config.File_host+"/"+_dir+"/"+file_name)
+					optionDirs = append(optionDirs, "/"+dev.GetService()+"/"+dev.GetFileHost()+"/"+_dir+"/"+fileName)
 					result = true
 				}
 			}
@@ -81,9 +80,9 @@ func getFileType(exp string) string {
 	return ""
 }
 
-//模拟客戶端文件上传
+//PostFile 模拟客戶端文件上传
 //fieldname注意与服务器端保持一致
-func PostFile(filename, fieldname string, targetUrl string) (e error, result string) {
+func PostFile(filename, fieldname, targetURL string) (result string, e error) {
 	bodyBuf := &bytes.Buffer{}
 	bodyWriter := multipart.NewWriter(bodyBuf)
 
@@ -114,19 +113,19 @@ func PostFile(filename, fieldname string, targetUrl string) (e error, result str
 	contentType := bodyWriter.FormDataContentType()
 	bodyWriter.Close()
 
-	resp, err := http.Post(targetUrl, contentType, bodyBuf)
+	resp, err := http.Post(targetURL, contentType, bodyBuf)
 	if err != nil {
 		e = err
 		return
 	}
 	defer resp.Body.Close()
-	resp_body, err := ioutil.ReadAll(resp.Body)
+	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		e = err
 		return
 	}
 	fmt.Println(resp.Status)
-	fmt.Println(string(resp_body))
-	result = string(resp_body)
+	fmt.Println(string(respBody))
+	result = string(respBody)
 	return
 }

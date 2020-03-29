@@ -4,13 +4,12 @@
 package message
 
 import (
-	"data/config"
 	"encoding/json"
-	"fmt"
 	"log"
-	"public/tools"
 
 	"github.com/bitly/go-simplejson"
+	"github.com/xxjwxc/public/dev"
+	"github.com/xxjwxc/public/tools"
 )
 
 const ( //消息id定义
@@ -106,6 +105,7 @@ const ( //消息id定义
 	ExistedError          = 1084 //已存在
 	NotBindError          = 1085 //未绑定
 	BindError             = 1086 //绑定失败
+	CalError              = 1087 //计算错误
 )
 
 //消息翻译
@@ -202,9 +202,10 @@ var MessageMap = map[int]string{
 	ExistedError:          "已存在",
 	NotBindError:          "未绑定",
 	BindError:             "绑定失败",
+	CalError:              "计算错误",
 }
 
-//
+//MessageBody 消息头
 type MessageBody struct {
 	State bool        `json:"state"`
 	Code  int         `json:"code,omitempty"`
@@ -212,7 +213,7 @@ type MessageBody struct {
 	Data  interface{} `json:"data,omitempty"`
 }
 
-//获取错误消息 参数(int,string)
+//GetErrorMsg 获取错误消息 参数(int,string)
 func GetErrorMsg(errorCode ...interface{}) (msg MessageBody) {
 	if len(errorCode) == 0 {
 		log.Println("未知")
@@ -228,10 +229,11 @@ func GetErrorMsg(errorCode ...interface{}) (msg MessageBody) {
 			msg.Error = MessageMap[msg.Code]
 		case string:
 			msg.Error = string(v)
-			fmt.Println(v)
+		case error:
+			msg.Error = v.Error()
 		case interface{}:
 			{
-				if config.OnIsDev() {
+				if dev.OnIsDev() {
 					msg.Error = onCheckParam(v)
 				}
 			}
@@ -261,12 +263,12 @@ func onCheckParam(op interface{}) string {
 }
 
 //成功消息
-func GetSuccessMsg(errorCode ...int) (msg MessageBody) {
+func GetSuccessMsg(code ...int) (msg MessageBody) {
 	msg.State = true
-	if len(errorCode) == 0 {
+	if len(code) == 0 {
 		msg.Code = NormalMessageId
 	} else {
-		msg.Code = errorCode[0]
+		msg.Code = code[0]
 	}
 
 	msg.Error = MessageMap[msg.Code]

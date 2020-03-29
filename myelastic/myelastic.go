@@ -3,8 +3,9 @@ package myelastic
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"log"
+
+	"github.com/xxjwxc/public/errors"
 
 	"reflect"
 	"strings"
@@ -149,10 +150,8 @@ func (es *MyElastic) SortQueryReturnHits(index_name string, from, size int, buil
 
 	//	log.Println("wwwwww", es_result.Aggregations)
 	if es_result.Hits.TotalHits > 0 {
-
 		return true, es_result.Hits.Hits
 	} else {
-
 		return true, nil
 	}
 }
@@ -314,7 +313,7 @@ func scanMapElement(fieldv reflect.Value, field reflect.StructField, objMap map[
 	bb := field.Tag
 	sqlTag := bb.Get("json")
 
-	if bb.Get("json") == "-" || sqlTag == "-" || reflect.ValueOf(bb).String() == "-" {
+	if sqlTag == "-" || reflect.ValueOf(bb).String() == "-" {
 		return nil
 	}
 

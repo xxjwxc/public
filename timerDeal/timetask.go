@@ -2,9 +2,11 @@ package timerDeal
 
 import (
 	"log"
-	"public/mydef"
-	"public/mylog"
+
 	"time"
+
+	"github.com/xxjwxc/public/mydef"
+	"github.com/xxjwxc/public/mylog"
 )
 
 /*

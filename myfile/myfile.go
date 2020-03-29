@@ -5,8 +5,9 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"public/tools"
 	"time"
+
+	"github.com/xxjwxc/public/tools"
 )
 
 //上传单个文件

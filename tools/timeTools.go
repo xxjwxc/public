@@ -50,18 +50,18 @@ func GetTimeWeek(timestamp int64) int {
 }
 
 //获取向上整时时间
-func GetHour0(timestamp int64, timeZone *time.Location) time.Time {
+func GetHour0(timestamp int64) time.Time {
 	tm := time.Unix(timestamp, 0)
 	tStr := tm.Format("2006-01-02 15") + ":00:00"
-	return StrToTime(tStr, "2006-01-02 15:04:05", timeZone)
+	return StrToTime(tStr, "2006-01-02 15:04:05", nil)
 }
 
 //获取给定日期的零点时间
-func GetDay0(timestamp int64, timeZone *time.Location) time.Time {
+func GetDay0(timestamp int64) time.Time {
 	tm := time.Unix(timestamp, 0)
 	tStr := tm.Format("2006-01-02") + " 00:00:00"
 
-	return StrToTime(tStr, "2006-01-02 15:04:05", timeZone)
+	return StrToTime(tStr, "2006-01-02 15:04:05", nil)
 }
 
 //获取offset 0点时间
@@ -92,9 +92,16 @@ func StringTimetoUnix(timestr string) int64 {
 }
 
 //获取最近上个星期天的零点日期
-func GetTimeWeek0(timestamp int64) int64 {
+func GetWeek0(timestamp int64) time.Time {
 	weekday := GetTimeWeek(timestamp)
-	tm0 := GetDay0(timestamp, nil)
+	tm0 := GetDay0(timestamp)
+	return tm0.AddDate(0, 0, -1*weekday)
+}
+
+//获取最近上个星期天的零点日期
+func GetUtcWeek0(timestamp int64) int64 {
+	weekday := GetTimeWeek(timestamp)
+	tm0 := GetDay0(timestamp)
 	tm0 = tm0.AddDate(0, 0, -1*weekday)
 
 	return tm0.Unix()
@@ -105,7 +112,7 @@ func GetTimeWeek0(timestamp int64) int64 {
 */
 func GetMonth0(timestamp int64) time.Time {
 
-	tm0 := GetDay0(timestamp, nil)
+	tm0 := GetDay0(timestamp)
 	month0 := tm0.Day() - 1
 	tm0 = tm0.AddDate(0, 0, -1*month0) //这个月1号
 	return tm0

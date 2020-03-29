@@ -5,8 +5,9 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
-	"public/mylog"
 	"strings"
+
+	"github.com/xxjwxc/public/mylog"
 )
 
 ///*
@@ -31,7 +32,7 @@ import (
 //	return
 //}
 
-//获取公网IP地址
+// GetWwwIP 获取公网IP地址
 func GetWwwIP() (exip string) {
 	resp, err := http.Get("http://myexternalip.com/raw")
 	if err != nil {
@@ -45,9 +46,7 @@ func GetWwwIP() (exip string) {
 	return string(bytes.TrimSpace(b))
 }
 
-/*
-	获取内网ip
-*/
+// GetLocalIP 获取内网ip
 func GetLocalIP() (ip string) {
 	addrs, err := net.InterfaceAddrs()
 	if err != nil {
@@ -65,8 +64,8 @@ func GetLocalIP() (ip string) {
 	return
 }
 
-//获取用户ip
-func GetClientIp(r *http.Request) (ip string) {
+// GetClientIP 获取用户ip
+func GetClientIP(r *http.Request) (ip string) {
 	ip = r.Header.Get("X-Real-Ip")
 	if ip == "" {
 		ip = strings.Split(r.RemoteAddr, ":")[0]

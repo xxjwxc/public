@@ -6,11 +6,11 @@ import (
 	"strings"
 )
 
-type WindowsServiceTools struct {
-	i ServiceTools
+type ServiceTools struct {
+	//i IServiceTools
 }
 
-func IsStart(name string) (st int, err error) {
+func (s *ServiceTools) IsStart(name string) (st int, err error) {
 	f, _ := exec.Command("service", name, "status").Output()
 
 	st = NOTFIND

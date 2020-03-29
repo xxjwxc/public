@@ -11,10 +11,10 @@ package mycatch
 import (
 	"fmt"
 	"os"
-	"os/exec"
-	"path/filepath"
 	"runtime/debug"
 	"time"
+
+	"github.com/xxjwxc/public/tools"
 )
 
 func Dmp() {
@@ -29,17 +29,15 @@ func Dmp() {
 }
 
 func OnPrintErr(errstring string) {
-	file, _ := exec.LookPath(os.Args[0])
-	path, _ := filepath.Abs(file)
-	path = filepath.Dir(path)
+	path := tools.GetModelPath() + "/err"
+	if !tools.CheckFileIsExist(path) {
+		os.MkdirAll(path, os.ModePerm) //生成多级目录
+	}
 
-	now := time.Now()  //获取当前时间
-	pid := os.Getpid() //获取进程ID
-
-	os.MkdirAll(path+"/err", os.ModePerm) //生成多级目录
-
-	time_str := now.Format("2006-01-02")                                //设定时间格式
-	fname := fmt.Sprintf("%s/err/panic_%s-%x.log", path, time_str, pid) //保存错误信息文件名:程序名-进程ID-当前时间（年月日时分秒）
+	now := time.Now()                                               //获取当前时间
+	pid := os.Getpid()                                              //获取进程ID
+	time_str := now.Format("2006-01-02")                            //设定时间格式
+	fname := fmt.Sprintf("%s/panic_%s-%x.log", path, time_str, pid) //保存错误信息文件名:程序名-进程ID-当前时间（年月日时分秒）
 	fmt.Println("panic to file ", fname)
 
 	f, err := os.OpenFile(fname, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0666)

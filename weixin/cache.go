@@ -1,11 +1,12 @@
 package weixin
 
 import (
-	"public/mycache"
 	"time"
+
+	"github.com/xxjwxc/public/mycache"
 )
 
-//Memcache struct contains *memcache.Client
+// Gocache Memcache struct contains *memcache.Client
 type Gocache struct {
 	mc *mycache.MyCache
 }

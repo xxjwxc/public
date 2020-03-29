@@ -4,20 +4,21 @@ import (
 	"crypto/md5"
 	"fmt"
 	"log"
-	"public/message"
-	"public/mylog"
-	"public/tools"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/xxjwxc/public/message"
+	"github.com/xxjwxc/public/mylog"
+	"github.com/xxjwxc/public/tools"
 
 	wxpay "gopkg.in/go-with/wxpay.v1"
 )
 
 const (
-	unifiedOrderUrl = "https://api.mch.weixin.qq.com/pay/unifiedorder"  // 统一下单请求URL
-	queryOrderUrl   = "https://api.mch.weixin.qq.com/pay/orderquery"    // 统一查询请求URL
-	refundUrl       = "https://api.mch.weixin.qq.com/secapi/pay/refund" //退款请求URL
+	unifiedOrderURL = "https://api.mch.weixin.qq.com/pay/unifiedorder"  // 统一下单请求URL
+	queryOrderURL   = "https://api.mch.weixin.qq.com/pay/orderquery"    // 统一查询请求URL
+	refundURL       = "https://api.mch.weixin.qq.com/secapi/pay/refund" //退款请求URL
 )
 
 const (
@@ -30,6 +31,7 @@ const (
 	PAY_ERROR      = -1 //支付失败
 )
 
+// SmallAppUnifiedorder 小程序统一下单接口
 /*
 	小程序统一下单接口
 	open_id:用户唯一标识
@@ -37,8 +39,8 @@ const (
 	price_body ： 支付描述
 	order_id ： 商户订单号
 */
-func SmallAppUnifiedorder(open_id string, price int, price_body, order_id, client_ip string) message.MessageBody {
-	if !tools.CheckParam(open_id, order_id) || price <= 0 { //参数检测
+func SmallAppUnifiedorder(openID string, price int, priceBody, orderID, clientIP string) message.MessageBody {
+	if !tools.CheckParam(openID, orderID) || price <= 0 { //参数检测
 		return message.GetErrorMsg(message.ParameterInvalid)
 	}
 
@@ -46,19 +48,19 @@ func SmallAppUnifiedorder(open_id string, price int, price_body, order_id, clien
 	// 查询企业付款接口请求参数
 	params.SetString("appid", client.AppId)
 	params.SetString("mch_id", client.MchId)
-	params.SetString("body", price_body)
+	params.SetString("body", priceBody)
 	params.SetInt64("total_fee", int64(price*10))
-	params.SetString("spbill_create_ip", client_ip)
-	params.SetString("notify_url", notify_url)
+	params.SetString("spbill_create_ip", clientIP)
+	params.SetString("notify_url", wxInfo.NotifyURL)
 	params.SetString("trade_type", "JSAPI")
-	params.SetString("openid", open_id)
+	params.SetString("openid", openID)
 	params.SetString("nonce_str", tools.GetRandomString(32)) // 随机字符串
-	params.SetString("out_trade_no", order_id)               // 商户订单号
+	params.SetString("out_trade_no", orderID)                // 商户订单号
 	params.SetString("sign", client.Sign(params))            // 签名 c.Sign(params)
 
 	log.Println("paramsparams", params)
 	// 发送查询企业付款请求
-	ret, err := client.Post(unifiedOrderUrl, params, true)
+	ret, err := client.Post(unifiedOrderURL, params, true)
 	if err != nil {
 		mylog.Error(err)
 		msg := message.GetErrorMsg(message.UnknownError)
@@ -77,10 +79,10 @@ func SmallAppUnifiedorder(open_id string, price int, price_body, order_id, clien
 		dd["signType"] = "MD5"
 		dd["paySign"] = "MD5"
 		//appId=wxd678efh567hg6787&nonceStr=5K8264ILTKCH16CQ2502SI8ZNMTM67VS&package=prepay_id=&signType=MD5&timeStamp=1490840662&key=qazwsxedcrfvtgbyhnujmikolp111111
-		str := "appId=" + pay_appId + "&nonceStr=" + dd["nonceStr"] + "&package=" + dd["package"] + "&signType=MD5&timeStamp=" + dd["timeStamp"] + "&key=" + apiKey
+		str := "appId=" + wxInfo.AppID + "&nonceStr=" + dd["nonceStr"] + "&package=" + dd["package"] + "&signType=MD5&timeStamp=" + dd["timeStamp"] + "&key=" + wxInfo.APIKey
 		by := md5.Sum([]byte(str))
 		dd["paySign"] = strings.ToUpper(fmt.Sprintf("%x", by))
-		dd["order_id"] = order_id
+		dd["order_id"] = orderID
 
 		msg := message.GetSuccessMsg()
 		msg.Data = dd
@@ -92,13 +94,14 @@ func SmallAppUnifiedorder(open_id string, price int, price_body, order_id, clien
 	return msg
 }
 
+// OnSelectData 统一查询接口
 /*
 	统一查询接口
 	open_id:用户唯一标识
 	order_id ： 商户订单号
 */
-func OnSelectData(open_id, order_id string) (int, message.MessageBody) {
-	if !tools.CheckParam(open_id, order_id) { //参数检测
+func OnSelectData(openID, orderID string) (int, message.MessageBody) {
+	if !tools.CheckParam(openID, orderID) { //参数检测
 		return 0, message.GetErrorMsg(message.ParameterInvalid)
 	}
 
@@ -108,17 +111,17 @@ func OnSelectData(open_id, order_id string) (int, message.MessageBody) {
 	// 查询企业付款接口请求参数
 	params.SetString("appid", client.AppId)
 	params.SetString("mch_id", client.MchId)
-	params.SetString("out_trade_no", order_id)               //商户订单号
+	params.SetString("out_trade_no", orderID)                //商户订单号
 	params.SetString("nonce_str", tools.GetRandomString(32)) // 随机字符串
 	params.SetString("sign", client.Sign(params))            // 签名 c.Sign(params)
 
 	// 发送查询企业付款请求
 	ret := make(wxpay.Params)
 	var err error
-	ret, err = client.Post(queryOrderUrl, params, true)
+	ret, err = client.Post(queryOrderURL, params, true)
 	if err != nil { //做再次确认
 		time.Sleep(time.Second * 1)
-		ret, err = client.Post(queryOrderUrl, params, true)
+		ret, err = client.Post(queryOrderURL, params, true)
 		if err != nil {
 			mylog.Error(err)
 			msg := message.GetSuccessMsg()
@@ -164,6 +167,7 @@ func OnSelectData(open_id, order_id string) (int, message.MessageBody) {
 	return code, msg
 }
 
+// RefundPay 申请退款
 /*
 	申请退款
 	open_id:用户唯一标识
@@ -172,8 +176,8 @@ func OnSelectData(open_id, order_id string) (int, message.MessageBody) {
 	total_fee: 订单总金额 分
 	refund_fee: 退款总金额 分
 */
-func RefundPay(open_id, order_id, refund_no string, total_fee, refund_fee int) (bool, message.MessageBody) {
-	if !tools.CheckParam(open_id, order_id) { //参数检测
+func RefundPay(openID, orderID, refundNO string, totalFee, refundFee int) (bool, message.MessageBody) {
+	if !tools.CheckParam(openID, orderID) { //参数检测
 		return false, message.GetErrorMsg(message.ParameterInvalid)
 	}
 	code := false
@@ -181,15 +185,15 @@ func RefundPay(open_id, order_id, refund_no string, total_fee, refund_fee int) (
 	// 退款请求参数
 	params.SetString("appid", client.AppId)
 	params.SetString("mch_id", client.MchId)
-	params.SetString("out_trade_no", order_id)               //商户订单号
-	params.SetString("out_refund_no", refund_no)             //商户退款单号
-	params.SetInt64("total_fee", int64(total_fee))           // 订单总金额（分）
-	params.SetInt64("refund_fee", int64(refund_fee))         // 退款金额（分）
+	params.SetString("out_trade_no", orderID)                //商户订单号
+	params.SetString("out_refund_no", refundNO)              //商户退款单号
+	params.SetInt64("total_fee", int64(totalFee))            // 订单总金额（分）
+	params.SetInt64("refund_fee", int64(refundFee))          // 退款金额（分）
 	params.SetString("nonce_str", tools.GetRandomString(32)) // 随机字符串
 	params.SetString("sign", client.Sign(params))            // 签名 c.Sign(params)
 
 	// 发送申请退款请求
-	ret, err := client.Post(refundUrl, params, true)
+	ret, err := client.Post(refundURL, params, true)
 	if err != nil {
 		mylog.Error(err)
 		msg := message.GetErrorMsg(message.UnknownError)

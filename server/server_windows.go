@@ -5,11 +5,11 @@ import (
 	"github.com/btcsuite/winsvc/svc"
 )
 
-type WindowsServiceTools struct {
-	i ServiceTools
+type ServiceTools struct {
+	//i IServiceTools
 }
 
-func IsStart(name string) (st int, err error) {
+func (s *ServiceTools) IsStart(name string) (st int, err error) {
 	var m *mgr.Mgr
 	m, err = mgr.Connect()
 	if err != nil {
@@ -17,14 +17,14 @@ func IsStart(name string) (st int, err error) {
 	}
 	defer m.Disconnect()
 
-	s, err := m.OpenService(name)
+	sv, err := m.OpenService(name) 
 	if err != nil {
 		return 0, err
 	}
-	defer s.Close()
+	defer sv.Close()
 
 	var ss svc.Status
-	ss, err = s.Query()
+	ss, err = sv.Query()
 	st = int(ss.State)
 	return
 }
