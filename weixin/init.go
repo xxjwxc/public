@@ -32,14 +32,14 @@ func InitWxinfo(info WxInfo) {
 	rootcaFile = tools.GetModelPath() + rootcaFileLoc
 
 	//使用memcache保存access_token，也可选择redis或自定义cache
-	memCache := NewGocache("_winxin_access")
+	//memCache := NewGocache("_winxin_access")
 	//配置微信参数
 	cfg = wechat.Config{
 		AppID:          wxInfo.APIKey,
 		AppSecret:      wxInfo.AppSecret,
 		Token:          wxInfo.Token,
 		EncodingAESKey: wxInfo.EncodingAESKey,
-		Cache:          memCache,
+		//Cache:          memCache,
 	}
 	client = wxpay.NewClient(wxInfo.AppID, wxInfo.MchID, wxInfo.APIKey)
 	client.WithCert(certFile, keyFile, rootcaFile)

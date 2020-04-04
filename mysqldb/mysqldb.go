@@ -33,7 +33,7 @@ func (i *MySqlDB) OnGetDBOrm(dataSourceName string) (orm *gorm.DB) {
 	}
 
 	i.DB.SingularTable(true) //全局禁用表名复数
-	if dev.OnIsDev() {
+	if dev.IsDev() {
 		i.DB.LogMode(true)
 		//beedb.OnDebug = true
 	} else {
