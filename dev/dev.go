@@ -14,8 +14,8 @@ func OnSetDev(isDev bool) {
 	_isDev = isDev
 }
 
-//OnIsDev ... 是否是开发版本
-func OnIsDev() bool {
+//IsDev ... 是否是开发版本
+func IsDev() bool {
 	return _isDev
 }
 
