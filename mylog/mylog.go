@@ -103,7 +103,7 @@ func SaveError(errstring, flag string) {
 
 //
 func Debug(describ ...interface{}) {
-	if dev.OnIsDev() {
+	if dev.IsDev() {
 		for _, e := range describ {
 			switch v := e.(type) {
 			case string:
