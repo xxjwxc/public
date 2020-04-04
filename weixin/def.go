@@ -22,14 +22,12 @@ type APITicket struct {
 
 // WxInfo 微信配置信息
 type WxInfo struct {
-	AppID          string // 微信公众平台应用ID
-	AppSecret      string // 微信支付商户平台商户号
-	APIKey         string // 微信支付商户平台API密钥
-	MchID          string
-	NotifyURL      string
-	ShearURL       string
-	Token          string
-	EncodingAESKey string
+	AppID     string // 微信公众平台应用ID
+	AppSecret string // 微信支付商户平台商户号
+	APIKey    string // 微信支付商户平台API密钥
+	MchID     string // 商户号
+	NotifyURL string // 通知地址
+	ShearURL  string // 微信分享url
 }
 
 // TempMsg 订阅消息头
