@@ -124,7 +124,7 @@ $oem.RespTab
 {{$obj.SC}}{{$obj.SC}}{{$obj.SC}}
 
 #### 返回参数说明:
-$oem.RespTab
+{{$oem.RespTab}}
 
 #### 返回示例:
 	
