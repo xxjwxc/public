@@ -30,6 +30,11 @@ func SetHost(h string) {
 	host = h
 }
 
+// GetHost 获取host
+func GetHost() string {
+	return schemes[0] + "://" + host
+}
+
 // SetBasePath set basePath
 func SetBasePath(b string) {
 	if !strings.HasPrefix(b, "/") {

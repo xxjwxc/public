@@ -97,7 +97,7 @@ func (m *model) GenMarkdown(outPath string) {
 
 			sub.Methods = v1.Methods
 			sub.Note = v1.Note
-			sub.RouterPath = buildRelativePath(m.Group, v1.RouterPath)
+			sub.RouterPath = buildRelativePath(myswagger.GetHost(), buildRelativePath(m.Group, v1.RouterPath))
 			tmp.Item = append(tmp.Item, sub)
 		}
 		jsonsrc := doc.GenMarkdown(tmp)
