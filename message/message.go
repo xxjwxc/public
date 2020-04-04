@@ -233,7 +233,7 @@ func GetErrorMsg(errorCode ...interface{}) (msg MessageBody) {
 			msg.Error = v.Error()
 		case interface{}:
 			{
-				if dev.OnIsDev() {
+				if dev.IsDev() {
 					msg.Error = onCheckParam(v)
 				}
 			}
