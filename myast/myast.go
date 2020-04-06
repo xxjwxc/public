@@ -26,6 +26,11 @@ func (a *structAnalys) ParserStruct(astPkg *ast.Package, structName string) (inf
 		return nil
 	}
 
+	if tools.IsInternalType(structName) { // 内部类型
+		return &mydoc.StructInfo{
+			Name: structName,
+		}
+	}
 	// ast.Print(token.NewFileSet(), astPkg)
 
 	for _, fl := range astPkg.Files {

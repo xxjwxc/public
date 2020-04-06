@@ -107,7 +107,7 @@ func HexToBye(hex string) []byte {
 	return slice
 }
 
-//Emoji表情解码
+// UnicodeEmojiDecode Emoji表情解码
 func UnicodeEmojiDecode(s string) string {
 	//emoji表情的数据表达式
 	re := regexp.MustCompile("\\[[\\\\u0-9a-zA-Z]+\\]")
@@ -124,7 +124,7 @@ func UnicodeEmojiDecode(s string) string {
 	return s
 }
 
-//Emoji表情转换
+// UnicodeEmojiCode Emoji表情转换
 func UnicodeEmojiCode(s string) string {
 	ret := ""
 	rs := []rune(s)
