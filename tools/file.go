@@ -2,13 +2,12 @@ package tools
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
-	"os/exec"
 	"path"
 	"path/filepath"
-	"strings"
 
 	"github.com/xxjwxc/public/mylog"
 )
@@ -59,19 +58,19 @@ func GetPathFiles(absDir string) (re []string) {
 	return
 }
 
-// GetModelPath 获取目录地址
+// GetModelPath 获取程序运行目录
 func GetModelPath() string {
-	file, _ := exec.LookPath(os.Args[0])
-	path := filepath.Dir(file)
-	path, _ = filepath.Abs(path)
-
-	return path
+	dir, _ := os.Getwd()
+	return dir
 }
 
-// GetCurrentDirectory 获取程序运行路径
+// GetCurrentDirectory 获取exe所在目录
 func GetCurrentDirectory() string {
-	dir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
-	return strings.Replace(dir, "\\", "/", -1)
+	dir, _ := os.Executable()
+	exPath := filepath.Dir(dir)
+	fmt.Println(exPath)
+
+	return exPath
 }
 
 // SaveToFile 写入文件

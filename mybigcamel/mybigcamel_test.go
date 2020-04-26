@@ -2,6 +2,7 @@ package mybigcamel
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 )
 
@@ -16,4 +17,15 @@ func Test_cache(t *testing.T) {
 	if SS != tmp1 {
 		fmt.Println("false.")
 	}
+
+	fmt.Println(CapLowercase("IDAPIID"))
+}
+
+func CapLowercase(name string) string {
+	list := strings.Split(UnMarshal(name), "_")
+	if len(list) == 0 {
+		return ""
+	}
+
+	return list[0] + name[len(list[0]):]
 }
