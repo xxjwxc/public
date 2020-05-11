@@ -64,3 +64,17 @@ func IsInternalType(t string) bool {
 	}
 	return false
 }
+
+var keywords = []string{"var", "const", "package", "import", "func", "return",
+	"defer", "go", "select", "interface", "struct", "break", "case", "continue", "for",
+	"fallthrough", "else", "if", "switch", "goto", "default", "chan", "type", "map", "range"}
+
+// IsKeywords 是否是关键字
+func IsKeywords(t string) bool {
+	for _, v := range keywords {
+		if t == v {
+			return true
+		}
+	}
+	return false
+}
