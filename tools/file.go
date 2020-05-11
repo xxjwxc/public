@@ -2,7 +2,6 @@ package tools
 
 import (
 	"bufio"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -68,7 +67,7 @@ func GetModelPath() string {
 func GetCurrentDirectory() string {
 	dir, _ := os.Executable()
 	exPath := filepath.Dir(dir)
-	fmt.Println(exPath)
+	// fmt.Println(exPath)
 
 	return exPath
 }
