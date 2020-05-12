@@ -79,6 +79,12 @@ func (a *structAnalys) structFieldInfo(astPkg *ast.Package, sinfo *ast.StructTyp
 		for _, fnames := range field.Names {
 			info.Name += fnames.Name
 		}
+		// 判断是否是导出属性(导出属性才允许)(首字母大写)
+		strArry := []rune(info.Name)
+		if strArry[0] >= 97 && strArry[0] <= 122 { // 首字母小写
+			continue
+		}
+
 		if field.Tag != nil {
 			info.Tag = strings.Trim(field.Tag.Value, "`")
 		}
