@@ -20,10 +20,10 @@ type Cli struct {
 }
 
 // New 创建命令行对象
-//@param ip IP地址
-//@param username 用户名
-//@param password 密码
-//@param port 端口号,默认22
+// ip IP地址
+// username 用户名
+// password 密码
+// port 端口号,默认22
 func New(ip string, username string, password string, port ...int) (*Cli, error) {
 	cli := new(Cli)
 	cli.IP = ip
