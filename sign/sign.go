@@ -1,13 +1,14 @@
 package sign
 
 import (
-	"data/config"
-	"public/mycache"
-	"public/mylog"
-	"public/mysqldb"
-	"public/tools"
 	"strings"
 	"time"
+
+	"github.com/xxjwxc/oauth2/oauth2Client/src/data/config"
+	"github.com/xxjwxc/public/mycache"
+	"github.com/xxjwxc/public/mylog"
+	"github.com/xxjwxc/public/mysqldb"
+	"github.com/xxjwxc/public/tools"
 )
 
 func init() {

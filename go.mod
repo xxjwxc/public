@@ -27,6 +27,7 @@ require (
 	github.com/nsqio/go-nsq v1.0.8
 	github.com/olivere/elastic v6.2.31+incompatible
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/spf13/cobra v1.0.0
 	github.com/syndtr/goleveldb v1.0.0
 	golang.org/x/crypto v0.0.0-20191205180655-e7c4368fe9dd
 	golang.org/x/image v0.0.0-20200430140353-33d19683fad8 // indirect

@@ -2,7 +2,6 @@ package myleveldb
 
 import (
 	"fmt"
-	"public/myleveldb"
 	"testing"
 	"time"
 )
@@ -21,7 +20,7 @@ type Tweet struct {
 func Test_order(t *testing.T) {
 	fmt.Println("ssss")
 	//初始化db
-	ldb := myleveldb.OnInitDB("./database")
+	ldb := OnInitDB("./database")
 	defer ldb.OnDestoryDB()
 
 	//	var www Tweet
@@ -55,7 +54,7 @@ func Test_order(t *testing.T) {
 	fmt.Println(eee.Created)
 	fmt.Println(eee.Tags)
 
-	var tmp []myleveldb.Param
+	var tmp []Param
 	bb = ldb.Model(&Tweet{}).Find(&tmp, "key3", "key7") //查找
 
 	fmt.Println(tmp)

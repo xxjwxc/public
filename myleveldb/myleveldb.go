@@ -121,7 +121,7 @@ func (L *MyLevelDB) Find(values *[]Param, args ...string) (b bool) {
 		if L.Value == nil {
 			panic("not call Model()")
 		}
-		mylog.Print(mylog.Log_Error, "not init.")
+		mylog.Println("not init.")
 	}
 
 	return false
