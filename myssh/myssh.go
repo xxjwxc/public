@@ -2,6 +2,7 @@ package myssh
 
 import (
 	"fmt"
+	"io"
 	"net"
 	"os"
 	"time"
@@ -38,36 +39,46 @@ func New(ip string, username string, password string, port ...int) (*Cli, error)
 	return cli, cli.connect()
 }
 
-// Run 执行 shell脚本命令
-func (c Cli) Run(shell string) (string, error) {
+// NewSession new session
+func (c Cli) newSession() (*ssh.Session, error) {
 	if c.client == nil {
 		if err := c.connect(); err != nil {
-			return "", err
+			return nil, err
 		}
 	}
 	session, err := c.client.NewSession()
 	if err != nil {
+		return nil, err
+	}
+
+	return session, nil
+}
+
+// Run 执行 shell脚本命令
+func (c Cli) Run(shell string) (string, error) {
+	session, err := c.newSession()
+	if err != nil {
 		return "", err
 	}
 	defer session.Close()
-	buf, err := session.CombinedOutput(shell)
 
+	buf, err := session.CombinedOutput(shell)
 	return string(buf), err
 }
 
 // RunTerminal 执行带交互的命令
 func (c *Cli) RunTerminal(shell string) error {
-	if c.client == nil {
-		if err := c.connect(); err != nil {
-			return err
-		}
-	}
-	session, err := c.client.NewSession()
+	session, err := c.newSession()
 	if err != nil {
 		return err
 	}
 	defer session.Close()
 
+	return c.runTerminalSession(session, shell)
+}
+
+// runTerminalSession 执行带交互的命令
+func (c *Cli) runTerminalSession(session *ssh.Session, shell string) error {
 	fd := int(os.Stdin.Fd())
 	oldState, err := terminal.MakeRaw(fd)
 	if err != nil {
@@ -99,15 +110,30 @@ func (c *Cli) RunTerminal(shell string) error {
 	return nil
 }
 
-// Terminal 进入终端
-func (c Cli) Terminal() error {
-	session, err := c.client.NewSession()
+// EnterTerminal 完全进入终端
+func (c Cli) EnterTerminal() error {
+	session, err := c.newSession()
 	if err != nil {
 		return err
 	}
-
 	defer session.Close()
 
+	return c.enterTerminalSession(session, os.Stdout, os.Stdin)
+}
+
+// Enter 完全进入终端
+func (c Cli) Enter(w io.Writer, r io.Reader) error {
+	session, err := c.newSession()
+	if err != nil {
+		return err
+	}
+	defer session.Close()
+
+	return c.enterTerminalSession(session, w, r)
+}
+
+// EnterTerminalSession 进入终端
+func (c Cli) enterTerminalSession(session *ssh.Session, w io.Writer, r io.Reader) error {
 	fd := int(os.Stdin.Fd())
 	oldState, err := terminal.MakeRaw(fd)
 	if err != nil {
@@ -115,9 +141,9 @@ func (c Cli) Terminal() error {
 	}
 	defer terminal.Restore(fd, oldState)
 
-	session.Stdout = os.Stdout
+	session.Stdout = w
 	session.Stderr = os.Stdin
-	session.Stdin = os.Stdin
+	session.Stdin = r
 
 	termWidth, termHeight, err := terminal.GetSize(fd)
 	if err != nil {

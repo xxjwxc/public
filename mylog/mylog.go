@@ -74,6 +74,12 @@ func ErrorString(v ...interface{}) {
 	log.Output(2, color.Error.Render(fmt.Sprint(v...)))
 }
 
+//Fatalf 系统级错误
+func Fatalf(src string, v ...interface{}) {
+	log.Output(2, color.Error.Render(fmt.Sprintf(src, v...)))
+	os.Exit(1)
+}
+
 //Fatal 系统级错误
 func Fatal(v ...interface{}) {
 	log.Output(2, color.Error.Render(fmt.Sprint(v...)))
