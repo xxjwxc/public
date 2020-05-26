@@ -39,21 +39,6 @@ func New(ip string, username string, password string, port ...int) (*Cli, error)
 	return cli, cli.connect()
 }
 
-// NewSession new session
-func (c Cli) newSession() (*ssh.Session, error) {
-	if c.client == nil {
-		if err := c.connect(); err != nil {
-			return nil, err
-		}
-	}
-	session, err := c.client.NewSession()
-	if err != nil {
-		return nil, err
-	}
-
-	return session, nil
-}
-
 // Run 执行 shell脚本命令
 func (c Cli) Run(shell string) (string, error) {
 	session, err := c.newSession()
@@ -118,7 +103,38 @@ func (c Cli) EnterTerminal() error {
 	}
 	defer session.Close()
 
-	return c.enterTerminalSession(session, os.Stdout, os.Stdin)
+	fd := int(os.Stdin.Fd())
+	oldState, err := terminal.MakeRaw(fd)
+	if err != nil {
+		return err
+	}
+	defer terminal.Restore(fd, oldState)
+
+	session.Stdout = os.Stdout
+	session.Stderr = os.Stdin
+	session.Stdin = os.Stdin
+
+	termWidth, termHeight, err := terminal.GetSize(fd)
+	if err != nil {
+		return err
+	}
+
+	modes := ssh.TerminalModes{
+		ssh.ECHO:          1,
+		ssh.TTY_OP_ISPEED: 14400,
+		ssh.TTY_OP_OSPEED: 14400,
+	}
+	err = session.RequestPty("xterm-256color", termHeight, termWidth, modes)
+	if err != nil {
+		return err
+	}
+
+	err = session.Shell()
+	if err != nil {
+		return err
+	}
+
+	return session.Wait()
 }
 
 // Enter 完全进入终端
@@ -129,17 +145,12 @@ func (c Cli) Enter(w io.Writer, r io.Reader) error {
 	}
 	defer session.Close()
 
-	return c.enterTerminalSession(session, w, r)
-}
-
-// EnterTerminalSession 进入终端
-func (c Cli) enterTerminalSession(session *ssh.Session, w io.Writer, r io.Reader) error {
 	fd := int(os.Stdin.Fd())
-	oldState, err := terminal.MakeRaw(fd)
-	if err != nil {
-		return err
-	}
-	defer terminal.Restore(fd, oldState)
+	// oldState, err := terminal.MakeRaw(fd)
+	// if err != nil {
+	// 	return err
+	// }
+	// defer terminal.Restore(fd, oldState)
 
 	session.Stdout = w
 	session.Stderr = os.Stdin
@@ -185,4 +196,19 @@ func (c *Cli) connect() error {
 	}
 	c.client = sshClient
 	return nil
+}
+
+// newSession new session
+func (c Cli) newSession() (*ssh.Session, error) {
+	if c.client == nil {
+		if err := c.connect(); err != nil {
+			return nil, err
+		}
+	}
+	session, err := c.client.NewSession()
+	if err != nil {
+		return nil, err
+	}
+
+	return session, nil
 }

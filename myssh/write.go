@@ -37,6 +37,9 @@ func (w *MyWriter) Run() {
 	go func() {
 		for res := range w.channel {
 			fmt.Print(res)
+			// 以下去掉命令行显示
+			// index := strings.Index(res, "\n")
+			// fmt.Print(res[index+1:])
 		}
 	}()
 }

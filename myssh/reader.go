@@ -23,14 +23,11 @@ func NewReader() *MyReader {
 }
 
 func (r *MyReader) Read(p []byte) (n int, err error) {
-	fmt.Println("into Read...")
-	fmt.Println("=======:", string(p))
 	cmd := <-r.channel
 	tmp := []byte(cmd + "\n")
 	for i, v := range tmp {
 		p[i] = v
 	}
-	fmt.Println("leave Read.")
 	return len(tmp), err
 }
 
@@ -51,9 +48,7 @@ func (r *MyReader) ListenStdin() {
 				arg = " " + arg
 			}
 
-			fmt.Println("yes:::::", str+arg)
 			if atomic.LoadInt32(&r.isClose) == 1 {
-				fmt.Println("outtttttt")
 				break
 			} else {
 				r.channel <- str + arg
