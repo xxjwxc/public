@@ -81,7 +81,7 @@ func (a *structAnalys) structFieldInfo(astPkg *ast.Package, sinfo *ast.StructTyp
 		}
 		// 判断是否是导出属性(导出属性才允许)(首字母大写)
 		strArry := []rune(info.Name)
-		if strArry[0] >= 97 && strArry[0] <= 122 { // 首字母小写
+		if len(strArry) > 0 && (strArry[0] >= 97 && strArry[0] <= 122) { // 首字母小写
 			continue
 		}
 
