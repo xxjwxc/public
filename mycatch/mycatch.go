@@ -29,7 +29,7 @@ func Dmp() {
 }
 
 func OnPrintErr(errstring string) {
-	path := tools.GetModelPath() + "/err"
+	path := tools.GetCurrentDirectory() + "/err"
 	if !tools.CheckFileIsExist(path) {
 		os.MkdirAll(path, os.ModePerm) //生成多级目录
 	}

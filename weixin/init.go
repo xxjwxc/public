@@ -25,9 +25,9 @@ var rootcaFile string
 func InitWxinfo(info WxInfo) {
 	wxInfo = info
 
-	certFile = tools.GetModelPath() + certFileLoc
-	keyFile = tools.GetModelPath() + keyFileLoc
-	rootcaFile = tools.GetModelPath() + rootcaFileLoc
+	certFile = tools.GetCurrentDirectory() + certFileLoc
+	keyFile = tools.GetCurrentDirectory() + keyFileLoc
+	rootcaFile = tools.GetCurrentDirectory() + rootcaFileLoc
 
 	client = wxpay.NewClient(wxInfo.AppID, wxInfo.MchID, wxInfo.APIKey)
 	client.WithCert(certFile, keyFile, rootcaFile)
