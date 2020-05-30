@@ -22,9 +22,8 @@ const (
 )
 
 // GetAccessToken 获取微信accesstoken
-
-//获取登录凭证
-func GetAccessToken() (accessToken string, err error) {
+// 获取登录凭证
+func (_wx *wxTools) GetAccessToken() (accessToken string, err error) {
 	//先从缓存中获取 access_token
 	cache := mycache.OnGetCache(_cacheToken)
 	var tp interface{}
@@ -33,7 +32,7 @@ func GetAccessToken() (accessToken string, err error) {
 	if b {
 		accessToken = *(tp.(*string))
 	} else {
-		var url = _getToken + wxInfo.AppID + "&secret=" + wxInfo.AppSecret
+		var url = _getToken + _wx.wxInfo.AppID + "&secret=" + _wx.wxInfo.AppSecret
 
 		resp, err := http.Get(url)
 		if err != nil {
@@ -62,7 +61,7 @@ func GetAccessToken() (accessToken string, err error) {
 }
 
 // GetAPITicket 获取微信卡券ticket
-func GetAPITicket() (ticket string, err error) {
+func (_wx *wxTools) GetAPITicket() (ticket string, err error) {
 	//先从缓存中获取
 	cache := mycache.OnGetCache(_cacheTicket)
 	var tp interface{}
@@ -70,7 +69,7 @@ func GetAPITicket() (ticket string, err error) {
 	if b {
 		ticket = tp.(string)
 	} else {
-		accessToken, e := GetAccessToken()
+		accessToken, e := _wx.GetAccessToken()
 		if e != nil {
 			mylog.Error(e)
 			err = e
@@ -101,7 +100,7 @@ func GetAPITicket() (ticket string, err error) {
 }
 
 // GetJsTicket 获取微信js ticket
-func GetJsTicket() (ticket string, err error) {
+func (_wx *wxTools) GetJsTicket() (ticket string, err error) {
 	//先从缓存中获取
 	cache := mycache.OnGetCache("weixin_js_ticket")
 	var tp interface{}
@@ -109,7 +108,7 @@ func GetJsTicket() (ticket string, err error) {
 	if b {
 		ticket = tp.(string)
 	} else {
-		accessToken, e := GetAccessToken()
+		accessToken, e := _wx.GetAccessToken()
 		if e != nil {
 			mylog.Error(e)
 			err = e
@@ -139,9 +138,9 @@ func GetJsTicket() (ticket string, err error) {
 	return
 }
 
-// 发送订阅消息
-func SendTemplateMsg(msg TempMsg) bool {
-	accessToken, err := GetAccessToken()
+// SendTemplateMsg 发送订阅消息
+func (_wx *wxTools) SendTemplateMsg(msg TempMsg) bool {
+	accessToken, err := _wx.GetAccessToken()
 	if err != nil {
 		mylog.Error(err)
 		return false

@@ -1,5 +1,7 @@
 package weixin
 
+import wxpay "gopkg.in/go-with/wxpay.v1"
+
 type UserInfo struct {
 	OpenID     string   `json:"openid"`
 	Nickname   string   `json:"nickname"`
@@ -42,4 +44,12 @@ type TempMsg struct {
 type ResTempMsg struct {
 	Errcode int    `json:"errcode"` //
 	Errmsg  string `json:"errmsg"`
+}
+
+type wxTools struct {
+	client     *wxpay.Client
+	wxInfo     WxInfo
+	certFile   string // 微信支付商户平台证书路径
+	keyFile    string
+	rootcaFile string
 }

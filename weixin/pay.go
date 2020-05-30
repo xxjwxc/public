@@ -16,9 +16,10 @@ import (
 )
 
 const (
-	unifiedOrderURL = "https://api.mch.weixin.qq.com/pay/unifiedorder"  // 统一下单请求URL
-	queryOrderURL   = "https://api.mch.weixin.qq.com/pay/orderquery"    // 统一查询请求URL
-	refundURL       = "https://api.mch.weixin.qq.com/secapi/pay/refund" //退款请求URL
+	unifiedOrderURL  = "https://api.mch.weixin.qq.com/pay/unifiedorder"                      // 统一下单请求URL
+	queryOrderURL    = "https://api.mch.weixin.qq.com/pay/orderquery"                        // 统一查询请求URL
+	refundURL        = "https://api.mch.weixin.qq.com/secapi/pay/refund"                     //退款请求URL
+	enterprisePayURL = "https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers" // 查询企业付款接口请求URL
 )
 
 const (
@@ -39,28 +40,28 @@ const (
 	price_body ： 支付描述
 	order_id ： 商户订单号
 */
-func SmallAppUnifiedorder(openID string, price int, priceBody, orderID, clientIP string) message.MessageBody {
+func (_wx *wxTools) SmallAppUnifiedorder(openID string, price int, priceBody, orderID, clientIP string) message.MessageBody {
 	if !tools.CheckParam(openID, orderID) || price <= 0 { //参数检测
 		return message.GetErrorMsg(message.ParameterInvalid)
 	}
 
 	params := make(wxpay.Params)
 	// 查询企业付款接口请求参数
-	params.SetString("appid", client.AppId)
-	params.SetString("mch_id", client.MchId)
+	params.SetString("appid", _wx.client.AppId)
+	params.SetString("mch_id", _wx.client.MchId)
 	params.SetString("body", priceBody)
 	params.SetInt64("total_fee", int64(price*10))
 	params.SetString("spbill_create_ip", clientIP)
-	params.SetString("notify_url", wxInfo.NotifyURL)
+	params.SetString("notify_url", _wx.wxInfo.NotifyURL)
 	params.SetString("trade_type", "JSAPI")
 	params.SetString("openid", openID)
 	params.SetString("nonce_str", tools.GetRandomString(32)) // 随机字符串
 	params.SetString("out_trade_no", orderID)                // 商户订单号
-	params.SetString("sign", client.Sign(params))            // 签名 c.Sign(params)
+	params.SetString("sign", _wx.client.Sign(params))        // 签名 c.Sign(params)
 
 	log.Println("paramsparams", params)
 	// 发送查询企业付款请求
-	ret, err := client.Post(unifiedOrderURL, params, true)
+	ret, err := _wx.client.Post(unifiedOrderURL, params, true)
 	if err != nil {
 		mylog.Error(err)
 		msg := message.GetErrorMsg(message.UnknownError)
@@ -79,7 +80,7 @@ func SmallAppUnifiedorder(openID string, price int, priceBody, orderID, clientIP
 		dd["signType"] = "MD5"
 		dd["paySign"] = "MD5"
 		//appId=wxd678efh567hg6787&nonceStr=5K8264ILTKCH16CQ2502SI8ZNMTM67VS&package=prepay_id=&signType=MD5&timeStamp=1490840662&key=qazwsxedcrfvtgbyhnujmikolp111111
-		str := "appId=" + wxInfo.AppID + "&nonceStr=" + dd["nonceStr"] + "&package=" + dd["package"] + "&signType=MD5&timeStamp=" + dd["timeStamp"] + "&key=" + wxInfo.APIKey
+		str := "appId=" + _wx.wxInfo.AppID + "&nonceStr=" + dd["nonceStr"] + "&package=" + dd["package"] + "&signType=MD5&timeStamp=" + dd["timeStamp"] + "&key=" + _wx.wxInfo.APIKey
 		by := md5.Sum([]byte(str))
 		dd["paySign"] = strings.ToUpper(fmt.Sprintf("%x", by))
 		dd["order_id"] = orderID
@@ -94,13 +95,13 @@ func SmallAppUnifiedorder(openID string, price int, priceBody, orderID, clientIP
 	return msg
 }
 
-// OnSelectData 统一查询接口
+// SelectOrder 统一查询接口
 /*
 	统一查询接口
 	open_id:用户唯一标识
 	order_id ： 商户订单号
 */
-func OnSelectData(openID, orderID string) (int, message.MessageBody) {
+func (_wx *wxTools) SelectOrder(openID, orderID string) (int, message.MessageBody) {
 	if !tools.CheckParam(openID, orderID) { //参数检测
 		return 0, message.GetErrorMsg(message.ParameterInvalid)
 	}
@@ -109,19 +110,19 @@ func OnSelectData(openID, orderID string) (int, message.MessageBody) {
 
 	params := make(wxpay.Params)
 	// 查询企业付款接口请求参数
-	params.SetString("appid", client.AppId)
-	params.SetString("mch_id", client.MchId)
+	params.SetString("appid", _wx.client.AppId)
+	params.SetString("mch_id", _wx.client.MchId)
 	params.SetString("out_trade_no", orderID)                //商户订单号
 	params.SetString("nonce_str", tools.GetRandomString(32)) // 随机字符串
-	params.SetString("sign", client.Sign(params))            // 签名 c.Sign(params)
+	params.SetString("sign", _wx.client.Sign(params))        // 签名 c.Sign(params)
 
 	// 发送查询企业付款请求
 	ret := make(wxpay.Params)
 	var err error
-	ret, err = client.Post(queryOrderURL, params, true)
+	ret, err = _wx.client.Post(queryOrderURL, params, true)
 	if err != nil { //做再次确认
 		time.Sleep(time.Second * 1)
-		ret, err = client.Post(queryOrderURL, params, true)
+		ret, err = _wx.client.Post(queryOrderURL, params, true)
 		if err != nil {
 			mylog.Error(err)
 			msg := message.GetSuccessMsg()
@@ -176,24 +177,24 @@ func OnSelectData(openID, orderID string) (int, message.MessageBody) {
 	total_fee: 订单总金额 分
 	refund_fee: 退款总金额 分
 */
-func RefundPay(openID, orderID, refundNO string, totalFee, refundFee int) (bool, message.MessageBody) {
+func (_wx *wxTools) RefundPay(openID, orderID, refundNO string, totalFee, refundFee int) (bool, message.MessageBody) {
 	if !tools.CheckParam(openID, orderID) { //参数检测
 		return false, message.GetErrorMsg(message.ParameterInvalid)
 	}
 	code := false
 	params := make(wxpay.Params)
 	// 退款请求参数
-	params.SetString("appid", client.AppId)
-	params.SetString("mch_id", client.MchId)
+	params.SetString("appid", _wx.client.AppId)
+	params.SetString("mch_id", _wx.client.MchId)
 	params.SetString("out_trade_no", orderID)                //商户订单号
 	params.SetString("out_refund_no", refundNO)              //商户退款单号
 	params.SetInt64("total_fee", int64(totalFee))            // 订单总金额（分）
 	params.SetInt64("refund_fee", int64(refundFee))          // 退款金额（分）
 	params.SetString("nonce_str", tools.GetRandomString(32)) // 随机字符串
-	params.SetString("sign", client.Sign(params))            // 签名 c.Sign(params)
+	params.SetString("sign", _wx.client.Sign(params))        // 签名 c.Sign(params)
 
 	// 发送申请退款请求
-	ret, err := client.Post(refundURL, params, true)
+	ret, err := _wx.client.Post(refundURL, params, true)
 	if err != nil {
 		mylog.Error(err)
 		msg := message.GetErrorMsg(message.UnknownError)
@@ -211,4 +212,51 @@ func RefundPay(openID, orderID, refundNO string, totalFee, refundFee int) (bool,
 	}
 	msg.Data = ret
 	return code, msg
+}
+
+// WxEnterprisePay 企业付款
+/*
+企业付款
+open_id:用户唯一标识
+trade_no : 商户订单号
+desc ： 操作说明
+amount：付款金额 分
+*/
+func (_wx *wxTools) WxEnterprisePay(openID, tradeNO, desc, ipAddr string, amount int) bool {
+	// c := wxpay.NewClient(_wx.wxInfo.AppID, _wx.wxInfo.MchID, _wx.wxInfo.APIKey)
+
+	// // 附着商户证书
+	// err := c.WithCert(_wx.certFile, _wx.keyFile, _wx.rootcaFile)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	params := make(wxpay.Params)
+	nonceStr := tools.GetRandomString(16)
+	// 查询企业付款接口请求参数
+	params.SetString("mch_appid", _wx.client.AppId) //商户账号appid
+	params.SetString("mchid", _wx.client.MchId)     //商户号
+	params.SetString("nonce_str", nonceStr)         // 随机字符串
+	params.SetString("partner_trade_no", tradeNO)   // 商户订单号
+	params.SetString("openid", openID)              //用户openid
+	params.SetString("check_name", "NO_CHECK")      //校验用户姓名选项
+	params.SetInt64("amount", int64(amount))        //企业付款金额，单位为分
+	params.SetString("desc", desc)                  //企业付款操作说明信息。必填。
+	params.SetString("spbill_create_ip", ipAddr)
+
+	params.SetString("sign", _wx.client.Sign(params)) // 签名
+
+	// 发送查询企业付款请求
+	ret, err := _wx.client.Post(enterprisePayURL, params, true)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Print(ret)
+	returnCode := ret.GetString("return_code")
+	resultCode := ret.GetString("result_code")
+	if returnCode == "SUCCESS" && resultCode == "SUCCESS" {
+		return true
+	}
+
+	return false
 }
