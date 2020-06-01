@@ -213,6 +213,26 @@ type MessageBody struct {
 	Data  interface{} `json:"data,omitempty"`
 }
 
+var _MessageMap = map[string]int{}
+
+func init() {
+	for k, v := range MessageMap {
+		_MessageMap[v] = k
+	}
+}
+
+//GetErrorStrMsg 获取错误消息 参数(int,string)
+func GetErrorStrMsg(errorCode string) (msg MessageBody) {
+	if k, ok := _MessageMap[errorCode]; ok {
+		return GetErrorMsg(k)
+	}
+
+	msg.State = false
+	msg.Code = -1
+	msg.Error = errorCode
+	return
+}
+
 //GetErrorMsg 获取错误消息 参数(int,string)
 func GetErrorMsg(errorCode ...interface{}) (msg MessageBody) {
 	if len(errorCode) == 0 {
