@@ -19,7 +19,7 @@ type Tweet struct {
 
 func Test_cache(t *testing.T) {
 	//获取
-	cache := OnGetCache("_cache")
+	cache := NewCache("_cache")
 	var tp interface{}
 	tp, b := cache.Value("key")
 	if b {

@@ -18,7 +18,7 @@ type MyCache struct {
 	初始化一个cache
 	cachename 缓存名字
 */
-func OnGetCache(cachename string) (mc *MyCache) {
+func NewCache(cachename string) (mc *MyCache) {
 	mc = &MyCache{}
 	mc.cache = cache2go.Cache(cachename)
 	return
