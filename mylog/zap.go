@@ -92,6 +92,11 @@ func (z *zapLog) Errorf(msg string, a ...interface{}) {
 	z.SaveError(fmt.Sprintf(msg, a...), "err")
 }
 
+// ErrorString 打印错误信息
+func (z *zapLog) ErrorString(a ...interface{}) {
+	z.logger.Error(getStr(a...))
+}
+
 // Debug level info msg
 func (z *zapLog) Debug(a ...interface{}) {
 	if dev.IsDev() {

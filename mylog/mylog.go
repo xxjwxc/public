@@ -13,6 +13,7 @@ type myLog interface {
 	Infof(msg string, a ...interface{})
 	Error(a ...interface{})
 	Errorf(msg string, a ...interface{})
+	ErrorString(a ...interface{})        // ErrorString 打印错误信息(不记录错误文件)
 	Fatal(v ...interface{})              // 系统级错误,退出
 	Fatalf(msg string, a ...interface{}) // 系统级错误,退出
 	SaveError(errstring, flag string)
@@ -80,4 +81,9 @@ func SaveError(errstring, flag string) {
 // Panic return trace of error
 func Panic(a ...interface{}) {
 	_log.Panic(a...)
+}
+
+// ErrorString 打印错误信息
+func ErrorString(a ...interface{}) {
+	_log.ErrorString(a...)
 }

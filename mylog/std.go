@@ -83,6 +83,11 @@ func (s *stdLog) TraceError(err error) error {
 	return errors.WithStack(err)
 }
 
+// ErrorString 打印错误信息
+func (s *stdLog) ErrorString(a ...interface{}) {
+	log.Output(2, color.Error.Render(fmt.Sprint(a...)))
+}
+
 func (s *stdLog) Close() {
 
 }
