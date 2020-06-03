@@ -31,6 +31,15 @@ func TestZapLog(t *testing.T) {
 	dev.SetService("xxjwxc")
 	//	dev.OnSetDev(true)
 	SetLog(GetDefaultZap())
+	// log.Printf("%#v", &ttt{
+	// 	Act:   "====001===",
+	// 	Begin: time.Now().Unix(),
+	// 	Cat: &aaa{
+	// 		Act:   "----002----",
+	// 		Begin: time.Now().Unix(),
+	// 	},
+	// })
+	// return
 
 	Info(&ttt{
 		Act:   "====001===",

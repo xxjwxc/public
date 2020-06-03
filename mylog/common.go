@@ -71,5 +71,5 @@ func getCurrentDirectory() string {
 }
 
 func getStr(a ...interface{}) string {
-	return fmt.Sprintf(strings.Repeat("[%+v]", len(a)), a...)
+	return fmt.Sprintf(strings.Repeat("[%#v]", len(a)), a...)
 }
