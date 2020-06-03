@@ -29,6 +29,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.0.0
 	github.com/syndtr/goleveldb v1.0.0
+	github.com/xxjwxc/gowp v0.0.0-20200603130651-4d7368b0e285
 	go.uber.org/zap v1.10.0
 	golang.org/x/crypto v0.0.0-20191205180655-e7c4368fe9dd
 	golang.org/x/image v0.0.0-20200430140353-33d19683fad8 // indirect
