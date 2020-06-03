@@ -37,7 +37,7 @@ func OnInitES(url string) MyElastic {
 
 //func (es *MyElastic) Model(refs interface{}) *MyElastic {
 //	if reflect.ValueOf(refs).Type().Kind() != reflect.Ptr {
-//		mylog.Println("Model: attempt to Model into a pointer")
+//		mylog.Info("Model: attempt to Model into a pointer")
 //		panic(0)
 //	}
 

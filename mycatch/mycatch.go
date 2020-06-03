@@ -10,13 +10,12 @@ package mycatch
 
 import (
 	"fmt"
-	"os"
 	"runtime/debug"
-	"time"
 
-	"github.com/xxjwxc/public/tools"
+	"github.com/xxjwxc/public/mylog"
 )
 
+// Dmp dmp the recover
 func Dmp() {
 	errstr := ""
 	if err := recover(); err != nil {
@@ -25,28 +24,29 @@ func Dmp() {
 	}
 
 	errstr += (string(debug.Stack())) //输出堆栈信息
-	OnPrintErr(errstr)
+	mylog.Panic(errstr, "err")
+	// OnPrintErr(errstr)
 }
 
-func OnPrintErr(errstring string) {
-	path := tools.GetCurrentDirectory() + "/err"
-	if !tools.CheckFileIsExist(path) {
-		os.MkdirAll(path, os.ModePerm) //生成多级目录
-	}
+// func OnPrintErr(errstring string) {
+// 	path := tools.GetCurrentDirectory() + "/err"
+// 	if !tools.CheckFileIsExist(path) {
+// 		os.MkdirAll(path, os.ModePerm) //生成多级目录
+// 	}
 
-	now := time.Now()                                               //获取当前时间
-	pid := os.Getpid()                                              //获取进程ID
-	time_str := now.Format("2006-01-02")                            //设定时间格式
-	fname := fmt.Sprintf("%s/panic_%s-%x.log", path, time_str, pid) //保存错误信息文件名:程序名-进程ID-当前时间（年月日时分秒）
-	fmt.Println("panic to file ", fname)
+// 	now := time.Now()                                              //获取当前时间
+// 	pid := os.Getpid()                                             //获取进程ID
+// 	timeStr := now.Format("2006-01-02")                            //设定时间格式
+// 	fname := fmt.Sprintf("%s/panic_%s-%x.log", path, timeStr, pid) //保存错误信息文件名:程序名-进程ID-当前时间（年月日时分秒）
+// 	fmt.Println("panic to file ", fname)
 
-	f, err := os.OpenFile(fname, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0666)
-	if err != nil {
-		return
-	}
-	defer f.Close()
+// 	f, err := os.OpenFile(fname, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0666)
+// 	if err != nil {
+// 		return
+// 	}
+// 	defer f.Close()
 
-	f.WriteString("=========================" + now.Format("2006-01-02 15:04:05 ========================= \r\n"))
-	f.WriteString(errstring) //输出堆栈信息
-	f.WriteString("=========================end=========================")
-}
+// 	f.WriteString("=========================" + now.Format("2006-01-02 15:04:05 ========================= \r\n"))
+// 	f.WriteString(errstring) //输出堆栈信息
+// 	f.WriteString("=========================end=========================")
+// }

@@ -53,7 +53,6 @@ func AsString(src interface{}) string {
 	default:
 		{
 			b, _ := json.Marshal(v)
-			mylog.Println(string(b))
 			return string(b)
 		}
 	}

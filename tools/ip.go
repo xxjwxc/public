@@ -10,28 +10,6 @@ import (
 	"github.com/xxjwxc/public/mylog"
 )
 
-///*
-//	获取外网ip
-//*/
-//func GetWwwIP() (ip string) {
-//	ip = ""
-//	resp, err := http.Get("http://myexternalip.com/raw")
-//	if err != nil {
-//		mylog.Error(err)
-//		return
-//	}
-
-//	defer resp.Body.Close()
-//	body, err := ioutil.ReadAll(resp.Body)
-//	if err != nil {
-//		return
-//	}
-
-//	ip = string(body)
-//	ip = strings.Split(ip, "\n")[0]
-//	return
-//}
-
 // GetWwwIP 获取公网IP地址
 func GetWwwIP() (exip string) {
 	resp, err := http.Get("http://myexternalip.com/raw")

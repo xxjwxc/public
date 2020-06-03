@@ -19,7 +19,7 @@ func init() {
 	var err error
 	producer, err = nsq.NewProducer(config.GetNsqAddr(), cnf)
 	if err != nil {
-		mylog.Print(mylog.Log_Error, err.Error())
+		mylog.Error(err)
 		panic(err)
 	}
 
@@ -34,7 +34,7 @@ func ProduceMsg(topic string, message []byte) bool {
 		var err error
 		producer, err = nsq.NewProducer(config.GetNsqAddr(), cnf)
 		if err != nil {
-			mylog.Print(mylog.Log_Error, err.Error())
+			mylog.Error(err)
 			return false
 		}
 	}
@@ -42,7 +42,7 @@ func ProduceMsg(topic string, message []byte) bool {
 	if producer != nil {
 		err := producer.Publish(topic, message)
 		if err != nil {
-			mylog.Print(mylog.Log_Error, err.Error())
+			mylog.Error(err)
 			return false
 		} else {
 			return true
@@ -65,7 +65,7 @@ func StartConsumeMsg(index int, topic, channel, nsqd string, handler nsq.Handler
 		consumerMap[index], err = nsq.NewConsumer(topic, channel, conf)
 		if nil != err {
 			log.Println(err)
-			mylog.Print(mylog.Log_Error, err.Error())
+			mylog.Error(err)
 			return false
 		}
 
@@ -74,7 +74,7 @@ func StartConsumeMsg(index int, topic, channel, nsqd string, handler nsq.Handler
 		err = consumerMap[index].ConnectToNSQD(nsqd)
 		if nil != err {
 			log.Println(err)
-			mylog.Print(mylog.Log_Error, err.Error())
+			mylog.Error(err)
 			return false
 		}
 

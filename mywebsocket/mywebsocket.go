@@ -139,7 +139,7 @@ func InitWebSocket(pathExp string, handlerFunc HandlerReadFunc, stateFunc Handle
 							goto loop
 						}
 					case <-after: //超时处理
-						mylog.Print(mylog.Log_Info, "time out:"+clientid)
+						mylog.Info("time out:" + clientid)
 						ws.Close()
 						break
 					}
