@@ -25,7 +25,7 @@ const (
 // 获取登录凭证
 func (_wx *wxTools) GetAccessToken() (accessToken string, err error) {
 	//先从缓存中获取 access_token
-	cache := mycache.OnGetCache(_cacheToken)
+	cache := mycache.NewCache(_cacheToken)
 	var tp interface{}
 	var b bool
 	tp, b = cache.Value(_cacheToken)
@@ -63,7 +63,7 @@ func (_wx *wxTools) GetAccessToken() (accessToken string, err error) {
 // GetAPITicket 获取微信卡券ticket
 func (_wx *wxTools) GetAPITicket() (ticket string, err error) {
 	//先从缓存中获取
-	cache := mycache.OnGetCache(_cacheTicket)
+	cache := mycache.NewCache(_cacheTicket)
 	var tp interface{}
 	tp, b := cache.Value(_cacheTicket)
 	if b {
@@ -102,7 +102,7 @@ func (_wx *wxTools) GetAPITicket() (ticket string, err error) {
 // GetJsTicket 获取微信js ticket
 func (_wx *wxTools) GetJsTicket() (ticket string, err error) {
 	//先从缓存中获取
-	cache := mycache.OnGetCache("weixin_js_ticket")
+	cache := mycache.NewCache("weixin_js_ticket")
 	var tp interface{}
 	tp, b := cache.Value("base")
 	if b {

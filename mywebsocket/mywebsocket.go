@@ -47,7 +47,7 @@ func WriteData(pathExp string, clientid string, body ClientBody) bool {
 		return false
 	}
 
-	cache := mycache.OnGetCache("websocket" + pathExp)
+	cache := mycache.NewCache("websocket" + pathExp)
 	tp, b := cache.Value(clientid)
 
 	if b {
@@ -103,7 +103,7 @@ func InitWebSocket(pathExp string, handlerFunc HandlerReadFunc, stateFunc Handle
 			}
 			clientid = clientBody.Data.(string)
 			//保存缓存
-			cache := mycache.OnGetCache("websocket" + pathExp)
+			cache := mycache.NewCache("websocket" + pathExp)
 			var tmp []*websocket.Conn
 
 			mutex.Lock()
@@ -170,7 +170,7 @@ func InitWebSocket(pathExp string, handlerFunc HandlerReadFunc, stateFunc Handle
 		}
 
 		//删除缓存
-		cache := mycache.OnGetCache("websocket" + pathExp)
+		cache := mycache.NewCache("websocket" + pathExp)
 		var tmp []*websocket.Conn
 
 		mutex.Lock()

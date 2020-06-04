@@ -29,7 +29,7 @@ func OnInit() {
 				mylog.Error(err)
 				return
 			}
-			cache := mycache.OnGetCache(_sign_data)
+			cache := mycache.NewCache(_sign_data)
 			for _, v := range list { //保存数据到缓存
 				cache.Add(v.App_key, v, v.Expire_time.Sub(now))
 			}
@@ -50,7 +50,7 @@ func getOne(appKey string) (sign Sign_client_tbl) {
 				mylog.Error(err)
 				return
 			}
-			cache := mycache.OnGetCache(_sign_data)
+			cache := mycache.NewCache(_sign_data)
 			cache.Add(sign.App_key, sign, sign.Expire_time.Sub(now))
 		}
 	}
@@ -64,7 +64,7 @@ func getOne(appKey string) (sign Sign_client_tbl) {
 func OnGetSign(appkey string, parm ...interface{}) string {
 	var sign Sign_client_tbl
 	if len(appkey) > 0 {
-		cache := mycache.OnGetCache(_sign_data)
+		cache := mycache.NewCache(_sign_data)
 		tp, b := cache.Value(appkey)
 		if b {
 			sign = tp.(Sign_client_tbl)

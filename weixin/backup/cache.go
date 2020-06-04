@@ -13,8 +13,8 @@ type Gocache struct {
 
 //NewGocache create new cache2go
 func NewGocache(server string) *Gocache {
-	mc := mycache.OnGetCache(server)
-	return &Gocache{&mc}
+	mc := mycache.NewCache(server)
+	return &Gocache{mc}
 }
 
 //Get return cached value
