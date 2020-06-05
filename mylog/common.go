@@ -5,7 +5,6 @@ import (
 	"os"
 	"path/filepath"
 	"runtime/debug"
-	"strings"
 	"sync"
 	"time"
 )
@@ -71,5 +70,23 @@ func getCurrentDirectory() string {
 }
 
 func getStr(a ...interface{}) string {
-	return fmt.Sprintf(strings.Repeat("[%#v]", len(a)), a...)
+	if len(a) == 1 {
+		switch v := a[0].(type) {
+		case string, []byte, int8, int, int32, int64, float32, float64, time.Time, bool, error: // 系统变量
+			return fmt.Sprintf("%v", v)
+		default:
+			return fmt.Sprintf("%#v", v)
+		}
+	}
+
+	var rep string
+	for _, v := range a {
+		switch v.(type) {
+		case string, []byte, int8, int, int32, int64, float32, float64, time.Time, bool, error: // 系统变量
+			rep += "[%v]"
+		default:
+			rep += "[%#v]"
+		}
+	}
+	return fmt.Sprintf(rep, a...)
 }

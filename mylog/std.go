@@ -1,6 +1,7 @@
 package mylog
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -67,6 +68,14 @@ func (s *stdLog) Fatal(a ...interface{}) {
 func (s *stdLog) Fatalf(msg string, a ...interface{}) {
 	log.Output(2, color.Error.Render(fmt.Sprintf(msg, a...)))
 	os.Exit(1)
+}
+
+//JSON json输出
+func (s *stdLog) JSON(a ...interface{}) {
+	for _, v := range a {
+		b, _ := json.MarshalIndent(v, "", "     ")
+		log.Println(color.FgGreen.Render(string(b)))
+	}
 }
 
 // TraceError return trace of error

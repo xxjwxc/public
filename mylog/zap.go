@@ -1,6 +1,7 @@
 package mylog
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 
@@ -121,6 +122,14 @@ func (z *zapLog) Fatal(a ...interface{}) {
 func (z *zapLog) Fatalf(msg string, a ...interface{}) {
 	z.logger.Fatal(fmt.Sprintf(msg, a...))
 	os.Exit(1)
+}
+
+//JSON json输出
+func (z *zapLog) JSON(a ...interface{}) {
+	for _, v := range a {
+		b, _ := json.MarshalIndent(v, "", "     ")
+		z.logger.Info(string(b))
+	}
 }
 
 // TraceError return trace of error

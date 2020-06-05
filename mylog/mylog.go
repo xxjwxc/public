@@ -19,6 +19,8 @@ type myLog interface {
 	SaveError(errstring, flag string)
 	Panic(a ...interface{})
 
+	JSON(a ...interface{})
+
 	TraceError(err error) error
 	Close()
 }
@@ -66,6 +68,11 @@ func Fatal(a ...interface{}) {
 // Fatalf level fatal
 func Fatalf(msg string, a ...interface{}) {
 	_log.Fatal(a...)
+}
+
+// JSON json info
+func JSON(a ...interface{}) {
+	_log.JSON(a...)
 }
 
 // TraceError return trace of error
