@@ -5,6 +5,7 @@ package message
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 
 	"github.com/bitly/go-simplejson"
@@ -36,7 +37,7 @@ const ( //消息id定义
 	InValidAuthorize         = 1008 //授权码错误
 	HasusedError             = 1009 //已被使用
 	HasActvError             = 1010 //已被激活
-	ActvFailure              = 1011 //|激活码被禁止使用
+	ActvFailure              = 1011 // 激活码被禁止使用
 	UserExisted              = 1012 //用户已存在
 	VerifyTimeError          = 1013 //验证码请求过于平凡
 	MailSendFaild            = 1014 //邮箱发送失败
@@ -221,18 +222,6 @@ func init() {
 	}
 }
 
-//GetErrorStrMsg 获取错误消息 参数(int,string)
-func GetErrorStrMsg(errorCode string) (msg MessageBody) {
-	if k, ok := _MessageMap[errorCode]; ok {
-		return GetErrorMsg(k)
-	}
-
-	msg.State = false
-	msg.Code = -1
-	msg.Error = errorCode
-	return
-}
-
 //GetErrorMsg 获取错误消息 参数(int,string)
 func GetErrorMsg(errorCode ...interface{}) (msg MessageBody) {
 	if len(errorCode) == 0 {
@@ -282,7 +271,7 @@ func onCheckParam(op interface{}) string {
 	return string(b)
 }
 
-//成功消息
+// GetSuccessMsg 成功消息
 func GetSuccessMsg(code ...int) (msg MessageBody) {
 	msg.State = true
 	if len(code) == 0 {
@@ -293,4 +282,30 @@ func GetSuccessMsg(code ...int) (msg MessageBody) {
 
 	msg.Error = MessageMap[msg.Code]
 	return
+}
+
+//GetErrorStrMsg 获取错误消息 参数(int,string)
+func GetErrorStrMsg(errorCode string) (msg MessageBody) {
+	if k, ok := _MessageMap[errorCode]; ok {
+		return GetErrorMsg(k)
+	}
+
+	msg.State = false
+	msg.Code = -1
+	msg.Error = errorCode
+	return
+}
+
+// GetMsgStr 获取消息字符串
+func GetMsgStr(code int) string {
+	if k, ok := MessageMap[code]; ok {
+		return k
+	}
+
+	return "未知错误"
+}
+
+// GetError 获取错误信息
+func GetError(code int) error {
+	return fmt.Errorf(GetMsgStr(code))
 }
