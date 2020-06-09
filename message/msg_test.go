@@ -15,6 +15,6 @@ func Test_sing(t *testing.T) {
 	var test Test
 	test.State = true
 	test.Error = ""
-
-	fmt.Println(onCheckParam(test))
+	fmt.Println(GetSuccessMsg(NormalMessageID))
+	fmt.Println(GetErrorStrMsg("默认的返回值"))
 }
