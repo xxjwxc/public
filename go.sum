@@ -218,6 +218,7 @@ github.com/xxjwxc/gormt v1.1.2/go.mod h1:9IzphAz9GIitx1A5ci5ni+twbAVVcUiP2KQa/kH
 github.com/xxjwxc/gowp v0.0.0-20200603130651-4d7368b0e285 h1:gbdax2ZvHZwe8zxu7by/HMuDUS47iHR2zmEzlgAHBMw=
 github.com/xxjwxc/gowp v0.0.0-20200603130651-4d7368b0e285/go.mod h1:yJ/fY5BorWARfDDsxBU/MyQTHc5MVyNcqBQQYD6MN0k=
 github.com/xxjwxc/oauth2 v0.0.0-20200316140438-ddd4e3c5f272 h1:aKA2UeM+nzEanWpzZWqkD3e12FlX6bRdhcOsNhm21X0=
+github.com/xxjwxc/public v0.0.0-20190915135914-aefa9155c004/go.mod h1:rgW5aGDrLzmJM8NtrtskcxerGFyvn1OK3+Ra52YeZS0=
 github.com/xxjwxc/public v0.0.0-20200603115833-341beff27850/go.mod h1:fp3M+FEQrCgWD1fZ/PLwZkCTglf086OEhC9LcydAUnc=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.opencensus.io v0.20.1/go.mod h1:6WKK9ahsWS3RSO+PY9ZHZUfv2irvY6gN279GOPZjmmk=
