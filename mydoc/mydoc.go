@@ -2,6 +2,7 @@ package mydoc
 
 import (
 	"html/template"
+	"sort"
 
 	"github.com/xxjwxc/public/mydoc/mymarkdown"
 	"github.com/xxjwxc/public/mydoc/myswagger"
@@ -42,16 +43,20 @@ func (m *model) GenSwagger(outPath string) {
 	doc := myswagger.NewDoc()
 	reqRef, _ := "", ""
 
+	var sortStr []string
 	// define
-	for _, v := range m.MP {
+	for k, v := range m.MP {
 		for _, v1 := range v {
 			reqRef = m.setDefinition(doc, v1.Req)
 			//respRef = m.setDefinition(doc, v1.Resp)
 		}
+		sortStr = append(sortStr, k)
 	}
 	// ------------------end
+	sort.Strings(sortStr)
 
-	for k, v := range m.MP {
+	for _, k := range sortStr {
+		v := m.MP[k]
 		tag := myswagger.Tag{Name: k}
 		doc.AddTag(tag)
 		for _, v1 := range v {
@@ -80,7 +85,15 @@ func (m *model) GenSwagger(outPath string) {
 
 // GenMd 生成 markdown 文档
 func (m *model) GenMarkdown(outPath string) {
-	for k, v := range m.MP {
+	var sortStr []string
+	// define
+	for k := range m.MP {
+		sortStr = append(sortStr, k)
+	}
+	sort.Strings(sortStr)
+
+	for _, k := range sortStr {
+		v := m.MP[k]
 		doc := mymarkdown.NewDoc()
 		var tmp mymarkdown.TmpInterface
 		tmp.Class = k
