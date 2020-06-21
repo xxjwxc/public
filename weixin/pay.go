@@ -131,7 +131,7 @@ func (_wx *wxTools) SelectOrder(openID, orderID string) (int, message.MessageBod
 	}
 	//-----------------------end
 
-	msg := message.GetSuccessMsg(message.NormalMessageId)
+	msg := message.GetSuccessMsg(message.NormalMessageID)
 
 	/*
 		SUCCESS—支付成功
@@ -202,7 +202,7 @@ func (_wx *wxTools) RefundPay(openID, orderID, refundNO string, totalFee, refund
 	}
 	//-----------------------end
 
-	msg := message.GetSuccessMsg(message.NormalMessageId)
+	msg := message.GetSuccessMsg(message.NormalMessageID)
 
 	if ret["result_code"] == "SUCCESS" { //申请成功
 		msg.State = true
