@@ -105,6 +105,13 @@ func (a *structAnalys) structFieldInfo(astPkg *ast.Package, sinfo *ast.StructTyp
 				a.dealSelectorExpr(x, &info, importMP)
 			case *ast.Ident:
 				a.dealIdent(astPkg, x, &info)
+			case *ast.StarExpr:
+				switch x1 := x.X.(type) {
+				case *ast.SelectorExpr: // 非本文件包
+					a.dealSelectorExpr(x1, &info, importMP)
+				case *ast.Ident:
+					a.dealIdent(astPkg, x1, &info)
+				}
 			}
 		case *ast.StarExpr:
 			switch x := exp.X.(type) {
