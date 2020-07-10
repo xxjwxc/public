@@ -46,13 +46,16 @@ func (a *structAnalys) ParserStruct(astPkg *ast.Package, structName string) (inf
 							if spec.Name.Name == structName { // find it
 								info = new(mydoc.StructInfo)
 								info.Pkg = astPkg.Name
-								for _, v := range specDecl.Doc.List { // 结构体注释
-									t := strings.TrimSpace(strings.TrimPrefix(v.Text, "//"))
-									if strings.HasPrefix(t, structName) { // find note
-										t = strings.TrimSpace(strings.TrimPrefix(t, structName))
-										info.Note += t
+								if specDecl.Doc != nil { // 如果有注释
+									for _, v := range specDecl.Doc.List { // 结构体注释
+										t := strings.TrimSpace(strings.TrimPrefix(v.Text, "//"))
+										if strings.HasPrefix(t, structName) { // find note
+											t = strings.TrimSpace(strings.TrimPrefix(t, structName))
+											info.Note += t
+										}
 									}
 								}
+
 								info.Name = structName
 								info.Items = a.structFieldInfo(astPkg, st)
 								return

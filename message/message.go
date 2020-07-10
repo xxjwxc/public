@@ -48,15 +48,16 @@ func GetErrorMsg(errorCode ...interface{}) (msg MessageBody) {
 }
 
 // GetSuccessMsg 成功消息
-func GetSuccessMsg(code ...ErrCode) (msg MessageBody) {
-	if len(code) == 0 {
-		code = append(code, NormalMessageID)
+func GetSuccessMsg(codes ...ErrCode) (msg MessageBody) {
+	code := NormalMessageID
+	if len(codes) > 0 {
+		code = codes[0]
 	}
-	_tryRegisteryCode(code[0])
+	_tryRegisteryCode(code)
 
 	msg.State = true
-	msg.Code = int(code[0])
-	msg.Error = code[0].String()
+	msg.Code = int(code)
+	msg.Error = code.String()
 	return
 }
 

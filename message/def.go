@@ -4,7 +4,7 @@ package message
 type ErrCode int
 
 const ( //消息id定义
-	NormalMessageID   ErrCode = 0 // 默认的返回值
+	NormalMessageID   ErrCode = 0 // 默认返回值
 	ServerMaintenance ErrCode = 1 // 服务器维护中 请稍后再试
 	AccountDisabled   ErrCode = 2 // 帐号被禁用
 	AppidOverdue      ErrCode = 3 // appid过期

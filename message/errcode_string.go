@@ -101,7 +101,7 @@ func _() {
 }
 
 const (
-	_ErrCode_name_0 = "默认的返回值服务器维护中 请稍后再试帐号被禁用appid过期"
+	_ErrCode_name_0 = "默认返回值服务器维护中 请稍后再试帐号被禁用appid过期"
 	_ErrCode_name_1 = "未知错误token失效"
 	_ErrCode_name_2 = "成功"
 	_ErrCode_name_3 = "禁止访问"
@@ -112,7 +112,7 @@ const (
 )
 
 var (
-	_ErrCode_index_0 = [...]uint8{0, 18, 52, 67, 78}
+	_ErrCode_index_0 = [...]uint8{0, 15, 49, 64, 75}
 	_ErrCode_index_1 = [...]uint8{0, 12, 23}
 	_ErrCode_index_4 = [...]uint16{0, 12, 29, 50, 83, 98, 107, 119, 134, 146, 158, 182, 197, 224, 242, 260, 284, 299, 314, 331, 345, 363, 386, 412, 429, 444}
 	_ErrCode_index_5 = [...]uint8{0, 15, 36, 51, 72, 89, 116, 131, 149, 179, 194}
