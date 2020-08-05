@@ -2,6 +2,7 @@ package weixin
 
 import wxpay "gopkg.in/go-with/wxpay.v1"
 
+// UserInfo 用户信息
 type UserInfo struct {
 	OpenID     string   `json:"openid"`
 	Nickname   string   `json:"nickname"`

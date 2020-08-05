@@ -4,7 +4,6 @@ import (
 	"crypto/md5"
 	"fmt"
 	"log"
-	"strconv"
 	"strings"
 	"time"
 
@@ -35,10 +34,10 @@ const (
 // SmallAppUnifiedorder 小程序统一下单接口
 /*
 	小程序统一下单接口
-	open_id:用户唯一标识
+	openID:用户唯一标识
 	price : 预支付价钱
-	price_body ： 支付描述
-	order_id ： 商户订单号
+	priceBody ： 支付描述
+	orderID ： 商户订单号
 */
 func (_wx *wxTools) SmallAppUnifiedorder(openID string, price int, priceBody, orderID, clientIP string) message.MessageBody {
 	if !tools.CheckParam(openID, orderID) || price <= 0 { //参数检测
@@ -72,9 +71,9 @@ func (_wx *wxTools) SmallAppUnifiedorder(openID string, price int, priceBody, or
 	//ret["order_id"] = order_tbl.Order_id
 	fmt.Println(ret)
 
-	if ret["result_code"] == "SUCCESS" { //再次签名
+	if strings.EqualFold(ret["result_code"], "SUCCESS") { //再次签名
 		dd := make(map[string]string)
-		dd["timeStamp"] = strconv.FormatInt(tools.GetUtcTime(time.Now()), 10)
+		dd["timeStamp"] = fmt.Sprintf("%v", tools.GetUtcTime(time.Now()))
 		dd["nonceStr"] = tools.GetRandomString(32)
 		dd["package"] = "prepay_id=" + ret["prepay_id"]
 		dd["signType"] = "MD5"
