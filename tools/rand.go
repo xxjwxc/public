@@ -6,9 +6,10 @@ import (
 )
 
 //生成随机字符串
-var _bytes []byte = []byte("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+var _bytes = []byte("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 var r *rand.Rand
 
+// GetRandomString 生成随机字符串
 func GetRandomString(n int) string {
 	result := []byte{}
 	if r == nil {
@@ -21,7 +22,23 @@ func GetRandomString(n int) string {
 	return string(result)
 }
 
-//生成随机整数 digit：位数
+// GenerateRangeNumString 生成随机数字字符串
+func GenerateRangeNumString(n int) string {
+	var _bytes = []byte("0123456789")
+	var r *rand.Rand
+
+	result := []byte{}
+	if r == nil {
+		r = rand.New(rand.NewSource(time.Now().UnixNano()))
+	}
+
+	for i := 0; i < n; i++ {
+		result = append(result, _bytes[r.Intn(len(_bytes))])
+	}
+	return string(result)
+}
+
+// GenerateRangeNum 生成随机整数 digit：位数
 func GenerateRangeNum(digit int) int {
 	var max, min int = 1, 1
 	if digit > 0 {
@@ -36,7 +53,7 @@ func GenerateRangeNum(digit int) int {
 	return rand.Intn(max-min) + min
 }
 
-//生成随机整数 digit：位数
+// GetGetRandInt 生成随机整数 digit：位数
 func GetGetRandInt(min int, max int) int {
 	if min > max {
 		min = 0

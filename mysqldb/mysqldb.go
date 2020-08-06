@@ -65,3 +65,12 @@ func (i *MySqlDB) IsNotFound(errs ...error) bool {
 	}
 	return i.RecordNotFound()
 }
+
+// Commit 自动提交(如果有错，Rollback)
+func (i *MySqlDB) Commit(db *gorm.DB) {
+	if db.Error != nil {
+		db.Rollback() // 回滚
+	} else {
+		db.Commit()
+	}
+}
