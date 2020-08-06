@@ -125,6 +125,18 @@ func (a *structAnalys) structFieldInfo(astPkg *ast.Package, sinfo *ast.StructTyp
 			}
 		case *ast.Ident: // 本文件
 			a.dealIdent(astPkg, exp, &info)
+		case *ast.MapType: // map
+			key := ""
+			value := ""
+			switch x := exp.Key.(type) {
+			case *ast.Ident:
+				key = x.Name
+			}
+			switch x := exp.Value.(type) {
+			case *ast.Ident:
+				value = x.Name
+			}
+			info.Type = fmt.Sprintf("map (%v,%v)", key, value)
 		}
 
 		if len(info.Type) == 0 {
