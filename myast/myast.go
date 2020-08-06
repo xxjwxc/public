@@ -131,10 +131,28 @@ func (a *structAnalys) structFieldInfo(astPkg *ast.Package, sinfo *ast.StructTyp
 			switch x := exp.Key.(type) {
 			case *ast.Ident:
 				key = x.Name
+			case *ast.StarExpr:
+				switch x1 := x.X.(type) {
+				case *ast.SelectorExpr: // 非本文件包
+					key = x1.Sel.Name
+				case *ast.Ident:
+					key = x1.Name
+				}
+			case *ast.SelectorExpr: // 非本文件包
+				key = x.Sel.Name
 			}
 			switch x := exp.Value.(type) {
 			case *ast.Ident:
 				value = x.Name
+			case *ast.StarExpr:
+				switch x1 := x.X.(type) {
+				case *ast.SelectorExpr: // 非本文件包
+					value = x1.Sel.Name
+				case *ast.Ident:
+					value = x1.Name
+				}
+			case *ast.SelectorExpr: // 非本文件包
+				value = x.Sel.Name
 			}
 			info.Type = fmt.Sprintf("map (%v,%v)", key, value)
 		}
