@@ -35,11 +35,11 @@ const (
 /*
 	小程序统一下单接口
 	openID:用户唯一标识
-	price : 预支付价钱
+	price : 预支付价钱(单位分)
 	priceBody ： 支付描述
 	orderID ： 商户订单号
 */
-func (_wx *wxTools) SmallAppUnifiedorder(openID string, price int, priceBody, orderID, clientIP string) message.MessageBody {
+func (_wx *wxTools) SmallAppUnifiedorder(openID string, price int64, priceBody, orderID, clientIP string) message.MessageBody {
 	if !tools.CheckParam(openID, orderID) || price <= 0 { //参数检测
 		return message.GetErrorMsg(message.ParameterInvalid)
 	}
@@ -49,7 +49,7 @@ func (_wx *wxTools) SmallAppUnifiedorder(openID string, price int, priceBody, or
 	params.SetString("appid", _wx.client.AppId)
 	params.SetString("mch_id", _wx.client.MchId)
 	params.SetString("body", priceBody)
-	params.SetInt64("total_fee", int64(price*10))
+	params.SetInt64("total_fee", price)
 	params.SetString("spbill_create_ip", clientIP)
 	params.SetString("notify_url", _wx.wxInfo.NotifyURL)
 	params.SetString("trade_type", "JSAPI")
