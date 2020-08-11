@@ -89,7 +89,7 @@ func (_wx *wxTools) SmallAppUnifiedorder(openID string, price int64, priceBody, 
 		return msg
 	}
 
-	msg := message.GetErrorMsg(message.InValidOp)
+	msg := message.GetErrorMsg(ret["err_code_des"])
 	msg.Data = ret
 	return msg
 }
