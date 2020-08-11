@@ -54,3 +54,21 @@ type wxTools struct {
 	keyFile    string
 	rootcaFile string
 }
+
+// QrcodeRet ...
+type QrcodeRet struct {
+	Errcode int    `json:"errcode"`
+	Errmsg  string `json:"errmsg"`
+}
+
+//
+type wxPostdata struct {
+	Scene string `json:"scene"`
+	Page  string `json:"page"`
+}
+
+//
+type wxQrcodedata struct {
+	Path  string `json:"path"`  //路径
+	Width int    `json:"width"` //二维码宽度
+}

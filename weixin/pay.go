@@ -63,7 +63,7 @@ func (_wx *wxTools) SmallAppUnifiedorder(openID string, price int64, priceBody, 
 	ret, err := _wx.client.Post(unifiedOrderURL, params, true)
 	if err != nil {
 		mylog.Error(err)
-		msg := message.GetErrorMsg(message.UnknownError)
+		msg := message.GetErrorMsg(err)
 		return msg
 	}
 	//-----------------------end
@@ -196,7 +196,7 @@ func (_wx *wxTools) RefundPay(openID, orderID, refundNO string, totalFee, refund
 	ret, err := _wx.client.Post(refundURL, params, true)
 	if err != nil {
 		mylog.Error(err)
-		msg := message.GetErrorMsg(message.UnknownError)
+		msg := message.GetErrorMsg(err)
 		return code, msg
 	}
 	//-----------------------end

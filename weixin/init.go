@@ -9,12 +9,16 @@ import (
 	wxpay "gopkg.in/go-with/wxpay.v1"
 )
 
-const (
-	// 微信支付商户平台证书路径
-	certFileLoc   = "/conf/cert/apiclient_cert.pem"
-	keyFileLoc    = "/conf/cert/apiclient_key.pem"
-	rootcaFileLoc = "/conf/cert/rootca.pem"
-)
+// 微信支付商户平台证书路径
+
+// CertFileLoc  cert.pem
+var CertFileLoc = "/conf/cert/apiclient_cert.pem"
+
+// KeyFileLoc key.pem
+var KeyFileLoc = "/conf/cert/apiclient_key.pem"
+
+// RootcaFileLoc rootca.pem
+var RootcaFileLoc = "/conf/cert/rootca.pem"
 
 // WxTools 微信操作类型
 type WxTools interface {
@@ -27,15 +31,17 @@ type WxTools interface {
 	SelectOrder(openID, orderID string) (int, message.MessageBody)                                            // 统一查询接口
 	RefundPay(openID, orderID, refundNO string, totalFee, refundFee int) (bool, message.MessageBody)          // 申请退款
 	WxEnterprisePay(openID, tradeNO, desc, ipAddr string, amount int) bool                                    // 企业付款
+	GetShareQrcode(path string, scene, page string) (ret QrcodeRet)                                           // 获取小程序码
+	GetWxQrcode(path, page string, width int) (ret QrcodeRet)                                                 // 获取小程序二维码 （有限个）
 }
 
 // New 新建及 初始化配置信息
 func New(info WxInfo) (WxTools, error) {
 	t := &wxTools{
 		wxInfo:     info,
-		certFile:   tools.GetCurrentDirectory() + certFileLoc,
-		keyFile:    tools.GetCurrentDirectory() + keyFileLoc,
-		rootcaFile: tools.GetCurrentDirectory() + rootcaFileLoc,
+		certFile:   tools.GetCurrentDirectory() + CertFileLoc,
+		keyFile:    tools.GetCurrentDirectory() + KeyFileLoc,
+		rootcaFile: tools.GetCurrentDirectory() + RootcaFileLoc,
 		client:     wxpay.NewClient(info.AppID, info.MchID, info.APIKey),
 	}
 	err := t.client.WithCert(t.certFile, t.keyFile, t.rootcaFile)

@@ -18,6 +18,11 @@ type MessageBody struct {
 	Data  interface{} `json:"data,omitempty"`
 }
 
+func init() {
+	_tryRegisteryCode(NormalMessageID)
+	_tryRegisteryCode(NormalMessageID)
+}
+
 //GetErrorMsg 获取错误消息 参数(int,string)
 func GetErrorMsg(errorCode ...interface{}) (msg MessageBody) {
 	if len(errorCode) == 0 {
