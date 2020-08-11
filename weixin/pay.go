@@ -82,7 +82,7 @@ func (_wx *wxTools) SmallAppUnifiedorder(openID string, price int64, priceBody, 
 		str := "appId=" + _wx.wxInfo.AppID + "&nonceStr=" + dd["nonceStr"] + "&package=" + dd["package"] + "&signType=MD5&timeStamp=" + dd["timeStamp"] + "&key=" + _wx.wxInfo.APIKey
 		by := md5.Sum([]byte(str))
 		dd["paySign"] = strings.ToUpper(fmt.Sprintf("%x", by))
-		dd["order_id"] = orderID
+		dd["orderId"] = orderID
 
 		msg := message.GetSuccessMsg()
 		msg.Data = dd
