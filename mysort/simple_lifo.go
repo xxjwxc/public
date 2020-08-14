@@ -14,7 +14,7 @@ func (f *Lifo) Push(item interface{}) {
 	f.PushFront(item) // 没有就添加
 }
 
-// PushGrab 推送（重复插位到头部）
+// PushGrab 推送（去重插位到头部）
 func (f *Lifo) PushGrab(item interface{}) {
 	index := f.EqualAt(item)
 	if index >= 0 {
