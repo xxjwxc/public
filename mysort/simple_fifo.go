@@ -27,5 +27,5 @@ func (f *Fifo) PushGrab(item interface{}) {
 
 // Gets 获取
 func (f *Fifo) Gets() []interface{} {
-	return f.GetItems()
+	return f.items
 }

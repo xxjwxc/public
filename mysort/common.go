@@ -5,10 +5,8 @@ type base struct {
 	items []interface{}
 }
 
-func (b *base) Add(args ...interface{}) {
-	for _, v := range args {
-		b.items = append(b.items, v)
-	}
+func (b *base) Add(item interface{}) {
+	b.items = append(b.items, item)
 }
 
 // EqualAt 获取相等位置下标,不重复返回-1
@@ -23,7 +21,7 @@ func (b *base) EqualAt(item interface{}) int {
 }
 
 // GetItems 获取
-func (b *base) GetItems() []interface{} {
+func (b *base) GetItems() interface{} {
 	return b.items
 }
 
