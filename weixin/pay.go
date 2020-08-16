@@ -170,13 +170,13 @@ func (_wx *wxTools) SelectOrder(openID, orderID string) (int, message.MessageBod
 // RefundPay 申请退款
 /*
 	申请退款
-	open_id:用户唯一标识
-	order_id ： 商户订单号
-	refund_no：商户退款单号
-	total_fee: 订单总金额 分
-	refund_fee: 退款总金额 分
+	openID:用户唯一标识
+	orderID ： 商户订单号
+	rrefundNO ：商户退款单号
+	totalFee: 订单总金额 分
+	refundFee: 退款总金额 分
 */
-func (_wx *wxTools) RefundPay(openID, orderID, refundNO string, totalFee, refundFee int) (bool, message.MessageBody) {
+func (_wx *wxTools) RefundPay(openID, orderID, refundNO string, totalFee, refundFee int64) (bool, message.MessageBody) {
 	if !tools.CheckParam(openID, orderID) { //参数检测
 		return false, message.GetErrorMsg(message.ParameterInvalid)
 	}
@@ -187,8 +187,8 @@ func (_wx *wxTools) RefundPay(openID, orderID, refundNO string, totalFee, refund
 	params.SetString("mch_id", _wx.client.MchId)
 	params.SetString("out_trade_no", orderID)                //商户订单号
 	params.SetString("out_refund_no", refundNO)              //商户退款单号
-	params.SetInt64("total_fee", int64(totalFee))            // 订单总金额（分）
-	params.SetInt64("refund_fee", int64(refundFee))          // 退款金额（分）
+	params.SetInt64("total_fee", totalFee)                   // 订单总金额（分）
+	params.SetInt64("refund_fee", refundFee)                 // 退款金额（分）
 	params.SetString("nonce_str", tools.GetRandomString(32)) // 随机字符串
 	params.SetString("sign", _wx.client.Sign(params))        // 签名 c.Sign(params)
 

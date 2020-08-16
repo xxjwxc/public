@@ -29,7 +29,7 @@ type WxTools interface {
 	SmallAppOauth(jscode string) string                                                                       // 小程序授权
 	SmallAppUnifiedorder(openID string, price int64, priceBody, orderID, clientIP string) message.MessageBody // 小程序统一下单接口
 	SelectOrder(openID, orderID string) (int, message.MessageBody)                                            // 统一查询接口
-	RefundPay(openID, orderID, refundNO string, totalFee, refundFee int) (bool, message.MessageBody)          // 申请退款
+	RefundPay(openID, orderID, refundNO string, totalFee, refundFee int64) (bool, message.MessageBody)        // 申请退款
 	WxEnterprisePay(openID, tradeNO, desc, ipAddr string, amount int) bool                                    // 企业付款
 	GetShareQrcode(path string, scene, page string) (ret QrcodeRet)                                           // 获取小程序码
 	GetWxQrcode(path, page string, width int) (ret QrcodeRet)                                                 // 获取小程序二维码 （有限个）
