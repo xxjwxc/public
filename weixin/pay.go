@@ -207,7 +207,7 @@ func (_wx *wxTools) RefundPay(openID, orderID, refundNO string, totalFee, refund
 		msg.State = true
 		code = true
 	} else {
-		msg.State = false
+		msg = message.GetErrorMsg(ret["err_code_des"])
 	}
 	msg.Data = ret
 	return code, msg
