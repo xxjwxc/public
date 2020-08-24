@@ -203,11 +203,13 @@ func (_wx *wxTools) RefundPay(openID, orderID, refundNO string, totalFee, refund
 
 	msg := message.GetSuccessMsg(message.NormalMessageID)
 
-	if ret["result_code"] == "SUCCESS" { //申请成功
-		msg.State = true
-		code = true
-	} else {
+	if len(ret["err_code_des"]) > 0 {
 		msg = message.GetErrorMsg(ret["err_code_des"])
+	} else {
+		if ret["result_code"] == "SUCCESS" { //申请成功
+			msg.State = true
+			code = true
+		}
 	}
 	msg.Data = ret
 	return code, msg
