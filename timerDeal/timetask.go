@@ -3,6 +3,8 @@ package timerDeal
 import (
 	"log"
 
+	"github.com/xxjwxc/public/tools"
+
 	"time"
 
 	"github.com/xxjwxc/public/mydef"
@@ -40,6 +42,25 @@ func OnPeMonth(day int, hour, min, sec int, callback func()) {
 		for {
 			next := time.Now().AddDate(0, 1, 0)
 			next = time.Date(next.Year(), next.Month(), day, hour, min, sec, 0, next.Location())
+			t := time.NewTimer(next.Sub(time.Now()))
+			log.Println("next time callback:", next)
+			<-t.C
+			callback()
+		}
+	}()
+}
+
+/*
+	每天事件
+	hour, min, sec : 几点(当天的0点偏移秒数)
+	callback : 时间回调
+*/
+func OnPeDay(hour, min, sec int, callback func()) {
+	go func() {
+		for {
+			next := time.Now().AddDate(0, 1, 0)
+			next = time.Date(next.Year(), next.Month(), next.Day(), hour, min, sec, 0, next.Location())
+			mylog.Infof("next pe day on:%v", tools.GetTimeStr(next))
 			t := time.NewTimer(next.Sub(time.Now()))
 			log.Println("next time callback:", next)
 			<-t.C
