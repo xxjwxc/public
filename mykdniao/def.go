@@ -28,4 +28,5 @@ type KdnLogistics struct {
 type kdnLogisticsReq struct {
 	LogisticCode string `json:"LogisticCode"` // 物流单号
 	ShipperCode  string `json:"ShipperCode"`  // 快递公司编码
+	CustomerName string `json:"CustomerName"` // 寄件人或收件人的手机号后四位数字
 }

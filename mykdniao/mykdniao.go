@@ -36,9 +36,9 @@ func New(eBusinessID, appKey string) *kdniao {
 logisticCode:物流单号
 shipperCode:快递公司编码
 */
-func (k *kdniao) GetLogisticsTrack(logisticCode, shipperCode string) *KdnLogistics {
+func (k *kdniao) GetLogisticsTrack(logisticCode, shipperCode, customerName string) *KdnLogistics {
 	resp := &KdnLogistics{}
-	k.post(EbusinessOrderHandleUrl, "8001", &kdnLogisticsReq{LogisticCode: logisticCode, ShipperCode: shipperCode}, resp)
+	k.post(EbusinessOrderHandleUrl, "8001", &kdnLogisticsReq{LogisticCode: logisticCode, ShipperCode: shipperCode, CustomerName: customerName}, resp)
 	if !resp.Success {
 		mylog.Errorf("Call Fetch Logistics Failed. Reason: %v", resp.Reason)
 		return resp
@@ -57,6 +57,7 @@ func (k *kdniao) post(_url, requestType string, request, resp interface{}) {
 
 	body := myhttp.OnPostForm(_url, vs)
 
+	mylog.Info(string(body))
 	if err := json.Unmarshal(body, resp); err != nil {
 		mylog.Error(err)
 	}
