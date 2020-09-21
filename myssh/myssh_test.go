@@ -7,7 +7,7 @@ import (
 )
 
 func TestMain(t *testing.T) {
-	c, err := New("175.24.103.30", "ubuntu", "qwer@1234", 22)
+	c, err := New("127.0.0.1", "ubuntu", "qwer", 22)
 	if err != nil {
 		fmt.Println("err", err)
 	}
