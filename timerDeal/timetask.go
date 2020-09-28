@@ -57,14 +57,15 @@ func OnPeMonth(day int, hour, min, sec int, callback func()) {
 */
 func OnPeDay(hour, min, sec int, callback func()) {
 	go func() {
+		next := time.Now()
 		for {
-			next := time.Now().AddDate(0, 1, 0)
 			next = time.Date(next.Year(), next.Month(), next.Day(), hour, min, sec, 0, next.Location())
 			mylog.Infof("next pe day on:%v", tools.GetTimeStr(next))
 			t := time.NewTimer(next.Sub(time.Now()))
 			log.Println("next time callback:", next)
 			<-t.C
 			callback()
+			next = time.Now().AddDate(0, 0, 1) // 下一天
 		}
 	}()
 }

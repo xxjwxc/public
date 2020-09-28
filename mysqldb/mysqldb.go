@@ -6,6 +6,7 @@ import (
 	"github.com/xxjwxc/public/dev"
 	myerrors "github.com/xxjwxc/public/errors"
 	"gorm.io/gorm/logger"
+	"gorm.io/gorm/schema"
 
 	"github.com/xxjwxc/public/mylog"
 
@@ -30,7 +31,8 @@ func (i *MySqlDB) OnGetDBOrm(dataSourceName string) *gorm.DB {
 	if i.DB == nil {
 		var err error
 		i.DB, err = gorm.Open(mysql.Open(dataSourceName), &gorm.Config{PrepareStmt: false,
-			Logger: logger.Default})
+			NamingStrategy: schema.NamingStrategy{SingularTable: true}, // 全局禁用表名复数
+			Logger:         logger.Default})
 		if err != nil {
 			mylog.Error(myerrors.Wrap(err, "Got error when connect database:"+dataSourceName))
 			return nil
