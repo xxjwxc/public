@@ -1,37 +1,33 @@
 package mysqldb
 
 import (
-	"fmt"
+	"log"
+	"time"
 
 	"github.com/xxjwxc/public/mylog"
 
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm/logger"
 )
 
-var LogFormatter = func(values ...interface{}) (messages []interface{}) {
-	if len(values) > 1 {
-		var (
-			currentTime = "\t[" + gorm.NowFunc().Format("2006-01-02 15:04:05") + "]"
-			source      = fmt.Sprintf("(%v)\t", values[1])
-		)
-		messages = []interface{}{source, currentTime}
-		messages = append(messages, "\t [")
-		messages = append(messages, values[2:]...)
-		messages = append(messages, "]")
-
-	}
-
-	return
-}
-
-//
+// DbLog ...
 type DbLog struct {
-	gorm.Logger
 }
 
-//
-func (db DbLog) Print(values ...interface{}) {
-	msg := LogFormatter(values...)
-	str := fmt.Sprint(msg...)
-	mylog.SaveError(str, "sql")
+// Write ...
+func (lg DbLog) Write(p []byte) (n int, err error) {
+	mylog.SaveError(string(p), "sql")
+	return len(p), err
+}
+
+// GetDBlog 获取默认logger
+func GetDBlog() logger.Interface {
+	newLogger := logger.New(
+		log.New(DbLog{}, "\r\n", log.LstdFlags), // io writer
+		logger.Config{
+			SlowThreshold: time.Second,  // 慢 SQL 阈值
+			LogLevel:      logger.Error, // Log level
+			Colorful:      false,        // 禁用彩色打印
+		},
+	)
+	return newLogger
 }

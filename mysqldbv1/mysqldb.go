@@ -1,21 +1,19 @@
-package mysqldb
+package mysqldbv1
 
 import (
-	"errors"
-
 	"github.com/xxjwxc/public/dev"
-	myerrors "github.com/xxjwxc/public/errors"
-	"gorm.io/gorm/logger"
+	"github.com/xxjwxc/public/errors"
 
 	"github.com/xxjwxc/public/mylog"
 
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/jinzhu/gorm"
 )
 
 // MySqlDB ...
 type MySqlDB struct {
 	*gorm.DB
+	IsInit bool
 }
 
 // OnInitDBOrm init MySqlDB
@@ -29,22 +27,21 @@ func OnInitDBOrm(dataSourceName string) (orm *MySqlDB) {
 func (i *MySqlDB) OnGetDBOrm(dataSourceName string) *gorm.DB {
 	if i.DB == nil {
 		var err error
-		i.DB, err = gorm.Open(mysql.Open(dataSourceName), &gorm.Config{PrepareStmt: false,
-			Logger: logger.Default})
+		i.DB, err = gorm.Open("mysql", dataSourceName)
 		if err != nil {
-			mylog.Error(myerrors.Wrap(err, "Got error when connect database:"+dataSourceName))
+			mylog.Error(errors.Wrap(err, "Got error when connect database:"+dataSourceName))
 			return nil
 		}
+		i.IsInit = true
 	}
 
-	// i.DB.SingularTable(true) //全局禁用表名复数
+	i.DB.SingularTable(true) //全局禁用表名复数
 	if dev.IsDev() {
-		i.DB = i.DB.Debug()
+		i.DB.LogMode(true)
+		//beedb.OnDebug = true
 	} else {
-		i.DB.Logger = GetDBlog()
+		i.DB.SetLogger(DbLog{})
 	}
-
-	i.DB.Logger = GetDBlog()
 
 	return i.DB
 }
@@ -52,8 +49,7 @@ func (i *MySqlDB) OnGetDBOrm(dataSourceName string) *gorm.DB {
 // OnDestoryDB destorydb
 func (i *MySqlDB) OnDestoryDB() {
 	if i.DB != nil {
-		sqldb, _ := i.DB.DB()
-		sqldb.Close()
+		i.DB.Close()
 		i.DB = nil
 	}
 }
@@ -68,11 +64,6 @@ func (i *MySqlDB) IsNotFound(errs ...error) bool {
 		}
 	}
 	return i.RecordNotFound()
-}
-
-// RecordNotFound check if returning ErrRecordNotFound error
-func (i *MySqlDB) RecordNotFound() bool {
-	return !errors.Is(i.Error, gorm.ErrRecordNotFound)
 }
 
 // Commit 自动提交(如果有错，Rollback)
