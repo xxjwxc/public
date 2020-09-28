@@ -44,8 +44,6 @@ func (i *MySqlDB) OnGetDBOrm(dataSourceName string) *gorm.DB {
 		i.DB.Logger = GetDBlog()
 	}
 
-	i.DB.Logger = GetDBlog()
-
 	return i.DB
 }
 
