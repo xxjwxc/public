@@ -53,8 +53,8 @@ func GenerateRangeNum(digit int) int {
 	return rand.Intn(max-min) + min
 }
 
-// GetGetRandInt 生成随机整数 digit：位数
-func GetGetRandInt(min int, max int) int {
+// GetRandInt 生成随机整数 digit：位数
+func GetRandInt(min int, max int) int {
 	if min > max {
 		min = 0
 		max = 0
