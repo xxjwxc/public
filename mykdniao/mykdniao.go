@@ -35,6 +35,7 @@ func New(eBusinessID, appKey string) *kdniao {
 /*
 logisticCode:物流单号
 shipperCode:快递公司编码
+customerName: 当顺丰单号查询时，需要在CustomerName赋值寄件人或收件人的手机号后四位数字
 */
 func (k *kdniao) GetLogisticsTrack(logisticCode, shipperCode, customerName string) *KdnLogistics {
 	resp := &KdnLogistics{}
