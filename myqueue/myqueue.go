@@ -123,7 +123,7 @@ func (q *MyQueue) popChan(v *chan interface{}) {
 	return
 }
 
-// 插入队列，非阻塞
+// Push 插入队列，非阻塞
 func (q *MyQueue) Push(v interface{}) {
 	q.Mutex.Lock()
 	defer q.Mutex.Unlock()
@@ -134,7 +134,7 @@ func (q *MyQueue) Push(v interface{}) {
 	}
 }
 
-// 获取队列长度
+// Len 获取队列长度
 func (q *MyQueue) Len() int {
 	return (int)(atomic.LoadInt32(&q.count))
 }
