@@ -103,3 +103,28 @@ func TestTry(t *testing.T) {
 	que.Wait()
 	fmt.Println("down")
 }
+
+func TestTimeout(t *testing.T) {
+	que := New()
+	go func() {
+		for i := 0; i < 10; i++ { //开启20个请求
+			time.Sleep(1 * time.Second)
+			que.Push(i)
+		}
+	}()
+
+	go func() {
+		for {
+			b, ok := que.TryPopTimeout(100 * time.Microsecond)
+			if ok {
+				fmt.Println(b.(int))
+			} else {
+				fmt.Println("time out")
+			}
+		}
+	}()
+
+	time.Sleep(200 * time.Second)
+	que.Wait()
+	fmt.Println("down")
+}
