@@ -151,6 +151,11 @@ func (q *MyQueue) Close() {
 	}
 }
 
+// IsClose check is closed
+func (q *MyQueue) IsClose() bool {
+	return q.closed
+}
+
 //Wait 等待队列消费完成
 func (q *MyQueue) Wait() {
 	for {

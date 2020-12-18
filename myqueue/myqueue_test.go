@@ -110,6 +110,7 @@ func TestTimeout(t *testing.T) {
 		for i := 0; i < 10; i++ { //开启20个请求
 			time.Sleep(1 * time.Second)
 			que.Push(i)
+
 		}
 	}()
 
