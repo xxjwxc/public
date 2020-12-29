@@ -4,6 +4,8 @@ import (
 	"html/template"
 	"sort"
 
+	"github.com/xxjwxc/public/mylog"
+
 	"github.com/xxjwxc/public/mydoc/mymarkdown"
 	"github.com/xxjwxc/public/mydoc/myswagger"
 	"github.com/xxjwxc/public/tools"
@@ -79,7 +81,7 @@ func (m *model) GenSwagger(outPath string) {
 	}
 
 	jsonsrc := doc.GetAPIString()
-
+	mylog.Infof("output swagger doc: %v", outPath+"swagger.md")
 	tools.WriteFile(outPath+"swagger.json", []string{jsonsrc}, true)
 }
 
@@ -114,6 +116,7 @@ func (m *model) GenMarkdown(outPath string) {
 			tmp.Item = append(tmp.Item, sub)
 		}
 		jsonsrc := doc.GenMarkdown(tmp)
+		mylog.Infof("output markdown doc: %v", outPath+k+".md")
 		tools.WriteFile(outPath+k+".md", []string{jsonsrc}, true)
 	}
 }

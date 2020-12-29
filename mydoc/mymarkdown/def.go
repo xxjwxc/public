@@ -69,7 +69,7 @@ var bodyMod = []string{
 {{$obj.SC}}{{$obj.SC}}{{$obj.SC}}
 
 #### Return parameter description:
-$oem.RespTab
+{{$oem.RespTab}}
 
 #### Return example:
 	
