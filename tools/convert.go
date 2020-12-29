@@ -5,7 +5,6 @@ import (
 	"encoding/gob"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
@@ -16,6 +15,7 @@ import (
 	"github.com/xxjwxc/public/mylog"
 )
 
+// RawBytes ...
 type RawBytes []byte
 
 var errNilPtr = errors.New("destination pointer is nil")
@@ -23,13 +23,14 @@ var errNilPtr = errors.New("destination pointer is nil")
 func cloneBytes(b []byte) []byte {
 	if b == nil {
 		return nil
-	} else {
-		c := make([]byte, len(b))
-		copy(c, b)
-		return c
 	}
+
+	c := make([]byte, len(b))
+	copy(c, b)
+	return c
 }
 
+// AsString 转成string
 func AsString(src interface{}) string {
 	switch v := src.(type) {
 	case string:
@@ -56,10 +57,10 @@ func AsString(src interface{}) string {
 			return string(b)
 		}
 	}
-	return fmt.Sprintf("%v", src)
+	// return fmt.Sprintf("%v", src)
 }
 
-//编码二进制
+// EncodeByte 编码二进制
 func EncodeByte(data interface{}) ([]byte, error) {
 	buf := bytes.NewBuffer(nil)
 	enc := gob.NewEncoder(buf)
@@ -71,14 +72,14 @@ func EncodeByte(data interface{}) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-//解码二进制
+// DecodeByte 解码二进制
 func DecodeByte(data []byte, to interface{}) error {
 	buf := bytes.NewBuffer(data)
 	dec := gob.NewDecoder(buf)
 	return dec.Decode(to)
 }
 
-//byte转16进制字符串
+// ByteToHex byte转16进制字符串
 func ByteToHex(data []byte) string {
 
 	return hex.EncodeToString(data)
@@ -96,7 +97,7 @@ func ByteToHex(data []byte) string {
 	// return buffer.String()
 }
 
-//16进制字符串转[]byte
+// HexToBye 16进制字符串转[]byte
 func HexToBye(hexStr string) []byte {
 	hr, _ := hex.DecodeString(hexStr)
 	return hr

@@ -15,6 +15,7 @@ import (
 	"github.com/xxjwxc/public/errors"
 )
 
+// Md5Encoder md5 加密
 func Md5Encoder(src string) string {
 	h := md5.New()
 	h.Write([]byte(src)) // 需要加密的字符串
@@ -23,7 +24,7 @@ func Md5Encoder(src string) string {
 	return strings.ToUpper(ret)
 }
 
-//合并数组
+// Copy 合并数组
 func Copy(dest []interface{}, src []interface{}) (result []interface{}) {
 	result = make([]interface{}, len(dest)+len(src))
 	copy(result, dest)
@@ -31,26 +32,26 @@ func Copy(dest []interface{}, src []interface{}) (result []interface{}) {
 	return
 }
 
-//删除数组
+// DeleteArray 删除数组
 func DeleteArray(src []interface{}, index int) (result []interface{}) {
 	result = append(src[:index], src[(index+1):]...)
 	return
 }
 
-//生成32位md5字串
+// GetMd5String 生成32位md5字串
 func GetMd5String(s string) string {
 	h := md5.New()
 	h.Write([]byte(s))
 	return hex.EncodeToString(h.Sum(nil))
 }
 
-//获取总页数
+// GetTotalPageNum 获取总页数
 func GetTotalPageNum(pageSize, totalCount int) int {
 	return (totalCount + pageSize - 1) / pageSize
 }
 
-//生成32位guid
-func UniqueId() string {
+// UniqueID 生成32位guid
+func UniqueID() string {
 	b := make([]byte, 48)
 	if _, err := io.ReadFull(crand.Reader, b); err != nil {
 		return ""
@@ -67,12 +68,12 @@ func DeleteSlice(slice interface{}, index int) (interface{}, error) {
 	}
 	if length-1 == index {
 		return sliceValue.Slice(0, index).Interface(), nil
-	} else {
-		return reflect.AppendSlice(sliceValue.Slice(0, index), sliceValue.Slice(index+1, length)).Interface(), nil
 	}
+
+	return reflect.AppendSlice(sliceValue.Slice(0, index), sliceValue.Slice(index+1, length)).Interface(), nil
 }
 
-//查找int最小值
+// MinimumInt 查找int最小值
 func MinimumInt(rest []int) int {
 	minimum := rest[0]
 	for _, v := range rest {
@@ -113,7 +114,7 @@ func MinimumInt(rest []int) int {
 // 	}
 // }
 
-//按字典顺序排序
+// DictSort 按字典顺序排序
 func DictSort(res []string) (str string) {
 	sort.Strings(res)
 	if len(res) > 0 {
@@ -124,7 +125,7 @@ func DictSort(res []string) (str string) {
 	return
 }
 
-//SHA1加密
+// Sha1Encrypt SHA1加密
 func Sha1Encrypt(str string) string {
 	h := sha1.New()
 	h.Write([]byte(str))
@@ -132,7 +133,7 @@ func Sha1Encrypt(str string) string {
 	return fmt.Sprintf("%x", bs)
 }
 
-//中文字符切割时有问题。采用此方式不会有问题
+// GetUtf8Str 中文字符切割时有问题。采用此方式不会有问题
 func GetUtf8Str(str string) []rune {
 	return []rune(str)
 }

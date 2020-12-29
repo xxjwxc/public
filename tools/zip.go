@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 )
 
+// IsZip 是否zip文件
 func IsZip(zipPath string) bool {
 	f, err := os.Open(zipPath)
 	if err != nil {
@@ -23,6 +24,7 @@ func IsZip(zipPath string) bool {
 	return bytes.Equal(buf, []byte("PK\x03\x04"))
 }
 
+// Unzip 解压
 func Unzip(archive, target string) error {
 	reader, err := zip.OpenReader(archive)
 	if err != nil {
@@ -73,7 +75,7 @@ func Unzip(archive, target string) error {
 	return nil
 }
 
-//压缩文件
+// Compress 压缩文件
 //files 文件数组，可以是不同dir下的文件或者文件夹
 //dest 压缩文件存放地址
 func Compress(files []*os.File, dest string) error {
@@ -117,9 +119,7 @@ func compress(file *os.File, prefix string, zw *zip.Writer) error {
 		}
 	} else {
 		header, err := zip.FileInfoHeader(info)
-		if len(prefix) == 0 {
-			header.Name = header.Name
-		} else {
+		if len(prefix) != 0 {
 			header.Name = prefix + "/" + header.Name
 		}
 		if err != nil {

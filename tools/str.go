@@ -7,7 +7,7 @@ import (
 	"github.com/axgle/mahonia"
 )
 
-//int数组转字符串
+// FormatInt int数组转字符串
 func FormatInt(list []int, seg string) string {
 	s := make([]string, len(list))
 	for i := range list {
@@ -24,7 +24,7 @@ func FormatInt(list []int, seg string) string {
 //	return s
 //}
 
-//截取字符串 不包括str
+// Substr 截取字符串 不包括str
 func Substr(str string, start, length int) string {
 	rs := []rune(str)
 	rl := len(rs)
@@ -54,7 +54,7 @@ func Substr(str string, start, length int) string {
 	return string(rs[start:end])
 }
 
-//查找字符串最小值
+// MinimumString 查找字符串最小值
 func MinimumString(rest []string) string {
 	minimum := rest[0]
 	for _, v := range rest {
@@ -67,7 +67,7 @@ func MinimumString(rest []string) string {
 	return minimum
 }
 
-//字符集转换
+// ConvertToString 字符集转换
 func ConvertToString(src string, srcCode string, tagCode string) string {
 	srcCoder := mahonia.NewDecoder(srcCode)
 	srcResult := srcCoder.ConvertString(src)
@@ -76,18 +76,18 @@ func ConvertToString(src string, srcCode string, tagCode string) string {
 	return string(cdata)
 }
 
-//系统转其他
+// ConvertString 系统转其他
 func ConvertString(src string, tagCode string) string {
 	enc := mahonia.NewEncoder(tagCode)
 	return enc.ConvertString(src)
 }
 
-//
+// GetGBK 获取gbk
 func GetGBK(src string) string {
 	return string(ConvertString(src, "gbK"))
 }
 
-//反转字符串
+// Reverse 反转字符串
 func Reverse(s string) string {
 	r := []rune(s)
 	for i, j := 0, len(r)-1; i < len(r)/2; i, j = i+1, j-1 {
