@@ -19,6 +19,9 @@ func GetLocalSystemLang(isSimple bool) (locale string) {
 	if isSimple {
 		locale, _ = splitLocale(locale)
 	}
+	if len(locale) == 0 {
+		locale = "zh"
+	}
 	return
 }
 
