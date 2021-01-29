@@ -137,3 +137,8 @@ func Sha1Encrypt(str string) string {
 func GetUtf8Str(str string) []rune {
 	return []rune(str)
 }
+
+// GetUtf8Len 获取中文字符的长度
+func GetUtf8Len(str string) int {
+	return len([]rune(str))
+}
