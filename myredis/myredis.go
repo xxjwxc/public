@@ -1,9 +1,23 @@
 package myredis
 
-import "github.com/gomodule/redigo/redis"
+import (
+	"time"
+
+	"github.com/gomodule/redigo/redis"
+)
 
 // RedisDial 操作
 type RedisDial interface {
+	Destory()                                                             // 析构
+	GetRedisClient() redis.Conn                                           // 获取一个原始的redis连接
+	Ping() bool                                                           // 判断是否能ping通
+	Add(key interface{}, value interface{}, lifeSpan time.Duration) error // 添加一个元素
+	Value(key interface{}, value interface{}) error                       // 获取一个value
+	IsExist(key interface{}) bool                                         // 判断是否存在
+	Delete(key interface{}) error                                         // 删除一个
+	Clear() error                                                         // 清空
+	GetKeyS(key interface{}) ([]string, error)                            // 查询所有key
+	Close() (err error)                                                   // 关闭连接
 }
 
 // DefaultConf ...
@@ -15,7 +29,7 @@ func DefaultConf() *MyRedis {
 }
 
 // InitDefaultRedis 初始化(必须要优先调用一次)
-func InitDefaultRedis(ops ...Option) {
+func InitDefaultRedis(ops ...Option) *MyRedis {
 	var tmp = &redisOptions{}
 	for _, o := range ops {
 		o.apply(tmp)
@@ -27,6 +41,7 @@ func InitDefaultRedis(ops ...Option) {
 	_default.mtx.Lock()
 	defer _default.mtx.Unlock()
 	_default.conf = tmp
+	return _default
 }
 
 // InitRedis 初始化(必须要优先调用一次)
@@ -54,20 +69,28 @@ func NewRedis(con *MyRedis) (dial RedisDial, err error) {
 	con.once.Do(func() { // 创建连接
 		ReDialRedis(con)
 	})
-	
-	return nil, nil
+
+	return con.dial, nil
 }
 
 // ReDialRedis 重新连接redis
 func ReDialRedis(con *MyRedis) {
+	if con.dial != nil { // 清理，关闭连接
+		con.dial.Destory()
+	}
+
 	con.mtx.Lock()
 	defer con.mtx.Unlock()
-	if con.conf.maxIdle > 0 { // 创建连接池
 
+	if con.conf.maxIdle > 0 { // 创建连接池
+		con.dial = &redisConPool{
+			base: base{MyRedis: con},
+		}
 		return
 	}
 
-	con.dial = 
 	// 创建单个连接
-	redis.Dial("tcp",con.)
+	con.dial = &redisConOlny{
+		base: base{MyRedis: con},
+	}
 }

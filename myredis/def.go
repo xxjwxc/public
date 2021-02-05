@@ -7,9 +7,13 @@ import (
 	"github.com/gomodule/redigo/redis"
 )
 
+const KeepTTL = -1
+
 // MyRedis redis配置项
 type MyRedis struct {
 	conf *redisOptions
+	con  redis.Conn
+	pool *redis.Pool
 	mtx  sync.Mutex
 	once sync.Once
 	dial RedisDial
@@ -20,11 +24,12 @@ var _default = &MyRedis{}
 
 // redisOption redisOption
 type redisOptions struct {
-	con          redis.Conn
 	timeout      time.Duration
 	groupName    string
 	pwd          string
+	clientName   string
 	addrs        []string
+	addrIdex     int
 	db           int
 	readTimeout  time.Duration
 	writeTimeout time.Duration

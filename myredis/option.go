@@ -60,3 +60,10 @@ func WithPool(maxIdle, maxActive int) Option {
 		o.maxActive = maxActive
 	})
 }
+
+// WithClientName 指定Redis服务器连接使用的客户端名称
+func WithClientName(name string) Option {
+	return optionFunc(func(o *redisOptions) {
+		o.clientName = name
+	})
+}
