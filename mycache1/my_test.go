@@ -20,18 +20,15 @@ type Tweet struct {
 func Test_cache(t *testing.T) {
 	//获取
 	cache := NewCache("_cache")
-	tp := Tweet{
-		User:     "aaaa",
-		Retweets: 12,
-	}
-	cache.Add("key", tp, 24*time.Hour)
-
-	var tmp Tweet
-	err := cache.Value("key", &tmp)
-	if err != nil {
+	var tp interface{}
+	tp, b := cache.Value("key")
+	if b {
+		tmp := tp.(Tweet)
 		fmt.Println(tmp)
 	} else {
-		fmt.Println(tmp)
+		var tmp Tweet
+		//添加
+		cache.Add("key", tmp, 24*time.Hour)
 	}
 
 	return

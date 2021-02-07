@@ -71,7 +71,7 @@ func (mc *redisConPool) Add(key interface{}, value interface{}, lifeSpan time.Du
 		} else {
 			args = append(args, "ex", formatSec(lifeSpan))
 		}
-	} else if lifeSpan == KeepTTL {
+	} else if lifeSpan == keepTTL {
 		args = append(args, "keepttl")
 	}
 

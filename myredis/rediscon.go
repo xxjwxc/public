@@ -141,34 +141,45 @@ func (mc *base) ping(con redis.Conn) bool {
 }
 
 // Dial 获取一个链接
+func (mc *base) build() error {
+	index := mc.conf.addrIdex
+	len := len(mc.conf.addrs)
+	b := false
+	var err error
+	for i := 0; i < len; i++ {
+		index = (mc.conf.addrIdex + i) % len
+		mc.con, err = redis.Dial("tcp", mc.conf.addrs[index], redis.DialClientName(mc.conf.clientName),
+			redis.DialConnectTimeout(mc.conf.timeout), redis.DialDatabase(mc.conf.db),
+			redis.DialPassword(mc.conf.pwd), redis.DialReadTimeout(mc.conf.readTimeout), redis.DialWriteTimeout(mc.conf.writeTimeout),
+		)
+		if err != nil {
+			mylog.Error(err)
+		}
+		if mc.ping(mc.con) {
+			b = true
+		}
+	}
+	if b {
+		mc.conf.addrIdex = (index + 1) % len
+	}
+	return err
+}
+
+// Dial 获取一个链接
 func (mc *base) Dial() (redis.Conn, error) {
 	mc.mtx.Lock()
 	defer mc.mtx.Unlock()
 	if mc.con == nil { // 创建连接
-		index := mc.conf.addrIdex
-		len := len(mc.conf.addrs)
-		b := false
-		var err error
-		for i := 0; i < len; i++ {
-			index = (mc.conf.addrIdex + i) % len
-			mc.con, err = redis.Dial("tcp", mc.conf.addrs[index], redis.DialClientName(mc.conf.clientName),
-				redis.DialConnectTimeout(mc.conf.timeout), redis.DialDatabase(mc.conf.db),
-				redis.DialPassword(mc.conf.pwd), redis.DialReadTimeout(mc.conf.readTimeout), redis.DialWriteTimeout(mc.conf.writeTimeout),
-			)
-			if err != nil {
-				mylog.Error(err)
-			}
-			if mc.ping(mc.con) {
-				b = true
-			}
-		}
-		if b {
-			mc.conf.addrIdex = (index + 1) % len
-		}
+		err := mc.build()
 		return mc.con, err
 	}
 
-	return mc.con, nil
+	if mc.ping(mc.con) {
+		return mc.con, nil
+	}
+
+	err := mc.build()
+	return mc.con, err
 }
 
 func (mc *base) Do(con redis.Conn, commandName string, args ...interface{}) (reply interface{}, err error) {

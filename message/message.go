@@ -20,7 +20,7 @@ type MessageBody struct {
 
 func init() {
 	_tryRegisteryCode(NormalMessageID)
-	_tryRegisteryCode(NormalMessageID)
+	_tryRegisteryCode(NotFindError)
 }
 
 //GetErrorMsg 获取错误消息 参数(int,string)
@@ -64,6 +64,12 @@ func GetSuccessMsg(codes ...ErrCode) (msg MessageBody) {
 	msg.Code = int(code)
 	msg.Error = code.String()
 	return
+}
+
+// GetError 获取错误信息
+func GetError(code ErrCode) error {
+	_tryRegisteryCode(code)
+	return fmt.Errorf(code.String())
 }
 
 //GetErrorStrMsg 获取错误消息 参数(int,string)
