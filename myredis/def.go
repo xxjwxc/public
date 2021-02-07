@@ -7,7 +7,7 @@ import (
 	"github.com/gomodule/redigo/redis"
 )
 
-const KeepTTL = -1
+const keepTTL = -1
 
 // MyRedis redis配置项
 type MyRedis struct {
