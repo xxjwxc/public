@@ -8,7 +8,7 @@ import (
 
 func Test_cache(t *testing.T) {
 	conf := InitRedis(WithAddr("192.155.1.150:6379"), WithClientName(""),
-		// WithPool(2, 2),
+		WithPool(2, 2),
 		WithTimeout(10*time.Second), WithReadTimeout(10*time.Second), WithWriteTimeout(10*time.Second),
 		WithPwd("Niren1015"), WithGroupName("gggg"), WithDB(0))
 	//获取
@@ -17,6 +17,7 @@ func Test_cache(t *testing.T) {
 	fmt.Println(err)
 	aaa := "ccccc"
 	res.Add("aaaa", aaa, 20*time.Second)
+	res.Close()
 	res.Add("bbbb", aaa, 0)
 	res.Close()
 	fmt.Println(res.Ping())

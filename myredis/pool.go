@@ -23,11 +23,14 @@ func (mc *redisConPool) Destory() {
 		}
 		mc.con = nil
 	}
+
+	if mc.pool != nil {
+		mc.pool.Close()
+	}
 }
 
 func (mc *redisConPool) GetRedisClient() redis.Conn {
 	mc.mtx.Lock()
-	defer mc.mtx.Unlock()
 	if mc.pool == nil { // 创建连接
 		mc.pool = &redis.Pool{
 			MaxIdle:   mc.conf.maxIdle,
@@ -45,8 +48,12 @@ func (mc *redisConPool) GetRedisClient() redis.Conn {
 			},
 		}
 	}
+	mc.mtx.Unlock()
 
-	return mc.pool.Get()
+	con := mc.pool.Get()
+
+	mylog.Info(mc.pool.ActiveCount())
+	return con
 }
 
 // Ping 判断是否能ping通
@@ -68,7 +75,9 @@ func (mc *redisConPool) Add(key interface{}, value interface{}, lifeSpan time.Du
 		args = append(args, "keepttl")
 	}
 
-	repy, err := mc.Do(mc.GetRedisClient(), "SET", args...)
+	con := mc.GetRedisClient()
+	defer con.Close()
+	repy, err := mc.Do(con, "SET", args...)
 	mylog.Info(redis.String(repy, err))
 	if err != nil {
 		mylog.Error(err)
@@ -78,7 +87,9 @@ func (mc *redisConPool) Add(key interface{}, value interface{}, lifeSpan time.Du
 
 // Value 查找一个cache
 func (mc *redisConPool) Value(key interface{}, value interface{}) (err error) {
-	repy, err := mc.Do(mc.GetRedisClient(), "GET", mc.getKey(key))
+	con := mc.GetRedisClient()
+	defer con.Close()
+	repy, err := mc.Do(con, "GET", mc.getKey(key))
 	if err != nil {
 		mylog.Error(err)
 		return err
@@ -88,7 +99,9 @@ func (mc *redisConPool) Value(key interface{}, value interface{}) (err error) {
 
 // IsExist 判断key是否存在
 func (mc *redisConPool) IsExist(key interface{}) bool {
-	repy, err := mc.Do(mc.GetRedisClient(), "EXISTS", mc.getKey(key))
+	con := mc.GetRedisClient()
+	defer con.Close()
+	repy, err := mc.Do(con, "EXISTS", mc.getKey(key))
 	if err != nil {
 		mylog.Error(err)
 		return false
@@ -104,7 +117,9 @@ func (mc *redisConPool) IsExist(key interface{}) bool {
 
 // Delete 删除一个cache
 func (mc *redisConPool) Delete(key interface{}) error {
-	_, err := mc.Do(mc.GetRedisClient(), "del", mc.getKey(key))
+	con := mc.GetRedisClient()
+	defer con.Close()
+	_, err := mc.Do(con, "del", mc.getKey(key))
 	if err != nil {
 		mylog.Error(err)
 		return err
@@ -131,8 +146,10 @@ func (mc *redisConPool) Clear() error {
 
 // GetKeyS 查询所有key
 func (mc *redisConPool) GetKeyS(key interface{}) ([]string, error) {
+	con := mc.GetRedisClient()
+	defer con.Close()
 	var keys []string
-	repy, err := mc.Do(mc.GetRedisClient(), "keys", mc.getKey(key))
+	repy, err := mc.Do(con, "keys", mc.getKey(key))
 	if err != nil {
 		mylog.Error(err)
 		return keys, err
@@ -156,12 +173,5 @@ func (mc *redisConPool) GetKeyS(key interface{}) ([]string, error) {
 
 // Close 关闭一个连接
 func (mc *redisConPool) Close() (err error) {
-	mc.mtx.Lock()
-	defer mc.mtx.Unlock()
-	if mc.con != nil {
-		err = mc.con.Close()
-		mc.con = nil
-	}
-
-	return
+	return nil
 }
