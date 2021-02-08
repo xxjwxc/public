@@ -68,7 +68,7 @@ func GetSuccessMsg(codes ...ErrCode) (msg MessageBody) {
 
 // GetError 获取错误信息
 func GetError(code ErrCode) error {
-	_tryRegisteryCode(code)
+	go _tryRegisteryCode(code)
 	return fmt.Errorf(code.String())
 }
 

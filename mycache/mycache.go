@@ -10,6 +10,18 @@ import (
 	"github.com/xxjwxc/public/serializing"
 )
 
+// CacheIFS 缓存操作接口
+type CacheIFS interface {
+	Destory()                                                             // 析构
+	Add(key interface{}, value interface{}, lifeSpan time.Duration) error // 添加一个元素
+	Value(key interface{}, value interface{}) error                       // 获取一个value
+	IsExist(key interface{}) bool                                         // 判断是否存在
+	Delete(key interface{}) error                                         // 删除一个
+	Clear() error                                                         // 清空
+	Close() (err error)                                                   // 关闭连接
+}
+
+
 // MyCache 内存缓存
 type MyCache struct {
 	cache *cache2go.CacheTable

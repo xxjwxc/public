@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/gomodule/redigo/redis"
-	"github.com/prometheus/common/log"
 	"github.com/xxjwxc/public/dev"
 	"github.com/xxjwxc/public/mylog"
 	"github.com/xxjwxc/public/tools"
@@ -188,7 +187,7 @@ func (mc *base) Do(con redis.Conn, commandName string, args ...interface{}) (rep
 		for _, v := range args {
 			cmd += fmt.Sprintf(" %v", v)
 		}
-		log.Infof("redis req :%v", cmd)
+		mylog.Infof("redis req :%v", cmd)
 	}
 
 	if con != nil {
@@ -204,7 +203,7 @@ func (mc *base) Do(con redis.Conn, commandName string, args ...interface{}) (rep
 			case int64:
 				tmp = fmt.Sprintf("%v", reply)
 			}
-			log.Infof("redis resp:%v,%v", tmp, err)
+			mylog.Infof("redis resp:%v,%v", tmp, err)
 		}
 		return
 	}
