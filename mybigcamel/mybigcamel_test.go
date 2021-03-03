@@ -19,10 +19,20 @@ func Test_cache(t *testing.T) {
 	}
 
 	fmt.Println(CapLowercase("IDAPIID"))
+	fmt.Println(CapSmallcase("IDAPIID"))
 }
 
 func CapLowercase(name string) string {
 	list := strings.Split(UnMarshal(name), "_")
+	if len(list) == 0 {
+		return ""
+	}
+
+	return list[0] + name[len(list[0]):]
+}
+
+func CapSmallcase(name string) string {
+	list := strings.Split(UnSmallMarshal(name), "_")
 	if len(list) == 0 {
 		return ""
 	}
