@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
 
 	"github.com/xxjwxc/public/errors"
 
@@ -145,4 +146,40 @@ func UnicodeEmojiCode(s string) string {
 		}
 	}
 	return ret
+}
+
+// DbcToSbc 全角转半角
+func DbcToSbc(str string) string {
+	numConv := unicode.SpecialCase{
+		unicode.CaseRange{
+			Lo: 0x3002, // Lo 全角句号
+			Hi: 0x3002, // Hi 全角句号
+			Delta: [unicode.MaxCase]rune{
+				0,               // UpperCase
+				0x002e - 0x3002, // LowerCase 转成半角句号
+				0,               // TitleCase
+			},
+		},
+		//
+		unicode.CaseRange{
+			Lo: 0xFF01, // 从全角！
+			Hi: 0xFF19, // 到全角 9
+			Delta: [unicode.MaxCase]rune{
+				0,               // UpperCase
+				0x0021 - 0xFF01, // LowerCase 转成半角
+				0,               // TitleCase
+			},
+		},
+		unicode.CaseRange{
+			Lo: 0xff21, // Lo: 全角 Ａ
+			Hi: 0xFF5A, // Hi:到全角 ｚ
+			Delta: [unicode.MaxCase]rune{
+				0,               // UpperCase
+				0x0041 - 0xff21, // LowerCase 转成半角
+				0,               // TitleCase
+			},
+		},
+	}
+
+	return strings.ToLowerSpecial(numConv, str)
 }
