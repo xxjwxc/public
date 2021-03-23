@@ -12,21 +12,20 @@ import (
 )
 
 //OnPostJSON 发送修改密码
-func OnPostJSON(url, jsonstr string) []byte {
+func OnPostJSON(url, jsonstr string) ([]byte,error) {
 	//解析这个 URL 并确保解析没有出错。
 	body := bytes.NewBuffer([]byte(jsonstr))
 	resp, err := http.Post(url, "application/json;charset=utf-8", body)
 	if err != nil {
-		return []byte("")
+		return nil,err
 	}
 	defer resp.Body.Close()
 	body1, err1 := ioutil.ReadAll(resp.Body)
 	if err1 != nil {
-		mylog.Error(err1)
-		return []byte("")
+		return nil,err
 	}
 
-	return body1
+	return body1,nil
 }
 
 //OnGetJSON 发送get 请求
@@ -135,6 +134,7 @@ func SendPost(requestBody interface{}, responseBody interface{}, url string) err
 		return e
 	}
 	// mylog.Debug(string(body))
+	
 
 	err = json.Unmarshal(body, &responseBody)
 	if err != nil {
