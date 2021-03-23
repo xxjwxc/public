@@ -117,7 +117,7 @@ func OnPostForm(url string, data url.Values) (body []byte) {
 }
 
 //SendPost 发送POST请求
-func SendPost(requestBody interface{}, responseBody interface{}, url string) bool {
+func SendPost(requestBody interface{}, responseBody interface{}, url string) error {
 	postData, err := json.Marshal(requestBody)
 	client := &http.Client{}
 	req, _ := http.NewRequest("POST", url, bytes.NewReader(postData))
@@ -126,25 +126,22 @@ func SendPost(requestBody interface{}, responseBody interface{}, url string) boo
 	//	req.Header.Add("Authorization", authorization)
 	resp, e := client.Do(req)
 	if e != nil {
-		mylog.Error(e)
-		return false
+		return e
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		mylog.Error(e)
-		return false
+		return e
 	}
 	// mylog.Debug(string(body))
 
 	err = json.Unmarshal(body, &responseBody)
 	if err != nil {
-		mylog.Error(err)
-		return false
+		return e
 	}
 
-	return true
+	return nil
 }
 
 //WriteJSON  像指定client 发送json 包
