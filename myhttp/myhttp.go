@@ -12,20 +12,20 @@ import (
 )
 
 //OnPostJSON 发送修改密码
-func OnPostJSON(url, jsonstr string) ([]byte,error) {
+func OnPostJSON(url, jsonstr string) ([]byte, error) {
 	//解析这个 URL 并确保解析没有出错。
 	body := bytes.NewBuffer([]byte(jsonstr))
 	resp, err := http.Post(url, "application/json;charset=utf-8", body)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	defer resp.Body.Close()
 	body1, err1 := ioutil.ReadAll(resp.Body)
 	if err1 != nil {
-		return nil,err
+		return nil, err
 	}
 
-	return body1,nil
+	return body1, nil
 }
 
 //OnGetJSON 发送get 请求
@@ -134,7 +134,6 @@ func SendPost(requestBody interface{}, responseBody interface{}, url string) err
 		return e
 	}
 	// mylog.Debug(string(body))
-	
 
 	err = json.Unmarshal(body, &responseBody)
 	if err != nil {
@@ -152,5 +151,25 @@ func WriteJSON(w http.ResponseWriter, msg interface{}) {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Fprintf(w, string(js))
+	fmt.Fprint(w, string(js))
+}
+
+// PostHeader post by head
+func PostHeader(url, jsonstr string, header http.Header) ([]byte, error) {
+	postData := bytes.NewBuffer([]byte(jsonstr))
+	client := &http.Client{}
+	req, _ := http.NewRequest("POST", url, postData)
+	req.Header = header
+	resp, e := client.Do(req)
+	if e != nil {
+		return nil, e
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, e
+	}
+
+	return body, nil
 }
