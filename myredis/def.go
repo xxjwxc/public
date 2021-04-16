@@ -12,7 +12,7 @@ const keepTTL = -1
 // MyRedis redis配置项
 type MyRedis struct {
 	conf *redisOptions
-	con  redis.Conn
+	// con  redis.Conn
 	pool *redis.Pool
 	mtx  sync.Mutex
 	once sync.Once

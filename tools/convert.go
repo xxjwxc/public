@@ -140,7 +140,6 @@ func UnicodeEmojiCode(s string) string {
 		if len(string(rs[i])) == 4 {
 			u := `[\u` + strconv.FormatInt(int64(rs[i]), 16) + `]`
 			ret += u
-
 		} else {
 			ret += string(rs[i])
 		}

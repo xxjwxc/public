@@ -16,14 +16,6 @@ func (mc *redisConPool) Destory() {
 	mc.mtx.Lock()
 	defer mc.mtx.Unlock()
 
-	if mc.con != nil {
-		err := mc.con.Close()
-		if err != nil {
-			mylog.Error(err)
-		}
-		mc.con = nil
-	}
-
 	if mc.pool != nil {
 		mc.pool.Close()
 	}
