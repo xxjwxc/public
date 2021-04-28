@@ -176,6 +176,9 @@ func (mc *base) Do(con redis.Conn, commandName string, args ...interface{}) (rep
 		cmd := commandName
 		for _, v := range args {
 			cmd += fmt.Sprintf(" %v", v)
+			if len(cmd) > 100 {
+				break
+			}
 		}
 		mylog.Infof("redis req :%v", cmd)
 	}
