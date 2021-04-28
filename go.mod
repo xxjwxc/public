@@ -13,7 +13,6 @@ require (
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/gomodule/redigo v1.8.3
 	github.com/gookit/color v1.2.5
-	github.com/hashicorp/consul/api v1.8.1
 	github.com/jander/golog v0.0.0-20150917071935-954a5be801fc
 	github.com/jinzhu/gorm v1.9.12
 	github.com/jroimartin/gocui v0.4.0
@@ -25,12 +24,12 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.0.0
 	github.com/syndtr/goleveldb v1.0.0
-	github.com/tidwall/gjson v1.7.5
 	github.com/xxjwxc/gowp v0.0.0-20200603130651-4d7368b0e285
 	go.uber.org/zap v1.10.0
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	golang.org/x/net v0.0.0-20201202161906-c7110b5ffcbb
 	golang.org/x/text v0.3.3
+	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 	gopkg.in/eapache/queue.v1 v1.1.0
 	gopkg.in/go-with/wxpay.v1 v1.3.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
