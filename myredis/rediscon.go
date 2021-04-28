@@ -177,10 +177,11 @@ func (mc *base) Do(con redis.Conn, commandName string, args ...interface{}) (rep
 		for _, v := range args {
 			cmd += fmt.Sprintf(" %v", v)
 			if len(cmd) > 100 {
+				cmd = cmd[:100]
 				break
 			}
 		}
-		mylog.Infof("redis req :%v", cmd)
+		mylog.Infof("redis req :%v \n", cmd)
 	}
 
 	if con != nil {
@@ -199,7 +200,7 @@ func (mc *base) Do(con redis.Conn, commandName string, args ...interface{}) (rep
 			if len(tmp) > 100 {
 				tmp = tmp[:100]
 			}
-			mylog.Infof("redis resp:%v,%v", tmp, err)
+			mylog.Infof("redis resp:%v,%v \n", tmp, err)
 		}
 		return
 	}
