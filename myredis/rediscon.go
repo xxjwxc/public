@@ -196,6 +196,9 @@ func (mc *base) Do(con redis.Conn, commandName string, args ...interface{}) (rep
 			case int64:
 				tmp = fmt.Sprintf("%v", reply)
 			}
+			if len(tmp) > 100 {
+				tmp = tmp[:100]
+			}
 			mylog.Infof("redis resp:%v,%v", tmp, err)
 		}
 		return
