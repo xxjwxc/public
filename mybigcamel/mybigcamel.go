@@ -37,9 +37,7 @@ func Marshal(name string) string {
 	return s
 }
 
-/*
-  回退网络模式
-*/
+// UnMarshal  回退网络模式
 func UnMarshal(name string) string {
 	const (
 		lower = false
@@ -88,4 +86,23 @@ func UnMarshal(name string) string {
 
 	s := strings.ToLower(buf.String())
 	return s
+}
+
+// UnSmallMarshal 小驼峰模式
+func UnSmallMarshal(name string) string {
+	if name == "" {
+		return ""
+	}
+
+	var (
+		value = commonInitialismsReplacer.Replace(name)
+	)
+
+	strArry := []rune(value)
+
+	if bool(strArry[0] >= 'A' && strArry[0] <= 'Z') {
+		strArry[0] = strArry[0] + 32
+	}
+
+	return string(strArry)
 }

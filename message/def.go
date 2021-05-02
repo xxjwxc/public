@@ -4,7 +4,7 @@ package message
 type ErrCode int
 
 const ( //消息id定义
-	NormalMessageID   ErrCode = 0 // 默认返回值
+	NormalMessageID   ErrCode = 0 // normal
 	ServerMaintenance ErrCode = 1 // 服务器维护中 请稍后再试
 	AccountDisabled   ErrCode = 2 // 帐号被禁用
 	AppidOverdue      ErrCode = 3 // appid过期
@@ -97,4 +97,5 @@ const ( //消息id定义
 	NotBindError              ErrCode = 1085 // 未绑定
 	BindError                 ErrCode = 1086 // 绑定失败
 	CalError                  ErrCode = 1087 // 计算错误
+	TokenCheckError           ErrCode = 1088 // token校验失败
 )

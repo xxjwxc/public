@@ -7,73 +7,86 @@ import (
 	"time"
 
 	"github.com/muesli/cache2go"
+	"github.com/xxjwxc/public/serializing"
 )
+
+// CacheIFS 缓存操作接口
+type CacheIFS interface {
+	Destory()                                                             // 析构
+	Add(key interface{}, value interface{}, lifeSpan time.Duration) error // 添加一个元素
+	Value(key interface{}, value interface{}) error                       // 获取一个value
+	IsExist(key interface{}) bool                                         // 判断是否存在
+	Delete(key interface{}) error                                         // 删除一个
+	Clear() error                                                         // 清空
+	Close() (err error)                                                   // 关闭连接
+}
+
 
 // MyCache 内存缓存
 type MyCache struct {
 	cache *cache2go.CacheTable
 }
 
-/*
-	初始化一个cache
-	cachename 缓存名字
-*/
+// NewCache 初始化一个cache,cachename 缓存名字
 func NewCache(cachename string) (mc *MyCache) {
 	mc = &MyCache{}
 	mc.cache = cache2go.Cache(cachename)
 	return
 }
 
-/*
-	添加一个缓存
-	lifeSpan:缓存时间，0表示永不超时
-*/
-func (mc *MyCache) Add(key interface{}, value interface{}, lifeSpan time.Duration) *cache2go.CacheItem {
-	return mc.cache.Add(key, lifeSpan, value)
+// Destory 添加一个缓存,lifeSpan:缓存时间，0表示永不超时
+func (mc *MyCache) Destory() {
+
 }
 
-/*
-	查找一个cache
-	value 返回的值
-*/
+// Add 添加一个缓存,lifeSpan:缓存时间，0表示永不超时
+func (mc *MyCache) Add(key interface{}, value interface{}, lifeSpan time.Duration) error {
+	mc.cache.Add(key, lifeSpan, encodeValue(value))
+	return nil
+}
 
-func (mc *MyCache) Value(key interface{}) (value interface{}, b bool) {
-	b = false
+// Value 查找一个cache
+func (mc *MyCache) Value(key interface{}, value interface{}) error {
 	res, err := mc.cache.Value(key)
 	if err == nil {
-		value = res.Data()
-		b = true
-		return
+		bt := res.Data().([]byte)
+		return decodeValue(bt, value)
 	}
-	return
+	return err
 }
 
-/*
-	判断key是否存在
-*/
+// IsExist 	判断key是否存在
 func (mc *MyCache) IsExist(key interface{}) bool {
 	return mc.cache.Exists(key)
 }
 
-/*
- 删除一个cache
-*/
+// Delete 删除一个cache
 func (mc *MyCache) Delete(key interface{}) error {
 	_, err := mc.cache.Delete(key)
 	return err
 }
 
-/*
-	获取原始cache2go操作类
-*/
+// GetCache2go 获取原始cache2go操作类
 func (mc *MyCache) GetCache2go() *cache2go.CacheTable {
 	return mc.cache
 }
 
-/*
-	清空表內容
-*/
-func (mc *MyCache) Clear() bool {
+// Clear 清空表內容
+func (mc *MyCache) Clear() error {
 	mc.cache.Flush()
-	return true
+	return nil
+}
+
+// Close 清空表內容
+func (mc *MyCache) Close() error {
+	return nil
+}
+
+func encodeValue(value interface{}) []byte {
+	data, _ := serializing.Encode(value)
+	return data
+}
+
+func decodeValue(in []byte, out interface{}) (err error) {
+	return serializing.Decode(in, out)
 }

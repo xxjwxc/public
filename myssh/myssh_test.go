@@ -21,5 +21,5 @@ func TestMain(t *testing.T) {
 
 	// time.Sleep(1 * time.Second)
 
-	c.Terminal() // 进入
+	c.EnterTerminal() // 进入
 }

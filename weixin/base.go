@@ -26,36 +26,33 @@ const (
 func (_wx *wxTools) GetAccessToken() (accessToken string, err error) {
 	//先从缓存中获取 access_token
 	cache := mycache.NewCache(_cacheToken)
-	var tp interface{}
-	var b bool
-	tp, b = cache.Value(_cacheToken)
-	if b {
-		accessToken = *(tp.(*string))
-	} else {
-		var url = _getToken + _wx.wxInfo.AppID + "&secret=" + _wx.wxInfo.AppSecret
-
-		resp, err := http.Get(url)
-		if err != nil {
-			return "", err
-		}
-
-		defer resp.Body.Close()
-		body, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return "", err
-		}
-
-		//注入client ip
-		js, err := simplejson.NewJson(body)
-		if err == nil {
-			accessToken, _ = js.Get("access_token").String()
-			//保存缓存
-			cache.Add(_cacheToken, &accessToken, time.Duration(7000)*time.Second)
-			//------------------end
-		}
-		//----------------------end
+	err = cache.Value(_cacheToken, &accessToken)
+	if err == nil {
+		return
 	}
-	//---------------获取 access_token --------end
+
+	var url = _getToken + _wx.wxInfo.AppID + "&secret=" + _wx.wxInfo.AppSecret
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return "", err
+	}
+
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	//注入client ip
+	js, err := simplejson.NewJson(body)
+	if err == nil {
+		accessToken, _ = js.Get("access_token").String()
+		//保存缓存
+		cache.Add(_cacheToken, &accessToken, time.Duration(7000)*time.Second)
+		//------------------end
+	}
+	//----------------------end
 
 	return
 }
@@ -64,38 +61,38 @@ func (_wx *wxTools) GetAccessToken() (accessToken string, err error) {
 func (_wx *wxTools) GetAPITicket() (ticket string, err error) {
 	//先从缓存中获取
 	cache := mycache.NewCache(_cacheTicket)
-	var tp interface{}
-	tp, b := cache.Value(_cacheTicket)
-	if b {
-		ticket = tp.(string)
-	} else {
-		accessToken, e := _wx.GetAccessToken()
-		if e != nil {
-			mylog.Error(e)
-			err = e
-			return
-		}
-		var url = _getTicket + accessToken
-
-		resp, e1 := http.Get(url)
-		if e1 != nil {
-			mylog.Error(e1)
-			err = e1
-			return
-		}
-		defer resp.Body.Close()
-		body, e2 := ioutil.ReadAll(resp.Body)
-		if e2 != nil {
-			mylog.Error(e2)
-			err = e2
-			return
-		}
-		var result APITicket
-		json.Unmarshal(body, &result)
-		ticket = result.Ticket
-		//保存缓存
-		cache.Add(_cacheTicket, ticket, 7000*time.Second)
+	err = cache.Value(_cacheTicket, &ticket)
+	if err == nil {
+		return
 	}
+
+	accessToken, e := _wx.GetAccessToken()
+	if e != nil {
+		mylog.Error(e)
+		err = e
+		return
+	}
+	var url = _getTicket + accessToken
+
+	resp, e1 := http.Get(url)
+	if e1 != nil {
+		mylog.Error(e1)
+		err = e1
+		return
+	}
+	defer resp.Body.Close()
+	body, e2 := ioutil.ReadAll(resp.Body)
+	if e2 != nil {
+		mylog.Error(e2)
+		err = e2
+		return
+	}
+	var result APITicket
+	json.Unmarshal(body, &result)
+	ticket = result.Ticket
+	//保存缓存
+	cache.Add(_cacheTicket, ticket, 7000*time.Second)
+
 	return
 }
 
@@ -103,38 +100,38 @@ func (_wx *wxTools) GetAPITicket() (ticket string, err error) {
 func (_wx *wxTools) GetJsTicket() (ticket string, err error) {
 	//先从缓存中获取
 	cache := mycache.NewCache("weixin_js_ticket")
-	var tp interface{}
-	tp, b := cache.Value("base")
-	if b {
-		ticket = tp.(string)
-	} else {
-		accessToken, e := _wx.GetAccessToken()
-		if e != nil {
-			mylog.Error(e)
-			err = e
-			return
-		}
-		var url = _getJsurl + accessToken
-
-		resp, e1 := http.Get(url)
-		if e1 != nil {
-			mylog.Error(e1)
-			err = e1
-			return
-		}
-		defer resp.Body.Close()
-		body, e2 := ioutil.ReadAll(resp.Body)
-		if e2 != nil {
-			mylog.Error(e2)
-			err = e2
-			return
-		}
-		var result APITicket
-		json.Unmarshal(body, &result)
-		ticket = result.Ticket
-		//保存缓存
-		cache.Add("base", ticket, 7000*time.Second)
+	err = cache.Value("base", &ticket)
+	if err == nil {
+		return
 	}
+
+	accessToken, e := _wx.GetAccessToken()
+	if e != nil {
+		mylog.Error(e)
+		err = e
+		return
+	}
+	var url = _getJsurl + accessToken
+
+	resp, e1 := http.Get(url)
+	if e1 != nil {
+		mylog.Error(e1)
+		err = e1
+		return
+	}
+	defer resp.Body.Close()
+	body, e2 := ioutil.ReadAll(resp.Body)
+	if e2 != nil {
+		mylog.Error(e2)
+		err = e2
+		return
+	}
+	var result APITicket
+	json.Unmarshal(body, &result)
+	ticket = result.Ticket
+	//保存缓存
+	cache.Add("base", ticket, 7000*time.Second)
+
 	return
 }
 

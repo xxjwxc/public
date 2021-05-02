@@ -2,14 +2,13 @@ package mydraw
 
 import (
 	"fmt"
-	"public/mydraw"
 	"testing"
 )
 
 func TestMytest(t *testing.T) {
-	pen, b := mydraw.OnGetPen("./luximr.ttf", 0, 0, 0, 255)
+	pen, b := OnGetPen("./luximr.ttf", 0, 0, 0, 255)
 	if b {
-		var hdc mydraw.HDC
+		var hdc HDC
 		hdc.SetBg("./src.png")
 		pen.Dpi = 200
 		pen.FontSize = 16

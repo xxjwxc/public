@@ -6,12 +6,12 @@ package mywebsocket
 import (
 	"encoding/json"
 	"net/http"
-	"public/mycache"
-	"public/mylog"
 	"sync"
 	"time"
 
 	"github.com/ant0ine/go-json-rest/rest"
+	"github.com/xxjwxc/public/mycache"
+	"github.com/xxjwxc/public/mylog"
 
 	"golang.org/x/net/websocket"
 )
