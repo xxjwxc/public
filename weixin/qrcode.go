@@ -22,7 +22,7 @@ func (_wx *wxTools) GetShareQrcode(path string, scene, page string) (ret QrcodeR
 	accessToken, _ := _wx.GetAccessToken() // 获取access_token
 	data := wxPostdata{Scene: scene, Page: page}
 	bo, _ := json.Marshal(data)
-	resb := myhttp.OnPostJSON(GETSHAREURL+accessToken, string(bo))
+	resb, _ := myhttp.OnPostJSON(GETSHAREURL+accessToken, string(bo))
 
 	tools.JSONEncode(string(resb), &ret) //错误码45029 最大限制
 	if ret.Errcode == 0 {
@@ -43,7 +43,7 @@ func (_wx *wxTools) GetWxQrcode(path, page string, width int) (ret QrcodeRet) {
 
 	data := wxQrcodedata{Path: page, Width: width}
 	bo, _ := json.Marshal(data)
-	resb := myhttp.OnPostJSON(GETQRCODEURL+accessToken, string(bo))
+	resb, _ := myhttp.OnPostJSON(GETQRCODEURL+accessToken, string(bo))
 
 	tools.JSONEncode(string(resb), &ret) //错误码45029 最大限制
 	if ret.Errcode == 0 {

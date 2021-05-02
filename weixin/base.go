@@ -144,7 +144,7 @@ func (_wx *wxTools) SendTemplateMsg(msg TempMsg) bool {
 	}
 
 	bo, _ := json.Marshal(msg)
-	resb := myhttp.OnPostJSON(_getSubscribe+accessToken, string(bo))
+	resb, _ := myhttp.OnPostJSON(_getSubscribe+accessToken, string(bo))
 
 	var res ResTempMsg
 	json.Unmarshal(resb, &res)

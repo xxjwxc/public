@@ -48,11 +48,12 @@ func WriteData(pathExp string, clientid string, body ClientBody) bool {
 	}
 
 	cache := mycache.NewCache("websocket" + pathExp)
-	tp, b := cache.Value(clientid)
+	var tp []*websocket.Conn
+	e := cache.Value(clientid, &tp)
 
-	if b {
+	if e == nil {
 		b_r := false
-		tmp := tp.([]*websocket.Conn)
+		tmp := tp
 		for i := 0; i < len(tmp); i++ {
 			if _, err = tmp[i].Write(wb); err != nil {
 				mylog.Debug("Can't send", err.Error())
@@ -108,9 +109,10 @@ func InitWebSocket(pathExp string, handlerFunc HandlerReadFunc, stateFunc Handle
 
 			mutex.Lock()
 
-			tp, b := cache.Value(clientid)
-			if b && isMult { //多用户
-				tmp = tp.([]*websocket.Conn)
+			var tp []*websocket.Conn
+			b := cache.Value(clientid, &tp)
+			if b == nil && isMult { //多用户
+				tmp = tp
 			}
 
 			tmp = append(tmp, ws)
@@ -174,9 +176,11 @@ func InitWebSocket(pathExp string, handlerFunc HandlerReadFunc, stateFunc Handle
 		var tmp []*websocket.Conn
 
 		mutex.Lock()
-		tp, b := cache.Value(clientid)
-		if b {
-			tmp = tp.([]*websocket.Conn)
+
+		var tp []*websocket.Conn
+		b := cache.Value(clientid, &tp)
+		if b == nil {
+			tmp = tp
 		}
 		i := 0
 		for ; i < len(tmp); i++ {

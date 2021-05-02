@@ -18,10 +18,10 @@ func NewGocache(server string) *Gocache {
 }
 
 //Get return cached value
-func (mem *Gocache) Get(key string) interface{} {
-	v, _ := mem.mc.Value(key)
-	return v
-}
+// func (mem *Gocache) Get(key string) interface{} {
+// 	v, _ := mem.mc.Value(key)
+// 	return v
+// }
 
 // IsExist check value exists in memcache.
 func (mem *Gocache) IsExist(key string) bool {

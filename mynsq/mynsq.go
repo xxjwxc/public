@@ -1,11 +1,10 @@
 package mynsq
 
 import (
-	"data/config"
 	"log"
-	"public/mylog"
 
 	"github.com/nsqio/go-nsq"
+	"github.com/xxjwxc/public/mylog"
 )
 
 var producer *nsq.Producer = nil
@@ -13,15 +12,15 @@ var consumerMap map[int]*nsq.Consumer = nil
 var cosumerTopics map[string][]int = nil
 
 func init() {
-	consumerMap = make(map[int]*nsq.Consumer)
-	cosumerTopics = make(map[string][]int)
-	cnf := nsq.NewConfig()
-	var err error
-	producer, err = nsq.NewProducer(config.GetNsqAddr(), cnf)
-	if err != nil {
-		mylog.Error(err)
-		panic(err)
-	}
+	// consumerMap = make(map[int]*nsq.Consumer)
+	// cosumerTopics = make(map[string][]int)
+	// cnf := nsq.NewConfig()
+	// var err error
+	// producer, err = nsq.NewProducer(config.GetNsqAddr(), cnf)
+	// if err != nil {
+	// 	mylog.Error(err)
+	// 	panic(err)
+	// }
 
 }
 
@@ -30,13 +29,13 @@ func ProduceMsg(topic string, message []byte) bool {
 
 	if producer == nil {
 		//channel 锁住
-		cnf := nsq.NewConfig()
-		var err error
-		producer, err = nsq.NewProducer(config.GetNsqAddr(), cnf)
-		if err != nil {
-			mylog.Error(err)
-			return false
-		}
+		// cnf := nsq.NewConfig()
+		// var err error
+		// producer, err = nsq.NewProducer(config.GetNsqAddr(), cnf)
+		// if err != nil {
+		// 	mylog.Error(err)
+		// 	return false
+		// }
 	}
 
 	if producer != nil {
