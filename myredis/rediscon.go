@@ -171,7 +171,7 @@ func (mc *base) Dial() (redis.Conn, error) {
 	return mc.build() // 创建连接
 }
 
-func (mc *base) Do(con redis.Conn, commandName string, args ...interface{}) (reply interface{}, err error) {
+func (mc *base) DO(con redis.Conn, commandName string, args ...interface{}) (reply interface{}, err error) {
 	if dev.IsDev() {
 		cmd := commandName
 		for _, v := range args {
@@ -263,7 +263,7 @@ func (mc *redisConOlny) Add(key interface{}, value interface{}, lifeSpan time.Du
 		args = append(args, "keepttl")
 	}
 
-	_, err := mc.Do(mc.GetRedisClient(), "SET", args...)
+	_, err := mc.DO(mc.GetRedisClient(), "SET", args...)
 	if err != nil {
 		mylog.Error(err)
 	}
@@ -272,7 +272,7 @@ func (mc *redisConOlny) Add(key interface{}, value interface{}, lifeSpan time.Du
 
 // Value 查找一个cache
 func (mc *redisConOlny) Value(key interface{}, value interface{}) (err error) {
-	repy, err := mc.Do(mc.GetRedisClient(), "GET", mc.getKey(key))
+	repy, err := mc.DO(mc.GetRedisClient(), "GET", mc.getKey(key))
 	if err != nil {
 		mylog.Error(err)
 		return err
@@ -282,7 +282,7 @@ func (mc *redisConOlny) Value(key interface{}, value interface{}) (err error) {
 
 // IsExist 判断key是否存在
 func (mc *redisConOlny) IsExist(key interface{}) bool {
-	repy, err := mc.Do(mc.GetRedisClient(), "EXISTS", mc.getKey(key))
+	repy, err := mc.DO(mc.GetRedisClient(), "EXISTS", mc.getKey(key))
 	if err != nil {
 		mylog.Error(err)
 		return false
@@ -298,7 +298,7 @@ func (mc *redisConOlny) IsExist(key interface{}) bool {
 
 // Delete 删除一个cache
 func (mc *redisConOlny) Delete(key interface{}) error {
-	_, err := mc.Do(mc.GetRedisClient(), "del", mc.getKey(key))
+	_, err := mc.DO(mc.GetRedisClient(), "del", mc.getKey(key))
 	if err != nil {
 		mylog.Error(err)
 		return err
@@ -326,7 +326,7 @@ func (mc *redisConOlny) Clear() error {
 // GetKeyS 查询所有key
 func (mc *redisConOlny) GetKeyS(key interface{}) ([]string, error) {
 	var keys []string
-	repy, err := mc.Do(mc.GetRedisClient(), "keys", mc.getKey(key))
+	repy, err := mc.DO(mc.GetRedisClient(), "keys", mc.getKey(key))
 	if err != nil {
 		mylog.Error(err)
 		return keys, err
@@ -346,6 +346,10 @@ func (mc *redisConOlny) GetKeyS(key interface{}) ([]string, error) {
 	}
 
 	return keys, err
+}
+
+func (mc *redisConOlny) Do(commandName string, args ...interface{}) (reply interface{}, err error) {
+	return mc.DO(mc.GetRedisClient(), commandName, args...)
 }
 
 // Close 关闭一个连接

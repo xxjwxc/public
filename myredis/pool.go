@@ -69,7 +69,7 @@ func (mc *redisConPool) Add(key interface{}, value interface{}, lifeSpan time.Du
 
 	con := mc.GetRedisClient()
 	defer con.Close()
-	repy, err := mc.Do(con, "SET", args...)
+	repy, err := mc.DO(con, "SET", args...)
 	mylog.Info(redis.String(repy, err))
 	if err != nil {
 		mylog.Error(err)
@@ -81,7 +81,7 @@ func (mc *redisConPool) Add(key interface{}, value interface{}, lifeSpan time.Du
 func (mc *redisConPool) Value(key interface{}, value interface{}) (err error) {
 	con := mc.GetRedisClient()
 	defer con.Close()
-	repy, err := mc.Do(con, "GET", mc.getKey(key))
+	repy, err := mc.DO(con, "GET", mc.getKey(key))
 	if err != nil {
 		mylog.Error(err)
 		return err
@@ -93,7 +93,7 @@ func (mc *redisConPool) Value(key interface{}, value interface{}) (err error) {
 func (mc *redisConPool) IsExist(key interface{}) bool {
 	con := mc.GetRedisClient()
 	defer con.Close()
-	repy, err := mc.Do(con, "EXISTS", mc.getKey(key))
+	repy, err := mc.DO(con, "EXISTS", mc.getKey(key))
 	if err != nil {
 		mylog.Error(err)
 		return false
@@ -111,7 +111,7 @@ func (mc *redisConPool) IsExist(key interface{}) bool {
 func (mc *redisConPool) Delete(key interface{}) error {
 	con := mc.GetRedisClient()
 	defer con.Close()
-	_, err := mc.Do(con, "del", mc.getKey(key))
+	_, err := mc.DO(con, "del", mc.getKey(key))
 	if err != nil {
 		mylog.Error(err)
 		return err
@@ -141,7 +141,7 @@ func (mc *redisConPool) GetKeyS(key interface{}) ([]string, error) {
 	con := mc.GetRedisClient()
 	defer con.Close()
 	var keys []string
-	repy, err := mc.Do(con, "keys", mc.getKey(key))
+	repy, err := mc.DO(con, "keys", mc.getKey(key))
 	if err != nil {
 		mylog.Error(err)
 		return keys, err
@@ -161,6 +161,12 @@ func (mc *redisConPool) GetKeyS(key interface{}) ([]string, error) {
 	}
 
 	return keys, err
+}
+
+func (mc *redisConPool) Do(commandName string, args ...interface{}) (reply interface{}, err error) {
+	con := mc.GetRedisClient()
+	defer con.Close()
+	return mc.DO(con, commandName, args...)
 }
 
 // Close 关闭一个连接
