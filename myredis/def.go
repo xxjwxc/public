@@ -35,8 +35,9 @@ type redisOptions struct {
 	writeTimeout time.Duration
 
 	// redis pool 相关
-	maxIdle   int // 池中空闲连接的最大数目。
-	maxActive int // 池在给定时间分配的最大连接数。当为零时，池中的连接数没有限制。
+	maxIdle   int  // 池中空闲连接的最大数目。
+	maxActive int  // 池在给定时间分配的最大连接数。当为零时，池中的连接数没有限制。
+	isLog     bool // 是否显示日志
 }
 
 // Option 功能选项

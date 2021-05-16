@@ -31,7 +31,7 @@ func DefaultConf() *MyRedis {
 
 // InitDefaultRedis 初始化(必须要优先调用一次)
 func InitDefaultRedis(ops ...Option) *MyRedis {
-	var tmp = &redisOptions{}
+	var tmp = &redisOptions{isLog: true}
 	for _, o := range ops {
 		o.apply(tmp)
 	}

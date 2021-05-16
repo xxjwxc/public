@@ -181,7 +181,9 @@ func (mc *base) DO(con redis.Conn, commandName string, args ...interface{}) (rep
 				break
 			}
 		}
-		mylog.Infof("redis req :%v \n", cmd)
+		if mc.conf.isLog {
+			mylog.Infof("redis req :%v \n", cmd)
+		}
 	}
 
 	if con != nil {
@@ -200,7 +202,9 @@ func (mc *base) DO(con redis.Conn, commandName string, args ...interface{}) (rep
 			if len(tmp) > 100 {
 				tmp = tmp[:100]
 			}
-			mylog.Infof("redis resp:%v,%v \n", tmp, err)
+			if mc.conf.isLog {
+				mylog.Infof("redis resp:%v,%v \n", tmp, err)
+			}
 		}
 		return
 	}
@@ -349,6 +353,8 @@ func (mc *redisConOlny) GetKeyS(key interface{}) ([]string, error) {
 }
 
 func (mc *redisConOlny) Do(commandName string, args ...interface{}) (reply interface{}, err error) {
+	mc.mtx.Lock()
+	defer mc.mtx.Unlock()
 	return mc.DO(mc.GetRedisClient(), commandName, args...)
 }
 

@@ -30,6 +30,7 @@ func (mc *redisConPool) GetRedisClient() redis.Conn {
 			Dial: func() (redis.Conn, error) {
 				return mc.Dial()
 			},
+			Wait: (mc.conf.maxActive == 0),
 			TestOnBorrow: func(c redis.Conn, t time.Time) error {
 				_, err := c.Do("PING")
 				if err != nil {
@@ -44,7 +45,9 @@ func (mc *redisConPool) GetRedisClient() redis.Conn {
 
 	con := mc.pool.Get()
 
-	mylog.Info(mc.pool.ActiveCount())
+	if mc.conf.isLog {
+		mylog.Infof("ActiveCount:%v", mc.pool.ActiveCount())
+	}
 	return con
 }
 
@@ -70,7 +73,10 @@ func (mc *redisConPool) Add(key interface{}, value interface{}, lifeSpan time.Du
 	con := mc.GetRedisClient()
 	defer con.Close()
 	repy, err := mc.DO(con, "SET", args...)
-	mylog.Info(redis.String(repy, err))
+	if mc.conf.isLog {
+		mylog.Info(redis.String(repy, err))
+	}
+
 	if err != nil {
 		mylog.Error(err)
 	}
