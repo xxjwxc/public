@@ -83,15 +83,17 @@ func ReDialRedis(con *MyRedis) {
 	con.mtx.Lock()
 	defer con.mtx.Unlock()
 
-	if con.conf.maxIdle > 0 { // 创建连接池
-		con.dial = &redisConPool{
-			base: base{MyRedis: con},
-		}
-		return
+	if con.conf.maxIdle == 0 { // 创建连接池
+		con.conf.maxIdle = 1
+	}
+
+	// 创建连接池
+	con.dial = &redisConPool{
+		base: base{MyRedis: con},
 	}
 
 	// 创建单个连接
-	con.dial = &redisConOlny{
-		base: base{MyRedis: con},
-	}
+	// con.dial = &redisConOlny{
+	// 	base: base{MyRedis: con},
+	// }
 }
