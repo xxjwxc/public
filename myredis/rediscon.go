@@ -353,9 +353,10 @@ func (mc *redisConOlny) GetKeyS(key interface{}) ([]string, error) {
 }
 
 func (mc *redisConOlny) Do(commandName string, args ...interface{}) (reply interface{}, err error) {
+	con := mc.GetRedisClient()
 	mc.mtx.Lock()
 	defer mc.mtx.Unlock()
-	return mc.DO(mc.GetRedisClient(), commandName, args...)
+	return mc.DO(con, commandName, args...)
 }
 
 // Close 关闭一个连接
