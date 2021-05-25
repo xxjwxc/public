@@ -16,5 +16,4 @@ func Test_sing(t *testing.T) {
 	test.State = true
 	test.Error = ""
 	fmt.Println(GetSuccessMsg(NormalMessageID))
-	fmt.Println(GetErrorStrMsg("默认的返回值"))
 }

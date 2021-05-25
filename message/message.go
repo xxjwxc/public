@@ -5,7 +5,6 @@ package message
 
 import (
 	"fmt"
-	"sync"
 
 	"github.com/xxjwxc/public/mylog"
 	"google.golang.org/grpc/codes"
@@ -20,10 +19,10 @@ type MessageBody struct {
 	Data  interface{} `json:"data,omitempty"`
 }
 
-func init() {
-	_tryRegisteryCode(NormalMessageID)
-	_tryRegisteryCode(NotFindError)
-}
+// func init() {
+// 	_tryRegisteryCode(NormalMessageID)
+// 	_tryRegisteryCode(NotFindError)
+// }
 
 //GetErrorMsg 获取错误消息 参数(int,string)
 func GetErrorMsg(errorCode ...interface{}) (msg MessageBody) {
@@ -40,7 +39,6 @@ func GetErrorMsg(errorCode ...interface{}) (msg MessageBody) {
 			msg.Code = int(v)
 			msg.Error = ErrCode(v).String()
 		case ErrCode:
-			_tryRegisteryCode(v)
 			msg.Code = int(v)
 			msg.Error = v.String()
 		case string:
@@ -60,7 +58,6 @@ func GetSuccessMsg(codes ...ErrCode) (msg MessageBody) {
 	if len(codes) > 0 {
 		code = codes[0]
 	}
-	_tryRegisteryCode(code)
 
 	msg.State = true
 	msg.Code = int(code)
@@ -68,41 +65,35 @@ func GetSuccessMsg(codes ...ErrCode) (msg MessageBody) {
 	return
 }
 
-// GetError 获取错误信息
+// GetError 获取错误信息(grpc)
 func GetError(code ErrCode) error {
-	go _tryRegisteryCode(code)
-	return fmt.Errorf(code.String())
-}
-
-// GetGrpcError 获取grpc错误信息
-func GetGrpcError(code ErrCode) error {
-	go _tryRegisteryCode(code)
 	return status.Errorf(codes.Code(code), code.String())
 }
 
 //GetErrorStrMsg 获取错误消息 参数(int,string)
-func GetErrorStrMsg(errorCode string) (msg MessageBody) {
-	// if k, ok := _MessageMap[errorCode]; ok {
-	// 	return GetErrorMsg(k)
-	// }
-
+func GetErrorStrMsg(err error) (msg MessageBody) {
 	msg.State = false
-	msg.Code = _tryGetCodeID(errorCode)
-	msg.Error = errorCode
+	gerr := status.Convert(err)
+	if gerr != nil {
+		msg.Code = int(gerr.Code())
+		msg.Error = gerr.Message()
+	} else {
+		msg.Error = err.Error()
+	}
 	return
 }
 
-var _mp sync.Map
+// var _mp sync.Map
 
-func _tryRegisteryCode(code ErrCode) {
-	_mp.LoadOrStore(code.String(), int(code))
-}
+// func _tryRegisteryCode(code ErrCode) {
+// 	_mp.LoadOrStore(code.String(), int(code))
+// }
 
-func _tryGetCodeID(codeStr string) int {
-	v, ok := _mp.Load(codeStr)
-	if ok {
-		return v.(int)
-	}
+// func _tryGetCodeID(codeStr string) int {
+// 	v, ok := _mp.Load(codeStr)
+// 	if ok {
+// 		return v.(int)
+// 	}
 
-	return -1
-}
+// 	return -1
+// }
