@@ -22,8 +22,8 @@ func GetRandomString(n int) string {
 	return string(result)
 }
 
-// GenerateRangeNumString 生成随机数字字符串
-func GenerateRangeNumString(n int) string {
+// GetRangeNumString 生成随机数字字符串
+func GetRangeNumString(n int) string {
 	var _bytes = []byte("0123456789")
 	var r *rand.Rand
 
@@ -38,8 +38,8 @@ func GenerateRangeNumString(n int) string {
 	return string(result)
 }
 
-// GenerateRangeNum 生成随机整数 digit：位数
-func GenerateRangeNum(digit int) int {
+// GetRangeNum 生成随机整数 digit：位数
+func GetRangeNum(digit int) int {
 	var max, min int = 1, 1
 	if digit > 0 {
 		for i := 0; i < digit; i++ {

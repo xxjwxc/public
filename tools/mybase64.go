@@ -10,6 +10,6 @@ func Base64Encode(src []byte) string {
 }
 
 // Base64Decode base64 解码
-func Base64Decode(src []byte) ([]byte, error) {
-	return base64.StdEncoding.DecodeString(string(src))
+func Base64Decode(src string) ([]byte, error) {
+	return base64.StdEncoding.DecodeString(src)
 }
