@@ -13,13 +13,24 @@ import (
 	"github.com/xxjwxc/public/tools"
 )
 
+var importFile map[string]string // 自定义包文件
+
+func init() {
+	importFile = make(map[string]string)
+}
+
+// AddImportFile 添加自定义import文件列表
+func AddImportFile(k, v string) {
+	importFile[k] = v
+}
+
 // GetModuleInfo find and get module info , return module [ name ,path ]
 // 通过model信息获取[model name] [和 根目录绝对地址]
 func GetModuleInfo(n int) (string, string, bool) {
 	index := n
 	// This is used to support third-party package encapsulation
 	// 这样做用于支持第三方包封装,(主要找到main调用者)
-	for true { // find main file
+	for { // find main file
 		_, filename, _, ok := runtime.Caller(index)
 		if ok {
 			if strings.HasSuffix(filename, "runtime/asm_amd64.s") {
@@ -34,7 +45,7 @@ func GetModuleInfo(n int) (string, string, bool) {
 
 	_, filename, _, _ := runtime.Caller(index)
 	filename = strings.Replace(filename, "\\", "/", -1) // offset
-	for true {
+	for {
 		n := strings.LastIndex(filename, "/")
 		if n > 0 {
 			filename = filename[0:n]
@@ -65,6 +76,12 @@ func EvalSymlinks(modPkg, modFile, objPkg string) string {
 
 	if strings.HasPrefix(objPkg, modPkg) {
 		return modFile + strings.Replace(objPkg[len(modPkg):], ".", "/", -1)
+	}
+
+	// 自定义文件中查找
+	tmp := importFile[objPkg]
+	if len(tmp) > 0 {
+		return tmp
 	}
 
 	// get the error space
