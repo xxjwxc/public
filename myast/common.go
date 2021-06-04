@@ -37,6 +37,10 @@ func GetModuleInfo(n int) (string, string, bool) {
 				index = index - 2
 				break
 			}
+			if strings.HasSuffix(filename, "runtime/asm_arm64.s") {
+				index = index - 2
+				break
+			}
 			index++
 		} else {
 			panic(errors.New("package parsing failed:can not find main files"))
