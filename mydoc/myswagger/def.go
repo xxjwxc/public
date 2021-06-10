@@ -49,8 +49,13 @@ type Param struct {
 	Consumes    []string                     `json:"consumes"`              // Parameter content type
 	Produces    []string                     `json:"produces"`              // Response content type
 	Parameters  []Element                    `json:"parameters"`            // 请求参数
-	Responses   map[string]map[string]string `json:"responses"`             // 返回参数
-	Security    interface{}                  `json:"security,omitempty"`    // 认证信息
+	Responses   map[string]Resp 			 `json:"responses"`             // 返回参数
+	Security    interface{}                 `json:"security,omitempty"`    // 认证信息
+}
+// 为返回的类型的文档加入描述
+type Resp struct {
+	Description string                 `json:"description"`
+	Schema      map[string]interface{} `json:"schema,omitempty"`
 }
 
 // SecurityDefinitions 安全验证

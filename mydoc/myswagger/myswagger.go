@@ -71,10 +71,10 @@ func (doc *DocSwagger) AddPatch(url string, p Param, metheds ...string) {
 		p.Produces = respCtxType
 	}
 	if p.Responses == nil {
-		p.Responses = map[string]map[string]string{
-			"400": {"description": "v"},
-			"404": {"description": "not found"},
-			"405": {"description": "Validation exception"},
+		p.Responses = map[string]Resp{
+			"400": {Description: "v"},
+			"404": {Description: "not found"},
+			"405": {Description: "Validation exception"},
 		}
 	}
 

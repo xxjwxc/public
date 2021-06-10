@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go/ast"
 	"go/token"
+	"reflect"
 	"strings"
 
 	"github.com/xxjwxc/public/mydoc"
@@ -90,6 +91,13 @@ func (a *structAnalys) structFieldInfo(astPkg *ast.Package, sinfo *ast.StructTyp
 
 		if field.Tag != nil {
 			info.Tag = strings.Trim(field.Tag.Value, "`")
+			// 可以忽略某个字段, 主要是在扫描response返回类型的时候
+			// 有时候不一定会为每个请求方法都定义一个返回的struct(大概是因为懒)
+			tag := reflect.StructTag(info.Tag)
+			tagStr := tag.Get("json")
+			if tagStr == "-" { // 忽略的json字段
+				continue
+			}
 		}
 		if field.Comment != nil {
 			info.Note = strings.TrimSpace(field.Comment.Text())
