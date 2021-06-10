@@ -81,7 +81,7 @@ func (m *model) GenSwagger(outPath string) {
 	}
 
 	jsonsrc := doc.GetAPIString()
-	mylog.Infof("output swagger doc: %v", outPath+"swagger.md")
+	mylog.Infof("output swagger doc: %v", outPath+"swagger.json")
 	tools.WriteFile(outPath+"swagger.json", []string{jsonsrc}, true)
 }
 
