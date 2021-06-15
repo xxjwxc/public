@@ -98,4 +98,5 @@ const ( //消息id定义
 	BindError                 ErrCode = 1086 // 绑定失败
 	CalError                  ErrCode = 1087 // 计算错误
 	TokenCheckError           ErrCode = 1088 // token校验失败
+	AppidNotFind              ErrCode = 1089 // 应用id未找到
 )
