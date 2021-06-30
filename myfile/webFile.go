@@ -134,5 +134,5 @@ func (o *myFile) SaveOrigin(file *multipart.FileHeader, dir string) (string, err
 	defer out.Close()
 
 	_, err = io.Copy(out, src)
-	return o.path + filename, err
+	return path.Join(o.path, dir, filename), err
 }
