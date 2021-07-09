@@ -12,7 +12,8 @@ var uncommonInitialismsReplacer *strings.Replacer
 func init() {
 	var commonInitialismsForReplacer []string
 	var uncommonInitialismsForReplacer []string
-	for _, initialism := range commonInitialisms {
+	for i := len(commonInitialisms) - 1; i >= 0; i-- {
+		initialism := commonInitialisms[i]
 		commonInitialismsForReplacer = append(commonInitialismsForReplacer, initialism, strings.Title(strings.ToLower(initialism)))
 		uncommonInitialismsForReplacer = append(uncommonInitialismsForReplacer, strings.Title(strings.ToLower(initialism)), initialism)
 	}
