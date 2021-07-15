@@ -118,3 +118,31 @@ func ReadFile(fname string) (src []string) {
 
 	return src
 }
+
+// MoveFile 移动文件或文件夹(/结尾)
+func MoveFile(from, to string) error {
+	// if !CheckFileIsExist(to) {
+	// 	BuildDir(to)
+	// }
+	return os.Rename(from, to)
+}
+
+func CopyFile(src, des string) error {
+	if !CheckFileIsExist(des) {
+		BuildDir(des)
+	}
+	srcFile, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer srcFile.Close()
+
+	desFile, err := os.Create(des)
+	if err != nil {
+		return err
+	}
+	defer desFile.Close()
+
+	_, err = io.Copy(desFile, srcFile)
+	return err
+}
