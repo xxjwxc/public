@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 
 	"github.com/xxjwxc/public/mylog"
 )
@@ -60,7 +61,7 @@ func GetPathFiles(absDir string) (re []string) {
 // GetModelPath 获取程序运行目录
 func GetModelPath() string {
 	dir, _ := os.Getwd()
-	return dir
+	return strings.Replace(dir, "\\", "/", -1)
 }
 
 // GetCurrentDirectory 获取exe所在目录
@@ -69,7 +70,7 @@ func GetCurrentDirectory() string {
 	exPath := filepath.Dir(dir)
 	// fmt.Println(exPath)
 
-	return exPath
+	return strings.Replace(exPath, "\\", "/", -1)
 }
 
 // SaveToFile 写入文件
