@@ -99,4 +99,5 @@ const ( //消息id定义
 	CalError                  ErrCode = 1087 // 计算错误
 	TokenCheckError           ErrCode = 1088 // token校验失败
 	AppidNotFind              ErrCode = 1089 // 应用id未找到
+	HaveDeal                  ErrCode = 1090 // 已经处理
 )
