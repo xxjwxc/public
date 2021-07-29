@@ -56,6 +56,11 @@ func GetHour0(timestamp int64) time.Time {
 	return StrToTime(tStr, "2006-01-02 15:04:05", nil)
 }
 
+// GetUtcHour0 获取向上整时时间
+func GetUtcHour0(tm time.Time) int64 {
+	return tm.Unix() - int64(tm.Second()) - int64((60 * tm.Minute()))
+}
+
 // GetDay0 获取给定日期的零点时间
 func GetDay0(timestamp int64) time.Time {
 	tm := time.Unix(timestamp, 0)
@@ -64,11 +69,16 @@ func GetDay0(timestamp int64) time.Time {
 	return StrToTime(tStr, "2006-01-02 15:04:05", nil)
 }
 
-// GetUtcDay0 获取offset 0点时间
-func GetUtcDay0(now time.Time, timeZone *time.Location) int64 {
-	tm := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
-	return tm.Unix()
+// GetUtcDay0 获取给定日期的零点时间
+func GetUtcDay0(tm time.Time) int64 {
+	return tm.Unix() - int64(tm.Second()) - int64(60*tm.Minute()) - int64(60*60*tm.Hour())
 }
+
+// // GetUtcDay0 获取offset 0点时间
+// func GetUtcDay0(now time.Time, timeZone *time.Location) int64 {
+// 	tm := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+// 	return tm.Unix()
+// }
 
 // StrToTime 字符串转时间
 func StrToTime(tStr, format string, timeZone *time.Location) time.Time {
@@ -107,7 +117,6 @@ func GetUtcWeek0(timestamp int64) int64 {
 
 // GetMonth0 获取给定时间的当月1号零点时间
 func GetMonth0(timestamp int64) time.Time {
-
 	tm0 := GetDay0(timestamp)
 	month0 := tm0.Day() - 1
 	tm0 = tm0.AddDate(0, 0, -1*month0) //这个月1号

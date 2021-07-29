@@ -8,17 +8,19 @@ import (
 
 // RedisDial 操作
 type RedisDial interface {
-	Destory()                                                                  // 析构
-	GetRedisClient() redis.Conn                                                // 获取一个原始的redis连接
-	Ping() bool                                                                // 判断是否能ping通
-	Add(key interface{}, value interface{}, lifeSpan time.Duration) error      // 添加一个元素
-	Value(key interface{}, value interface{}) error                            // 获取一个value
-	IsExist(key interface{}) bool                                              // 判断是否存在
-	Delete(key interface{}) error                                              // 删除一个
-	Clear() error                                                              // 清空
-	GetKeyS(key interface{}) ([]string, error)                                 // 查询所有key
-	Close() (err error)                                                        // 关闭连接
-	Do(commandName string, args ...interface{}) (reply interface{}, err error) // 一次操作
+	Destory()                                                                       // 析构
+	GetRedisClient() redis.Conn                                                     // 获取一个原始的redis连接
+	Ping() bool                                                                     // 判断是否能ping通
+	Add(key interface{}, value interface{}, lifeSpan time.Duration) error           // 添加一个元素
+	Value(key interface{}, value interface{}) error                                 // 获取一个value
+	IsExist(key interface{}) bool                                                   // 判断是否存在
+	Delete(key interface{}) error                                                   // 删除一个
+	Clear() error                                                                   // 清空
+	GetKeyS(key interface{}) ([]string, error)                                      // 查询所有key
+	Close() (err error)                                                             // 关闭连接
+	Do(commandName string, args ...interface{}) (reply interface{}, err error)      // 一次操作
+	TryLock(key interface{}, value interface{}, lifeSpan time.Duration) (err error) //  试着加锁
+	Unlock(key interface{}) (err error)                                             // 解锁
 }
 
 // DefaultConf ...
