@@ -12,23 +12,26 @@ func (mc *redisConPool) TryLock(key interface{}, value interface{}, lifeSpan tim
 	args = append(args, mc.getKey(key), mc.encodeValue(value))
 	if lifeSpan > 0 {
 		if usePrecise(lifeSpan) {
-			args = append(args, "px", formatMs(lifeSpan))
+			args = append(args, "PX", formatMs(lifeSpan))
 		} else {
-			args = append(args, "ex", formatSec(lifeSpan))
+			args = append(args, "EX", formatSec(lifeSpan))
 		}
 	} else if lifeSpan == keepTTL {
 		args = append(args, "keepttl")
 	}
 
+	args = append(args, "NX")
+
 	con := mc.GetRedisClient()
 	defer con.Close()
-	repy, err := mc.DO(con, "SETNX", args...)
-	if mc.conf.isLog {
-		mylog.Info(redis.String(repy, err))
-	}
-
+	repy, err := mc.DO(con, "SET", args...)
+	_, err = redis.String(repy, err)
 	if err != nil {
 		mylog.Error(err)
+	}
+
+	if mc.conf.isLog {
+		mylog.Info(redis.String(repy, err))
 	}
 	return err
 }
