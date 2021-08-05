@@ -100,4 +100,7 @@ const ( //消息id定义
 	TokenCheckError           ErrCode = 1088 // token校验失败
 	AppidNotFind              ErrCode = 1089 // 应用id未找到
 	HaveDeal                  ErrCode = 1090 // 已经处理
+	ParseFilesError           ErrCode = 1091 // 解析文件错误
+	CacheException            ErrCode = 1092 // 缓存异常
+	TemplateExecuteError      ErrCode = 1093 // 模板执行错误
 )
