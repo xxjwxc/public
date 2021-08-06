@@ -103,4 +103,5 @@ const ( //消息id定义
 	ParseFilesError           ErrCode = 1091 // 解析文件错误
 	CacheException            ErrCode = 1092 // 缓存异常
 	TemplateExecuteError      ErrCode = 1093 // 模板执行错误
+	OpTimeError               ErrCode = 1013 // 请不要平凡操作
 )

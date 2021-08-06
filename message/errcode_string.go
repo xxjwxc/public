@@ -104,6 +104,7 @@ func _() {
 	_ = x[ParseFilesError-1091]
 	_ = x[CacheException-1092]
 	_ = x[TemplateExecuteError-1093]
+	_ = x[OpTimeError-1013]
 }
 
 const (
