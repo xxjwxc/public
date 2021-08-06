@@ -19,6 +19,11 @@ type MessageBody struct {
 	Data  interface{} `json:"data,omitempty"`
 }
 
+// GetError 获取错误信息(grpc)
+func (m *MessageBody) GetError() error {
+	return status.Errorf(codes.Code(m.Code), m.Error)
+}
+
 // func init() {
 // 	_tryRegisteryCode(NormalMessageID)
 // 	_tryRegisteryCode(NotFindError)
