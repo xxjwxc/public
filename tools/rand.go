@@ -49,6 +49,9 @@ func GetRangeNum(digit int) int {
 			min = min * 10
 		}
 	}
+	if max == min {
+		return min
+	}
 	rand.Seed(time.Now().Unix())
 	return rand.Intn(max-min) + min
 }
@@ -58,6 +61,9 @@ func GetRandInt(min int, max int) int {
 	if min > max {
 		min = 0
 		max = 0
+	}
+	if max == min {
+		return min
 	}
 	rand.Seed(time.Now().Unix())
 	return rand.Intn(max-min) + min
