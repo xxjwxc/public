@@ -29,7 +29,7 @@ const ( //消息id定义
 	HasActvError              ErrCode = 1010 // 已被激活
 	ActvFailure               ErrCode = 1011 // 激活码被禁止使用
 	UserExisted               ErrCode = 1012 // 用户已存在
-	VerifyTimeError           ErrCode = 1013 // 验证码请求过于平凡
+	VerifyTimeError           ErrCode = 1013 // 验证码请求过于频繁
 	MailSendFaild             ErrCode = 1014 // 邮箱发送失败
 	SMSSendFaild              ErrCode = 1015 // 手机发送失败
 	PhoneParameterError       ErrCode = 1016 // 手机号格式有问题
