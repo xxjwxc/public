@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"reflect"
+	"regexp"
 	"sort"
 	"strings"
 
@@ -141,4 +142,10 @@ func GetUtf8Str(str string) []rune {
 // GetUtf8Len 获取中文字符的长度
 func GetUtf8Len(str string) int {
 	return len([]rune(str))
+}
+
+// IsHan 判断是否有中文
+func IsHan(str string) bool {
+	var hzRegexp = regexp.MustCompile("^[\u4e00-\u9fa5]$")
+	return hzRegexp.MatchString(str)
 }
