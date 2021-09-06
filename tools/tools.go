@@ -9,9 +9,9 @@ import (
 	"fmt"
 	"io"
 	"reflect"
-	"regexp"
 	"sort"
 	"strings"
+	"unicode"
 
 	"github.com/xxjwxc/public/errors"
 )
@@ -146,6 +146,10 @@ func GetUtf8Len(str string) int {
 
 // IsHan 判断是否有中文
 func IsHan(str string) bool {
-	var hzRegexp = regexp.MustCompile("^[\u4e00-\u9fa5]$")
-	return hzRegexp.MatchString(str)
+	for _, r := range str {
+		if unicode.Is(unicode.Han, r) {
+			return true
+		}
+	}
+	return false
 }
