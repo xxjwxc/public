@@ -17,6 +17,7 @@ const (
 	_getJsurl     = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token="
 	_getToken     = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="
 	_getSubscribe = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token="
+	_getTempMsg   = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="
 	_cacheToken   = "wx_access_token"
 	_cacheTicket  = "weixin_card_ticket"
 )
@@ -48,6 +49,10 @@ func (_wx *wxTools) GetAccessToken() (accessToken string, err error) {
 	js, err := simplejson.NewJson(body)
 	if err == nil {
 		accessToken, _ = js.Get("access_token").String()
+		if len(accessToken) == 0 {
+			mylog.Error(js)
+			return
+		}
 		//保存缓存
 		cache.Add(_cacheToken, &accessToken, time.Duration(7000)*time.Second)
 		//------------------end
@@ -149,4 +154,24 @@ func (_wx *wxTools) SendTemplateMsg(msg TempMsg) bool {
 	var res ResTempMsg
 	json.Unmarshal(resb, &res)
 	return res.Errcode == 0
+}
+
+// SendWebTemplateMsg 发送订阅消息
+func (_wx *wxTools) SendWebTemplateMsg(msg TempWebMsg) bool {
+	accessToken, err := _wx.GetAccessToken()
+	if err != nil {
+		mylog.Error(err)
+		return false
+	}
+
+	bo, _ := json.Marshal(msg)
+	resb, _ := myhttp.OnPostJSON(_getTempMsg+accessToken, string(bo))
+
+	var res ResTempMsg
+	json.Unmarshal(resb, &res)
+	b := res.Errcode == 0
+	if !b {
+		mylog.Error(res)
+	}
+	return b
 }
