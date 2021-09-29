@@ -26,5 +26,6 @@ type DocModel struct {
 	RouterPath string
 	Methods    []string
 	Note       string
+	MethodName string
 	Req, Resp  *StructInfo
 }
