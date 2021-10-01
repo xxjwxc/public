@@ -62,6 +62,13 @@ func (_wx *wxTools) GetAccessToken() (accessToken string, err error) {
 	return
 }
 
+// clearAccessTokenCache 清除accesstoken缓存
+func (_wx *wxTools) clearAccessTokenCache() error {
+	//先从缓存中获取 access_token
+	cache := mycache.NewCache(_cacheToken)
+	return cache.Delete(_cacheToken)
+}
+
 // GetAPITicket 获取微信卡券ticket
 func (_wx *wxTools) GetAPITicket() (ticket string, err error) {
 	//先从缓存中获取
@@ -170,8 +177,19 @@ func (_wx *wxTools) SendWebTemplateMsg(msg TempWebMsg) bool {
 	var res ResTempMsg
 	json.Unmarshal(resb, &res)
 	b := res.Errcode == 0
-	if !b {
-		mylog.Error(res)
+	if !b { // try again
+		_wx.clearAccessTokenCache()
+		accessToken, err = _wx.GetAccessToken()
+		if err != nil {
+			mylog.Error(err)
+			return false
+		}
+		resb, _ = myhttp.OnPostJSON(_getTempMsg+accessToken, string(bo))
+		json.Unmarshal(resb, &res)
+		b = res.Errcode == 0
+		if !b {
+			mylog.Error(res)
+		}
 	}
 	return b
 }
