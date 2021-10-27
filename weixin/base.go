@@ -167,7 +167,7 @@ func (_wx *wxTools) SendTemplateMsg(msg TempMsg) bool {
 func (_wx *wxTools) SendWebTemplateMsg(msg TempWebMsg) bool {
 	accessToken, err := _wx.GetAccessToken()
 	if err != nil {
-		mylog.Error(err)
+		mylog.Errorf("SendWebTemplateMsg error: openid:%v,err:%v", msg.Touser, err)
 		return false
 	}
 
