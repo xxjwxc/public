@@ -188,7 +188,7 @@ func (_wx *wxTools) SendWebTemplateMsg(msg TempWebMsg) bool {
 		json.Unmarshal(resb, &res)
 		b = res.Errcode == 0
 		if !b {
-			mylog.Error(res)
+			mylog.Errorf("SendWebTemplateMsg error: openid:%v,res:%v", msg.Touser, res)
 		}
 	}
 	return b
