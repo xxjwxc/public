@@ -104,4 +104,5 @@ const ( //消息id定义
 	CacheException            ErrCode = 1092 // 缓存异常
 	TemplateExecuteError      ErrCode = 1093 // 模板执行错误
 	OpTimeError               ErrCode = 1094 // 请不要平凡操作
+	EmptyError                ErrCode = 1095 // 数据为空
 )
