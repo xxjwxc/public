@@ -91,12 +91,12 @@ type AccessToken struct {
 
 // WxUserinfo 微信用户信息
 type WxUserinfo struct {
-	Openid     string   `json:"openid"`     // 微信用户唯一标识符,,微信用户唯一标识符
-	NickName   string   `json:"nickname"`   // 用户昵称
-	Sex        int      `json:"sex"`        // 用户的性别
-	City       string   `json:"city"`       // 用户所在城市
-	Province   string   `json:"province"`   // 用户所在省份
-	Country    string   `json:"country"`    // 用户所在国家
-	Headimgurl string   `json:"headimgurl"` // 头像地址
-	Privilege  []string `json:"privilege"`  // 户特权信息，json 数组，如微信沃卡用户为（chinaunicom）
+	Openid     string `json:"openid"`     // 微信用户唯一标识符,,微信用户唯一标识符
+	NickName   string `json:"nickname"`   // 用户昵称
+	Sex        int    `json:"sex"`        // 用户的性别
+	City       string `json:"city"`       // 用户所在城市
+	Province   string `json:"province"`   // 用户所在省份
+	Country    string `json:"country"`    // 用户所在国家
+	Headimgurl string `json:"headimgurl"` // 头像地址
+	// Privilege  []string `json:"privilege"`  // 户特权信息，json 数组，如微信沃卡用户为（chinaunicom）
 }

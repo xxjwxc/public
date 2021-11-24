@@ -51,7 +51,8 @@ func (_wx *wxTools) GetWebOauth(code string) (*AccessToken, error) {
 
 // GetWebUserinfo 获取用户信息
 func (_wx *wxTools) GetWebUserinfo(openid, accessToken string) (*WxUserinfo, error) {
-	var url = "https://api.weixin.qq.com/sns/userinfo?access_token=" + accessToken + "&openid=" + openid + "&lang=zh_CN"
+	// https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN
+	var url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + accessToken + "&openid=" + openid + "&lang=zh_CN"
 
 	resp, e := http.Get(url)
 	if e != nil {
