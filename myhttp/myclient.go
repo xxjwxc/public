@@ -10,26 +10,26 @@ import (
 
 // 主要用于 爬虫
 
-type myHttpClient struct {
+type MyHttpClient struct {
 	client *http.Client
 }
 
 // NewHttpClient 创建http client实例
-func NewMyHttpClient() *myHttpClient {
+func NewMyHttpClient() *MyHttpClient {
 	cookieJar, _ := cookiejar.New(nil)
-	return &myHttpClient{
+	return &MyHttpClient{
 		client: &http.Client{
 			Jar: cookieJar,
 		},
 	}
 }
 
-func (c *myHttpClient) GetClient() *http.Client {
+func (c *MyHttpClient) GetClient() *http.Client {
 	return c.client
 }
 
 // SendPost 发送POST请求
-func (c *myHttpClient) SendPost(url string, params string, responseBody interface{}) error {
+func (c *MyHttpClient) SendPost(url string, params string, responseBody interface{}) error {
 	req, err := http.NewRequest("POST", url, strings.NewReader(params))
 	if err != nil {
 		return err
@@ -58,7 +58,7 @@ func (c *myHttpClient) SendPost(url string, params string, responseBody interfac
 }
 
 // SendPost 发送POST请求
-func (c *myHttpClient) SendGet(url string, params string, responseBody interface{}) error {
+func (c *MyHttpClient) SendGet(url string, params string, responseBody interface{}) error {
 	req, err := http.NewRequest("GET", url, strings.NewReader(params))
 	if err != nil {
 		return err
