@@ -16,7 +16,7 @@ import (
 func CheckFileIsExist(filename string) bool {
 	var exist = true
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
-		mylog.Debug(filename + " not exist")
+		mylog.Debug(err)
 		exist = false
 	}
 	return exist
