@@ -2,6 +2,7 @@ package weixin
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -18,6 +19,7 @@ const (
 	_getToken     = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="
 	_getSubscribe = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token="
 	_getTempMsg   = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="
+	_createMenu   = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token="
 	_cacheToken   = "wx_access_token"
 	_cacheTicket  = "weixin_card_ticket"
 )
@@ -192,4 +194,23 @@ func (_wx *wxTools) SendWebTemplateMsg(msg TempWebMsg) bool {
 		}
 	}
 	return b
+}
+
+// CreateMenu 创建自定义菜单
+func (_wx *wxTools) CreateMenu(menu WxMenu) error { // 创建自定义菜单
+	accessToken, err := _wx.GetAccessToken()
+	if err != nil {
+		return err
+	}
+	bo, _ := json.Marshal(menu)
+	resb, _ := myhttp.OnPostJSON(_createMenu+accessToken, string(bo))
+
+	var res ResTempMsg
+	json.Unmarshal(resb, &res)
+	b := res.Errcode == 0
+	if !b {
+		return fmt.Errorf("SendWebTemplateMsg error: res:%v", res)
+	}
+
+	return nil
 }

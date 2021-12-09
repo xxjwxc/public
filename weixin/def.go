@@ -100,3 +100,22 @@ type WxUserinfo struct {
 	Headimgurl string `json:"headimgurl"` // 头像地址
 	// Privilege  []string `json:"privilege"`  // 户特权信息，json 数组，如微信沃卡用户为（chinaunicom）
 }
+
+type WxMenu struct {
+	Button []WxMenuButton `json:"button"`
+}
+
+type WxMenuButton struct {
+	Type      string      `json:"type,omitempty"`
+	Name      string      `json:"name,omitempty"`
+	Key       string      `json:"key,omitempty"`
+	Url       string      `json:"url,omitempty"`
+	SubButton []SubButton `json:"sub_button"`
+}
+
+type SubButton struct {
+	Type string `json:"type,omitempty"`
+	Name string `json:"name,omitempty"`
+	Key  string `json:"key,omitempty"`
+	Url  string `json:"url,omitempty"`
+}
