@@ -39,7 +39,7 @@ type WxTools interface {
 	GetWebUserinfo(openid, accessToken string) (*WxUserinfo, error) // 获取用户信息
 	SendWebTemplateMsg(msg TempWebMsg) bool                         // 发送公众号模板消息
 	CreateMenu(menu WxMenu) error                                   // 创建自定义菜单
-
+	SendCustomMsg(msg CustomMsg) error                              // 发送客服消息
 	// ----------------------------------------------------
 }
 

@@ -119,3 +119,28 @@ type SubButton struct {
 	Key  string `json:"key,omitempty"`
 	Url  string `json:"url,omitempty"`
 }
+
+// CustomMsg 客服消息头
+type CustomMsg struct {
+	Touser  string       `json:"touser"`          //	是	接收者（用户）的 openid
+	Msgtype string       `json:"msgtype"`         //	是	所需下发的模板消息的id
+	Text    *CustomText  `json:"text,omitempty"`  //	文本类容
+	Voice   *CustomVoice `json:"voice,omitempty"` //	语音
+	Music   *CustomMusic `json:"music,omitempty"` //	音乐消息
+}
+
+type CustomText struct {
+	Content string `json:"content"` //	文本类容
+}
+
+type CustomVoice struct {
+	MediaId string `json:"media_id"` //	语音
+}
+
+type CustomMusic struct {
+	Title        string `json:"title"`          // 标题
+	Description  string `json:"description"`    // 描述
+	MusicUrl     string `json:"musicurl"`       // 链接
+	HQMusicUrl   string `json:"hqmusicurl"`     // 链接
+	ThumbMediaId string `json:"thumb_media_id"` // 缩略图
+}
