@@ -20,6 +20,7 @@ const (
 	_getSubscribe = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token="
 	_getTempMsg   = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="
 	_createMenu   = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token="
+	_deleteMenu   = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token="
 	_sendCustom   = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token="
 	_cacheToken   = "wx_access_token"
 	_cacheTicket  = "weixin_card_ticket"
@@ -205,6 +206,24 @@ func (_wx *wxTools) CreateMenu(menu WxMenu) error { // 创建自定义菜单
 	}
 	bo, _ := json.Marshal(menu)
 	resb, _ := myhttp.OnPostJSON(_createMenu+accessToken, string(bo))
+
+	var res ResTempMsg
+	json.Unmarshal(resb, &res)
+	b := res.Errcode == 0
+	if !b {
+		return fmt.Errorf("SendWebTemplateMsg error: res:%v", res)
+	}
+
+	return nil
+}
+
+// DeleteMenu 删除自定义菜单
+func (_wx *wxTools) DeleteMenu() error { // 创建自定义菜单
+	accessToken, err := _wx.GetAccessToken()
+	if err != nil {
+		return err
+	}
+	resb, _ := myhttp.OnPostJSON(_deleteMenu+accessToken, string(""))
 
 	var res ResTempMsg
 	json.Unmarshal(resb, &res)
