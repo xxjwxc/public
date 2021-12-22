@@ -27,8 +27,10 @@ require (
 	github.com/xxjwxc/gowp v0.0.0-20200603130651-4d7368b0e285
 	go.uber.org/zap v1.10.0
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
-	golang.org/x/net v0.0.0-20201202161906-c7110b5ffcbb
-	golang.org/x/text v0.3.3
+	golang.org/x/net v0.0.0-20211015210444-4f30a5c0130f
+	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect
+	golang.org/x/text v0.3.7
+	golang.org/x/tools v0.1.8 // indirect
 	google.golang.org/grpc v1.29.1
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 	gopkg.in/eapache/queue.v1 v1.1.0

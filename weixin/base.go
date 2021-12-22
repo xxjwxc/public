@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/bitly/go-simplejson"
+	"github.com/xxjwxc/public/message"
 	"github.com/xxjwxc/public/mycache"
 	"github.com/xxjwxc/public/myhttp"
 	"github.com/xxjwxc/public/mylog"
@@ -168,11 +169,11 @@ func (_wx *wxTools) SendTemplateMsg(msg TempMsg) bool {
 }
 
 // SendWebTemplateMsg 发送订阅消息
-func (_wx *wxTools) SendWebTemplateMsg(msg TempWebMsg) bool {
+func (_wx *wxTools) SendWebTemplateMsg(msg TempWebMsg) error {
 	accessToken, err := _wx.GetAccessToken()
 	if err != nil {
 		mylog.Errorf("SendWebTemplateMsg error: openid:%v,err:%v", msg.Touser, err)
-		return false
+		return err
 	}
 
 	bo, _ := json.Marshal(msg)
@@ -186,16 +187,19 @@ func (_wx *wxTools) SendWebTemplateMsg(msg TempWebMsg) bool {
 		accessToken, err = _wx.GetAccessToken()
 		if err != nil {
 			mylog.Error(err)
-			return false
+			return err
 		}
 		resb, _ = myhttp.OnPostJSON(_getTempMsg+accessToken, string(bo))
 		json.Unmarshal(resb, &res)
 		b = res.Errcode == 0
 		if !b {
+			if res.Errcode == 43004 {
+				return message.GetError(message.Unfollow)
+			}
 			mylog.Errorf("SendWebTemplateMsg error: openid:%v,res:%v", msg.Touser, res)
 		}
 	}
-	return b
+	return nil
 }
 
 // CreateMenu 创建自定义菜单
