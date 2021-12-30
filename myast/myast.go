@@ -126,6 +126,8 @@ func (a *structAnalys) structFieldInfo(astPkg *ast.Package, sinfo *ast.StructTyp
 				}
 			case *ast.InterfaceType:
 				info.Type = "Interface"
+			case *ast.ArrayType:
+				info.Type = "Array"
 			}
 		case *ast.StarExpr:
 			switch x := exp.X.(type) {
