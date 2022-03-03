@@ -40,6 +40,7 @@ type WxTools interface {
 	SendWebTemplateMsg(msg TempWebMsg) error                        // 发送公众号模板消息
 	CreateMenu(menu WxMenu) error                                   // 创建自定义菜单
 	DeleteMenu() error                                              // 删除自定义菜单
+	SetGuideConfig(guideConfig GuideConfig) error                   // 快捷回复与关注自动回复
 
 	SendCustomMsg(msg CustomMsg) error // 发送客服消息
 	// ----------------------------------------------------

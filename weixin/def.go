@@ -144,3 +144,21 @@ type CustomMusic struct {
 	HQMusicUrl   string `json:"hqmusicurl"`     // 链接
 	ThumbMediaId string `json:"thumb_media_id"` // 缩略图
 }
+
+type GuideConfig struct {
+	GuideAccount       string               `json:"guide_account"`         // 顾问号
+	IsDelete           bool                 `json:"is_delete"`             // 操作类型，false表示添加 true表示删除
+	GuideFastReplyList []GuideFastReplyList `json:"guide_fast_reply_list"` // 	快捷回复列表
+	GuideAutoReply     GuideAutoReply       `json:"guide_auto_reply"`      //	第一条新客户关注自动回复
+	GuideAutoReplyPlus GuideAutoReply       `json:"guide_auto_reply_plus"` //	第二条新客户关注自动回复
+}
+
+// GuideFastReplyList 快捷回复列表
+type GuideFastReplyList struct {
+	Content string `json:"content"` // 快捷回复
+}
+
+type GuideAutoReply struct {
+	Content string `json:"content"` // 新客户关注自动回复内容,图片填mediaid,获取方式同图片素材,小程序卡片填下面请求demo中字段的json格式
+	Msgtype int    `json:"msgtype"` // 1表示文字，2表示图片，3表示小程序卡片
+}

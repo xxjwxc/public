@@ -15,16 +15,17 @@ import (
 )
 
 const (
-	_getTicket    = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=wx_card&access_token="
-	_getJsurl     = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token="
-	_getToken     = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="
-	_getSubscribe = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token="
-	_getTempMsg   = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="
-	_createMenu   = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token="
-	_deleteMenu   = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token="
-	_sendCustom   = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token="
-	_cacheToken   = "wx_access_token"
-	_cacheTicket  = "weixin_card_ticket"
+	_getTicket      = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=wx_card&access_token="
+	_getJsurl       = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token="
+	_getToken       = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="
+	_getSubscribe   = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token="
+	_getTempMsg     = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="
+	_createMenu     = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token="
+	_deleteMenu     = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token="
+	_sendCustom     = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token="
+	_setGuideConfig = "https://api.weixin.qq.com/cgi-bin/guide/setguideconfig?access_token="
+	_cacheToken     = "wx_access_token"
+	_cacheTicket    = "weixin_card_ticket"
 )
 
 // GetAccessToken 获取微信accesstoken
@@ -253,6 +254,25 @@ func (_wx *wxTools) SendCustomMsg(msg CustomMsg) error {
 	b := res.Errcode == 0
 	if !b {
 		return fmt.Errorf("SendWebTemplateMsg error: res:%v", res)
+	}
+
+	return nil
+}
+
+// SetGuideConfig 快捷回复与关注自动回复
+func (_wx *wxTools) SetGuideConfig(guideConfig GuideConfig) error {
+	accessToken, err := _wx.GetAccessToken()
+	if err != nil {
+		return err
+	}
+	bo, _ := json.Marshal(guideConfig)
+	resb, _ := myhttp.OnPostJSON(_setGuideConfig+accessToken, string(bo))
+
+	var res ResTempMsg
+	json.Unmarshal(resb, &res)
+	b := res.Errcode == 0
+	if !b {
+		return fmt.Errorf("SetGuideConfig error: res:%v", res)
 	}
 
 	return nil
