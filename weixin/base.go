@@ -2,23 +2,30 @@ package weixin
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
 
 	"github.com/bitly/go-simplejson"
+	"github.com/xxjwxc/public/message"
 	"github.com/xxjwxc/public/mycache"
 	"github.com/xxjwxc/public/myhttp"
 	"github.com/xxjwxc/public/mylog"
 )
 
 const (
-	_getTicket    = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=wx_card&access_token="
-	_getJsurl     = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token="
-	_getToken     = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="
-	_getSubscribe = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token="
-	_cacheToken   = "wx_access_token"
-	_cacheTicket  = "weixin_card_ticket"
+	_getTicket      = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=wx_card&access_token="
+	_getJsurl       = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token="
+	_getToken       = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="
+	_getSubscribe   = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token="
+	_getTempMsg     = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="
+	_createMenu     = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token="
+	_deleteMenu     = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token="
+	_sendCustom     = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token="
+	_setGuideConfig = "https://api.weixin.qq.com/cgi-bin/guide/setguideconfig?access_token="
+	_cacheToken     = "wx_access_token"
+	_cacheTicket    = "weixin_card_ticket"
 )
 
 // GetAccessToken 获取微信accesstoken
@@ -48,6 +55,10 @@ func (_wx *wxTools) GetAccessToken() (accessToken string, err error) {
 	js, err := simplejson.NewJson(body)
 	if err == nil {
 		accessToken, _ = js.Get("access_token").String()
+		if len(accessToken) == 0 {
+			mylog.Error(js)
+			return
+		}
 		//保存缓存
 		cache.Add(_cacheToken, &accessToken, time.Duration(7000)*time.Second)
 		//------------------end
@@ -55,6 +66,13 @@ func (_wx *wxTools) GetAccessToken() (accessToken string, err error) {
 	//----------------------end
 
 	return
+}
+
+// clearAccessTokenCache 清除accesstoken缓存
+func (_wx *wxTools) clearAccessTokenCache() error {
+	//先从缓存中获取 access_token
+	cache := mycache.NewCache(_cacheToken)
+	return cache.Delete(_cacheToken)
 }
 
 // GetAPITicket 获取微信卡券ticket
@@ -149,4 +167,113 @@ func (_wx *wxTools) SendTemplateMsg(msg TempMsg) bool {
 	var res ResTempMsg
 	json.Unmarshal(resb, &res)
 	return res.Errcode == 0
+}
+
+// SendWebTemplateMsg 发送订阅消息
+func (_wx *wxTools) SendWebTemplateMsg(msg TempWebMsg) error {
+	accessToken, err := _wx.GetAccessToken()
+	if err != nil {
+		mylog.Errorf("SendWebTemplateMsg error: openid:%v,err:%v", msg.Touser, err)
+		return err
+	}
+
+	bo, _ := json.Marshal(msg)
+	resb, _ := myhttp.OnPostJSON(_getTempMsg+accessToken, string(bo))
+
+	var res ResTempMsg
+	json.Unmarshal(resb, &res)
+	b := res.Errcode == 0
+	if !b { // try again
+		_wx.clearAccessTokenCache()
+		accessToken, err = _wx.GetAccessToken()
+		if err != nil {
+			mylog.Error(err)
+			return err
+		}
+		resb, _ = myhttp.OnPostJSON(_getTempMsg+accessToken, string(bo))
+		json.Unmarshal(resb, &res)
+		b = res.Errcode == 0
+		if !b {
+			if res.Errcode == 43004 {
+				return message.GetError(message.Unfollow)
+			}
+			mylog.Errorf("SendWebTemplateMsg error: openid:%v,res:%v", msg.Touser, res)
+		}
+	}
+	return nil
+}
+
+// CreateMenu 创建自定义菜单
+func (_wx *wxTools) CreateMenu(menu WxMenu) error { // 创建自定义菜单
+	accessToken, err := _wx.GetAccessToken()
+	if err != nil {
+		return err
+	}
+	bo, _ := json.Marshal(menu)
+	resb, _ := myhttp.OnPostJSON(_createMenu+accessToken, string(bo))
+
+	var res ResTempMsg
+	json.Unmarshal(resb, &res)
+	b := res.Errcode == 0
+	if !b {
+		return fmt.Errorf("SendWebTemplateMsg error: res:%v", res)
+	}
+
+	return nil
+}
+
+// DeleteMenu 删除自定义菜单
+func (_wx *wxTools) DeleteMenu() error { // 创建自定义菜单
+	accessToken, err := _wx.GetAccessToken()
+	if err != nil {
+		return err
+	}
+	resb, _ := myhttp.OnPostJSON(_deleteMenu+accessToken, string(""))
+
+	var res ResTempMsg
+	json.Unmarshal(resb, &res)
+	b := res.Errcode == 0
+	if !b {
+		return fmt.Errorf("SendWebTemplateMsg error: res:%v", res)
+	}
+
+	return nil
+}
+
+// SendCustomMsg 发送客服消息
+func (_wx *wxTools) SendCustomMsg(msg CustomMsg) error {
+	accessToken, err := _wx.GetAccessToken()
+	if err != nil {
+		return err
+	}
+	bo, _ := json.Marshal(msg)
+	resb, _ := myhttp.OnPostJSON(_sendCustom+accessToken, string(bo))
+
+	var res ResTempMsg
+	json.Unmarshal(resb, &res)
+	b := res.Errcode == 0
+	if !b {
+		return fmt.Errorf("SendWebTemplateMsg error: res:%v", res)
+	}
+
+	return nil
+}
+
+// SetGuideConfig 快捷回复与关注自动回复
+func (_wx *wxTools) SetGuideConfig(guideConfig GuideConfig) error {
+	accessToken, err := _wx.GetAccessToken()
+	if err != nil {
+		return err
+	}
+	bo, _ := json.Marshal(guideConfig)
+	resb, _ := myhttp.OnPostJSON(_setGuideConfig+accessToken, string(bo))
+
+	var res ResTempMsg
+	json.Unmarshal(resb, &res)
+	b := res.Errcode == 0
+	if !b {
+		return fmt.Errorf("SetGuideConfig error: res:%v", res)
+	}
+
+	return nil
 }
