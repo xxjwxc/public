@@ -1,13 +1,14 @@
 package ratelimit
 
 import (
-"fmt"
-"github.com/yudeguang/ratelimit"
-"log"
-"strconv"
-"sync"
-"testing"
-"time"
+	"fmt"
+	"log"
+	"strconv"
+	"sync"
+	"testing"
+	"time"
+
+	"github.com/yudeguang/ratelimit"
 )
 
 func Test1(t *testing.T) {
@@ -46,7 +47,7 @@ func Test1(t *testing.T) {
 				for user := range users {
 					for {
 						Visits++
-						if !r.AllowVisit(user) {
+						if b, _ := r.AllowVisit(user); !b {
 							break
 						}
 					}
@@ -57,7 +58,7 @@ func Test1(t *testing.T) {
 	}
 	//所有线程结束，完工
 	wg.Wait()
-	t1 := int(time.Now().Sub(begin).Seconds())
+	t1 := int(time.Since(begin).Seconds())
 	log.Println("性能测试完成:共计访问", Visits, "次,", "耗时", t, "秒,即每秒约完成", Visits/t1, "次操作")
 	//步骤五(可选):程序退出前主动手动存盘
 	//err := r.SaveToDiscOnce() //在自动备份的同时，还支持手动备份，一般在程序要退出时调用此函数
