@@ -1,13 +1,12 @@
 package ratelimit
 
 import (
-"fmt"
-"github.com/yudeguang/ratelimit"
-"log"
-"strconv"
-"sync"
-"testing"
-"time"
+	"fmt"
+	"log"
+	"strconv"
+	"sync"
+	"testing"
+	"time"
 )
 
 func Test1(t *testing.T) {
@@ -17,7 +16,10 @@ func Test1(t *testing.T) {
 	r := NewRule()
 	//步骤二：增加一条或者多条规则组成复合规则，规则必须至少包含一条规则
 	//此处对于性能测试，为方便准确计数，只需要添加一条规则
-	r.AddRule(time.Second*10, 1000) //每10秒只允许访问1000次
+	err := r.AddRule(time.Second*10, 1000) //每10秒只允许访问1000次
+	if err != nil {
+		panic(err)
+	}
 	/*
 		r.AddRule(time.Second*10, 10)   //每10秒只允许访问10次
 		r.AddRule(time.Minute*30, 1000) //每30分钟只允许访问1000次
@@ -46,7 +48,11 @@ func Test1(t *testing.T) {
 				for user := range users {
 					for {
 						Visits++
-						if !r.AllowVisit(user) {
+						b, err := r.AllowVisit(user)
+						if err != nil {
+							panic(err)
+						}
+						if !b {
 							break
 						}
 					}
@@ -58,7 +64,7 @@ func Test1(t *testing.T) {
 	//所有线程结束，完工
 	wg.Wait()
 	t1 := int(time.Now().Sub(begin).Seconds())
-	log.Println("性能测试完成:共计访问", Visits, "次,", "耗时", t, "秒,即每秒约完成", Visits/t1, "次操作")
+	log.Println("性能测试完成:共计访问", Visits, "次,", "耗时", t1, "秒,即每秒约完成", Visits/t1, "次操作")
 	//步骤五(可选):程序退出前主动手动存盘
 	//err := r.SaveToDiscOnce() //在自动备份的同时，还支持手动备份，一般在程序要退出时调用此函数
 	//if err == nil {
@@ -71,9 +77,9 @@ func Test1(t *testing.T) {
 func Test2(t *testing.T) {
 	fmt.Println("\r\n测试2，模拟用户访问并打印:")
 	//步骤一：初始化
-	r := ratelimit.NewRule()
+	r := NewRule()
 	//步骤二：增加一条或者多条规则组成复合规则，规则必须至少包含一条规则
-	r.AddRule(time.Second*10, 5)  //每10秒只允许访问5次
+	r.AddRule(time.Second*10, 0)  //每10秒只允许访问5次
 	r.AddRule(time.Minute*30, 50) //每30分钟只允许访问50次
 	r.AddRule(time.Hour*24, 500)  //每天只允许访问500次
 	//步骤三：调用函数判断某用户是否允许访问
@@ -85,7 +91,11 @@ func Test2(t *testing.T) {
 	for _, user := range users {
 		fmt.Println("\r\n开始模拟以下用户访问:", user)
 		for {
-			if r.AllowVisit(user) {
+			b, err := r.AllowVisit(user)
+			if err != nil {
+				panic(err)
+			}
+			if b {
 				log.Println(user, "访问1次,剩余:", r.RemainingVisits(user))
 			} else {
 				log.Println(user, "访问过多,稍后再试")
@@ -112,4 +122,5 @@ func Test2(t *testing.T) {
 	log.Println("chery清空访问记录前,剩余:", r.RemainingVisits("chery"))
 	r.ManualEmptyVisitorRecordsOf("chery")
 	log.Println("chery清空访问记录后,剩余:", r.RemainingVisits("chery"))
+
 }

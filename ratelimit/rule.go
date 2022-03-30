@@ -1,6 +1,7 @@
 package ratelimit
 
 import (
+	"fmt"
 	"github.com/xxjwxc/public/errors"
 	"math"
 	"sort"
@@ -91,4 +92,33 @@ func (r *Rule) ManualEmptyVisitorRecordsOf(key interface{}) error {
 	}
 
 	return nil
+}
+
+/*
+RemainingVisits 某用户剩余访问次数，例:RemainingVisits("username")
+*/
+func (r *Rule) RemainingVisits(key interface{}) []int {
+	arr := make([]int, 0, len(r.rules))
+	for i := range r.rules {
+		arr = append(arr, r.rules[i].remainingVisits(key))
+	}
+	return arr
+}
+
+/*
+PrintRemainingVisits 打印各细分规则下的剩余访问次数
+*/
+func (r *Rule) PrintRemainingVisits(key interface{}, language ...int) {
+	//先确定语言，默认为中文，目前只支持中文，英文两种语言
+	lan := 0
+	if len(language) == 1 && language[0] == 1 {
+		lan = 1
+	}
+	for i := range r.rules {
+		if lan == 0 {
+			fmt.Println(key, "在", r.rules[i].defaultExpiration, "内共允许访问", r.rules[i].numberOfAllowedAccesses, "次,剩余", r.rules[i].remainingVisits(key))
+		} else {
+			fmt.Println(key, "allowed", r.rules[i].numberOfAllowedAccesses, "visits within", r.rules[i].defaultExpiration, ",with", r.rules[i].remainingVisits(key), "remaining")
+		}
+	}
 }
