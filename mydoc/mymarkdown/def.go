@@ -48,6 +48,8 @@ var bodyMod = []string{
 {{range $oem := $obj.Item}}
 --------------------
 
+### {{$oem.InterfaceName}}
+
 #### Brief description:
 
 - [{{$oem.Note}}]
@@ -102,6 +104,8 @@ var bodyMod = []string{
 - [{{$obj.Note}}]
 {{range $oem := $obj.Item}}
 --------------------
+
+### {{$oem.InterfaceName}}
 
 #### 简要描述：
 
@@ -177,8 +181,9 @@ type TmpSub struct {
 
 	Methods []string // 请求方式
 
-	Note       string // 注释
-	RouterPath string // 请求url
+	Note          string // 注释
+	RouterPath    string // 请求url
+	InterfaceName string // 接口名
 }
 
 // TmpInterface 模板

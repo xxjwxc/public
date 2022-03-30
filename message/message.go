@@ -19,12 +19,22 @@ type MessageBody struct {
 	Data  interface{} `json:"data,omitempty"`
 }
 
+// GetError 获取错误信息(grpc)
+// func (m *MessageBody) GetError() error {
+// 	return status.Errorf(codes.Code(m.Code), m.Error)
+// }
+
+// GetError 获取错误信息(grpc)
+func (m MessageBody) GetError() error {
+	return status.Errorf(codes.Code(m.Code), m.Error)
+}
+
 // func init() {
 // 	_tryRegisteryCode(NormalMessageID)
 // 	_tryRegisteryCode(NotFindError)
 // }
 
-//GetErrorMsg 获取错误消息 参数(int,string)
+// GetErrorMsg 获取错误消息 参数(int,string)
 func GetErrorMsg(errorCode ...interface{}) (msg MessageBody) {
 	if len(errorCode) == 0 {
 		mylog.ErrorString("unknow")

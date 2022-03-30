@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/xxjwxc/public/mydoc"
+	"github.com/xxjwxc/public/mylog"
 	"github.com/xxjwxc/public/tools"
 )
 
@@ -123,6 +124,10 @@ func (a *structAnalys) structFieldInfo(astPkg *ast.Package, sinfo *ast.StructTyp
 				case *ast.Ident:
 					a.dealIdent(astPkg, x1, &info)
 				}
+			case *ast.InterfaceType:
+				info.Type = "Interface"
+			case *ast.ArrayType:
+				info.Type = "Array"
 			}
 		case *ast.StarExpr:
 			switch x := exp.X.(type) {
@@ -166,10 +171,11 @@ func (a *structAnalys) structFieldInfo(astPkg *ast.Package, sinfo *ast.StructTyp
 		}
 
 		if len(info.Type) == 0 {
-			panic(fmt.Sprintf("can not deal the type : %v", field.Type))
+			mylog.Errorf("can not deal the type : %v", field.Type)
 		}
 
 		items = append(items, info)
+
 	}
 	return items
 }

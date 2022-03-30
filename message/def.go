@@ -4,18 +4,20 @@ package message
 type ErrCode int
 
 const ( //消息id定义
-	NormalMessageID   ErrCode = 0 // normal
-	ServerMaintenance ErrCode = 1 // 服务器维护中 请稍后再试
-	AccountDisabled   ErrCode = 2 // 帐号被禁用
-	AppidOverdue      ErrCode = 3 // appid过期
+	ServerMaintenance ErrCode = -1 // 服务器维护中 请稍后再试
+	NormalMessageID   ErrCode = 0  // normal
+	Canceled          ErrCode = 1  // 已取消
+	UnknownError      ErrCode = 2  // 未知错误
+	InvalidArgument   ErrCode = 3  // 无效参数
+	AppidOverdue      ErrCode = 4  // appid过期
 
-	UnknownError  ErrCode = 101 // 未知错误
-	TokenFailure  ErrCode = 102 // token失效
-	HTMLSuccess   ErrCode = 200 // 成功
-	BlockingAcess ErrCode = 405 // 禁止访问
+	AccountDisabled ErrCode = 101 // 帐号被禁用
+	TokenFailure    ErrCode = 102 // token失效
+	HTMLSuccess     ErrCode = 200 // 成功
+	BlockingAcess   ErrCode = 405 // 禁止访问
 
-	NewReport ErrCode = 2001 // 新消息
-	NewHeart  ErrCode = 2002 // 心跳
+	NewReport ErrCode = 201 // 新消息
+	NewHeart  ErrCode = 202 // 心跳
 
 	ParameterInvalid          ErrCode = 1001 // 参数无效
 	AppidParameterInvalid     ErrCode = 1002 // appid参数无效
@@ -29,7 +31,7 @@ const ( //消息id定义
 	HasActvError              ErrCode = 1010 // 已被激活
 	ActvFailure               ErrCode = 1011 // 激活码被禁止使用
 	UserExisted               ErrCode = 1012 // 用户已存在
-	VerifyTimeError           ErrCode = 1013 // 验证码请求过于平凡
+	VerifyTimeError           ErrCode = 1013 // 验证码请求过于频繁
 	MailSendFaild             ErrCode = 1014 // 邮箱发送失败
 	SMSSendFaild              ErrCode = 1015 // 手机发送失败
 	PhoneParameterError       ErrCode = 1016 // 手机号格式有问题
@@ -100,4 +102,10 @@ const ( //消息id定义
 	TokenCheckError           ErrCode = 1088 // token校验失败
 	AppidNotFind              ErrCode = 1089 // 应用id未找到
 	HaveDeal                  ErrCode = 1090 // 已经处理
+	ParseFilesError           ErrCode = 1091 // 解析文件错误
+	CacheException            ErrCode = 1092 // 缓存异常
+	TemplateExecuteError      ErrCode = 1093 // 模板执行错误
+	OpTimeError               ErrCode = 1094 // 请不要平凡操作
+	EmptyError                ErrCode = 1095 // 数据为空
+	Unfollow                  ErrCode = 1096 // 用户已取消关注
 )

@@ -11,6 +11,7 @@ import (
 	"reflect"
 	"sort"
 	"strings"
+	"unicode"
 
 	"github.com/xxjwxc/public/errors"
 )
@@ -141,4 +142,14 @@ func GetUtf8Str(str string) []rune {
 // GetUtf8Len 获取中文字符的长度
 func GetUtf8Len(str string) int {
 	return len([]rune(str))
+}
+
+// IsHan 判断是否有中文
+func IsHan(str string) bool {
+	for _, r := range str {
+		if unicode.Is(unicode.Han, r) {
+			return true
+		}
+	}
+	return false
 }

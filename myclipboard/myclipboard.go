@@ -1,7 +1,7 @@
 package myclipboard
 
 import (
-	"github.com/atotto/clipboard"
+	"github.com/xxjwxc/public/myclipboard/clipboard"
 	"github.com/xxjwxc/public/mylog"
 )
 

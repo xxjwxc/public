@@ -27,7 +27,7 @@ func (mc *redisConPool) TryLock(key interface{}, value interface{}, lifeSpan tim
 	repy, err := mc.DO(con, "SET", args...)
 	_, err = redis.String(repy, err)
 	if err != nil {
-		mylog.Error(err)
+		return err
 	}
 
 	if mc.conf.isLog {

@@ -182,3 +182,27 @@ func DbcToSbc(str string) string {
 
 	return strings.ToLowerSpecial(numConv, str)
 }
+
+// RemoveMark 去掉标点符号
+func RemoveMark(text string) string {
+	// 全角转半角
+	var out []rune
+	tmp := []rune(DbcToSbc(text))
+	for i := 0; i < len(tmp); i++ {
+		// if find := strings.Contains(",:-、.;?!…", string(tmp[i])); find {
+		if !isPunct(tmp[i]) {
+			out = append(out, tmp[i])
+		}
+	}
+
+	return string(out)
+}
+
+// 判断是否是标点 !,—.:;?…、
+func isPunct(r rune) bool {
+	if r == '!' || r == ',' || r == '—' || r == '.' || r == ':' || r == ';' || r == '?' || r == '…' || r == '、' {
+		return true
+	}
+
+	return false
+}

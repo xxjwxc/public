@@ -26,6 +26,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.0.0
 	github.com/syndtr/goleveldb v1.0.0
+	github.com/wenzhenxi/gorsa v0.0.0-20210524035706-528c7050d703
 	github.com/xxjwxc/gowp v0.0.0-20200603130651-4d7368b0e285
 	github.com/yudeguang/iox v0.0.0-20180519090448-bffdb29c87c0 // indirect
 	github.com/yudeguang/ratelimit v0.0.0-20220109125206-af2bdcdaf64a

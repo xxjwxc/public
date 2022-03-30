@@ -8,16 +8,18 @@ func _() {
 	// An "invalid array index" compiler error signifies that the constant values have changed.
 	// Re-run the stringer command to generate them again.
 	var x [1]struct{}
+	_ = x[ServerMaintenance - -1]
 	_ = x[NormalMessageID-0]
-	_ = x[ServerMaintenance-1]
-	_ = x[AccountDisabled-2]
-	_ = x[AppidOverdue-3]
-	_ = x[UnknownError-101]
+	_ = x[Canceled-1]
+	_ = x[UnknownError-2]
+	_ = x[InvalidArgument-3]
+	_ = x[AppidOverdue-4]
+	_ = x[AccountDisabled-101]
 	_ = x[TokenFailure-102]
 	_ = x[HTMLSuccess-200]
 	_ = x[BlockingAcess-405]
-	_ = x[NewReport-2001]
-	_ = x[NewHeart-2002]
+	_ = x[NewReport-201]
+	_ = x[NewHeart-202]
 	_ = x[ParameterInvalid-1001]
 	_ = x[AppidParameterInvalid-1002]
 	_ = x[EncryptCheckError-1003]
@@ -101,37 +103,44 @@ func _() {
 	_ = x[TokenCheckError-1088]
 	_ = x[AppidNotFind-1089]
 	_ = x[HaveDeal-1090]
+	_ = x[ParseFilesError-1091]
+	_ = x[CacheException-1092]
+	_ = x[TemplateExecuteError-1093]
+	_ = x[OpTimeError-1094]
+	_ = x[EmptyError-1095]
+	_ = x[Unfollow-1096]
 }
 
 const (
-	_ErrCode_name_0 = "normal服务器维护中 请稍后再试帐号被禁用appid过期"
-	_ErrCode_name_1 = "未知错误token失效"
-	_ErrCode_name_2 = "成功"
+	_ErrCode_name_0 = "服务器维护中 请稍后再试normal已取消未知错误无效参数appid过期"
+	_ErrCode_name_1 = "帐号被禁用token失效"
+	_ErrCode_name_2 = "成功新消息心跳"
 	_ErrCode_name_3 = "禁止访问"
-	_ErrCode_name_4 = "参数无效appid参数无效密文校验失败,aa用户名不存在或密码错误键值对重复未找到无效操作授权码错误已被使用已被激活激活码被禁止使用用户已存在验证码请求过于平凡邮箱发送失败手机发送失败手机号格式有问题验证码错误用户不存在topic已经存在topic不存在bundle_id不存在topic开启处理失败topic处理类型不存在topic不能为空设备不存在"
+	_ErrCode_name_4 = "参数无效appid参数无效密文校验失败,aa用户名不存在或密码错误键值对重复未找到无效操作授权码错误已被使用已被激活激活码被禁止使用用户已存在验证码请求过于频繁邮箱发送失败手机发送失败手机号格式有问题验证码错误用户不存在topic已经存在topic不存在bundle_id不存在topic开启处理失败topic处理类型不存在topic不能为空设备不存在"
 	_ErrCode_name_5 = "状态已存在上级菜单不存在菜单不存在用户权限不存在设备ID不存在商品处理类型不存在商品不存在商品正在打折商品可支付类型不存在商品已存在"
-	_ErrCode_name_6 = "订单不存在商品未打折会话不匹配商品已恢复原价邀请用户不存在邀请用户级数已满用户未授权申请人已存在申请人不存在订单无效微信零钱重复提现提现金额错误微信提现失败重复提交bundle已存在权限已存在权限不存在房型不存在房型已存在房间不存在房间已存在房价代码或房价名称已存在房价代码不存在文件不存在房间未启用班次已存在班次不存在系统时间与营业时间不匹配当前班次已交班支付金额错误存量不足数据存储错误数据添加错误数据更新错误数据删除错误时间错误预定信息错误不允许已过期超过最大值低于最小值已存在未绑定绑定失败计算错误token校验失败应用id未找到已经处理"
-	_ErrCode_name_7 = "新消息心跳"
+	_ErrCode_name_6 = "订单不存在商品未打折会话不匹配商品已恢复原价邀请用户不存在邀请用户级数已满用户未授权申请人已存在申请人不存在订单无效微信零钱重复提现提现金额错误微信提现失败重复提交bundle已存在权限已存在权限不存在房型不存在房型已存在房间不存在房间已存在房价代码或房价名称已存在房价代码不存在文件不存在房间未启用班次已存在班次不存在系统时间与营业时间不匹配当前班次已交班支付金额错误存量不足数据存储错误数据添加错误数据更新错误数据删除错误时间错误预定信息错误不允许已过期超过最大值低于最小值已存在未绑定绑定失败计算错误token校验失败应用id未找到已经处理解析文件错误缓存异常模板执行错误请不要平凡操作数据为空用户已取消关注"
 )
 
 var (
-	_ErrCode_index_0 = [...]uint8{0, 6, 40, 55, 66}
-	_ErrCode_index_1 = [...]uint8{0, 12, 23}
+	_ErrCode_index_0 = [...]uint8{0, 34, 40, 49, 61, 73, 84}
+	_ErrCode_index_1 = [...]uint8{0, 15, 26}
+	_ErrCode_index_2 = [...]uint8{0, 6, 15, 21}
 	_ErrCode_index_4 = [...]uint16{0, 12, 29, 50, 83, 98, 107, 119, 134, 146, 158, 182, 197, 224, 242, 260, 284, 299, 314, 331, 345, 363, 386, 412, 429, 444}
 	_ErrCode_index_5 = [...]uint8{0, 15, 36, 51, 72, 89, 116, 131, 149, 179, 194}
-	_ErrCode_index_6 = [...]uint16{0, 15, 30, 45, 66, 87, 111, 126, 144, 162, 174, 198, 216, 234, 246, 261, 276, 291, 306, 321, 336, 351, 387, 408, 423, 438, 453, 468, 504, 525, 543, 555, 573, 591, 609, 627, 639, 657, 666, 675, 690, 705, 714, 723, 735, 747, 764, 781, 793}
-	_ErrCode_index_7 = [...]uint8{0, 9, 15}
+	_ErrCode_index_6 = [...]uint16{0, 15, 30, 45, 66, 87, 111, 126, 144, 162, 174, 198, 216, 234, 246, 261, 276, 291, 306, 321, 336, 351, 387, 408, 423, 438, 453, 468, 504, 525, 543, 555, 573, 591, 609, 627, 639, 657, 666, 675, 690, 705, 714, 723, 735, 747, 764, 781, 793, 811, 823, 841, 862, 874, 895}
 )
 
 func (i ErrCode) String() string {
 	switch {
-	case 0 <= i && i <= 3:
+	case -1 <= i && i <= 4:
+		i -= -1
 		return _ErrCode_name_0[_ErrCode_index_0[i]:_ErrCode_index_0[i+1]]
 	case 101 <= i && i <= 102:
 		i -= 101
 		return _ErrCode_name_1[_ErrCode_index_1[i]:_ErrCode_index_1[i+1]]
-	case i == 200:
-		return _ErrCode_name_2
+	case 200 <= i && i <= 202:
+		i -= 200
+		return _ErrCode_name_2[_ErrCode_index_2[i]:_ErrCode_index_2[i+1]]
 	case i == 405:
 		return _ErrCode_name_3
 	case 1001 <= i && i <= 1025:
@@ -140,12 +149,9 @@ func (i ErrCode) String() string {
 	case 1027 <= i && i <= 1036:
 		i -= 1027
 		return _ErrCode_name_5[_ErrCode_index_5[i]:_ErrCode_index_5[i+1]]
-	case 1043 <= i && i <= 1090:
+	case 1043 <= i && i <= 1096:
 		i -= 1043
 		return _ErrCode_name_6[_ErrCode_index_6[i]:_ErrCode_index_6[i+1]]
-	case 2001 <= i && i <= 2002:
-		i -= 2001
-		return _ErrCode_name_7[_ErrCode_index_7[i]:_ErrCode_index_7[i+1]]
 	default:
 		return "ErrCode(" + strconv.FormatInt(int64(i), 10) + ")"
 	}
