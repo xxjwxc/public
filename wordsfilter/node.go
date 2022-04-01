@@ -152,8 +152,10 @@ func (node *Node) contains(text string, root map[string]*Node) bool {
 					return true
 				}
 				point = n.Child
-				index = i
-				jump = true
+				if !jump {
+					index = i
+					jump = true
+				}
 			}
 		} else {
 			if jump {
