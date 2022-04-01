@@ -83,7 +83,7 @@ loop:
 		words = root
 		i = e
 		// Maximum Matching Principle, Matching Backwards First
-		for ; i < l; i ++ {
+		for ; i < l; i++ {
 			word := string(textr[i])
 			if n, ok := words[word]; ok {
 				back = append(back, n)
@@ -136,20 +136,31 @@ func (node *Node) contains(text string, root map[string]*Node) bool {
 	if root == nil || text == "" {
 		return false
 	}
+
+	point := root
+	index := 0
+	jump := false
 	textr := []rune(text)
 	end := len(textr) - 1
 	for i := 0; i <= end; i++ {
 		word := string(textr[i])
-		if n, ok := root[word]; ok {
+		if n, ok := point[word]; ok {
 			if i == end {
 				return n.Placeholders != ""
 			} else {
 				if len(n.Child) == 0 { // last
 					return true
 				}
-				root = n.Child
+				point = n.Child
+				index = i
+				jump = true
 			}
 		} else {
+			if jump {
+				point = root //重头来
+				i = index
+				jump = false
+			}
 			continue
 		}
 	}

@@ -6,15 +6,17 @@ import (
 
 func TestWordsFilter(t *testing.T) {
 	texts := []string{
-		"Miyamoto Musashi",
-		"妲己",
-		"アンジェラ",
+		"爱女人",
+		"爱液",
+		"你他妈",
 		"ความรุ่งโรจน์",
 	}
 	wf := New()
+	// wf.StripSpace = false
+	// wf.Placeholder = ""
 	root := wf.Generate(texts)
 	wf.Remove("shif", root)
-	c1 := wf.Contains("アン", root) // 是否有敏感词
+	c1 := wf.Contains("你爱液", root) // 是否有敏感词
 	if c1 != false {
 		t.Errorf("Test Contains expect false, get %T, %v", c1, c1)
 	}
