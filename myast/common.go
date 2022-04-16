@@ -13,6 +13,11 @@ import (
 	"github.com/xxjwxc/public/tools"
 )
 
+type ObjFunInfo struct {
+	AstFunc *ast.FuncDecl
+	Imports map[string]string
+}
+
 var importFile map[string]string // 自定义包文件
 
 func init() {
@@ -131,17 +136,21 @@ func GetAstPkgs(objPkg, objFile string) (*ast.Package, bool) {
 
 // GetObjFunMp find all exported func of sturct objName
 // GetObjFunMp 类中的所有导出函数
-func GetObjFunMp(astPkg *ast.Package, objName string) map[string]*ast.FuncDecl {
-	funMp := make(map[string]*ast.FuncDecl)
+func GetObjFunMp(astPkg *ast.Package, objName string) map[string]ObjFunInfo {
+	funMp := make(map[string]ObjFunInfo)
 	// find all exported func of sturct objName
-	for _, fl := range astPkg.Files {
+	for dir, fl := range astPkg.Files {
 		for _, d := range fl.Decls {
 			switch specDecl := d.(type) {
 			case *ast.FuncDecl:
 				if specDecl.Recv != nil {
 					if exp, ok := specDecl.Recv.List[0].Type.(*ast.StarExpr); ok { // Check that the type is correct first beforing throwing to parser
 						if strings.Compare(fmt.Sprint(exp.X), objName) == 0 { // is the same struct
-							funMp[specDecl.Name.String()] = specDecl // catch
+							imp := AnalysisImportByFileID(astPkg, dir)
+							funMp[specDecl.Name.String()] = ObjFunInfo{
+								AstFunc: specDecl,
+								Imports: imp,
+							} // catch
 						}
 					}
 				}
@@ -172,6 +181,34 @@ func AnalysisImport(astPkgs *ast.Package) map[string]string {
 			}
 			imports[k] = v
 		}
+	}
+
+	return imports
+}
+
+// AnalysisImportByFileID 分析整合import相关信息
+func AnalysisImportByFileID(astPkgs *ast.Package, fileID string) map[string]string {
+	imports := make(map[string]string)
+	for dir, f := range astPkgs.Files {
+		if dir == fileID {
+			for _, p := range f.Imports {
+				k := ""
+				if p.Name != nil {
+					k = p.Name.Name
+				}
+				v := strings.Trim(p.Path.Value, `"`)
+				if len(k) == 0 {
+					n := strings.LastIndex(v, "/")
+					if n > 0 {
+						k = v[n+1:]
+					} else {
+						k = v
+					}
+				}
+				imports[k] = v
+			}
+		}
+
 	}
 
 	return imports
