@@ -11,6 +11,11 @@ func GetUtcTime(tm time.Time) int64 {
 	return tm.Unix() //- 8*60*60
 }
 
+// UnixToTime 时间戳转换为time
+func UnixToTime(timestamp int64) time.Time {
+	return time.Unix(timestamp, 0)
+}
+
 // GetHour 当前时间向上取整点
 func GetHour(timestamp int64) int {
 	//	formaTime := time.Format("2006-01-02 15:04:05")
@@ -135,11 +140,6 @@ func TimerByHour(f func()) {
 		//以下为定时执行的操作
 		f()
 	}
-}
-
-// UnixToTime 时间戳转换为time
-func UnixToTime(timestamp int64) time.Time {
-	return time.Unix(timestamp, 0)
 }
 
 // GetLocalTime 获取本地时间
