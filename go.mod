@@ -15,6 +15,7 @@ require (
 	github.com/gookit/color v1.2.5
 	github.com/jander/golog v0.0.0-20150917071935-954a5be801fc
 	github.com/jinzhu/gorm v1.9.12
+	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/jroimartin/gocui v0.4.0
 	github.com/kardianos/service v1.2.1
 	github.com/muesli/cache2go v0.0.0-20200423001931-a100c5aac93f
@@ -37,5 +38,5 @@ require (
 	gopkg.in/go-with/wxpay.v1 v1.3.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gorm.io/driver/mysql v1.0.1
-	gorm.io/gorm v1.20.2
+	gorm.io/gorm v1.23.8
 )

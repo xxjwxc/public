@@ -66,6 +66,11 @@ func GetUtcHour0(tm time.Time) int64 {
 	return tm.Unix() - int64(tm.Second()) - int64((60 * tm.Minute()))
 }
 
+// GetUtcMinute0 获取向上整时时间
+func GetUtcMinute0(tm time.Time) int64 {
+	return tm.Unix() - int64(tm.Second())
+}
+
 // GetDay0 获取给定日期的零点时间
 func GetDay0(timestamp int64) time.Time {
 	tm := time.Unix(timestamp, 0)
