@@ -137,7 +137,7 @@ func SendPost(requestBody interface{}, responseBody interface{}, url string) err
 
 	err = json.Unmarshal(body, &responseBody)
 	if err != nil {
-		return e
+		return err
 	}
 
 	return nil

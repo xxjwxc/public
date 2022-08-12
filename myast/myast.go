@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"go/ast"
 	"go/token"
+	"reflect"
 	"strings"
 
 	"github.com/xxjwxc/public/mydoc"
+	"github.com/xxjwxc/public/mylog"
 	"github.com/xxjwxc/public/tools"
 )
 
@@ -90,6 +92,13 @@ func (a *structAnalys) structFieldInfo(astPkg *ast.Package, sinfo *ast.StructTyp
 
 		if field.Tag != nil {
 			info.Tag = strings.Trim(field.Tag.Value, "`")
+			// 可以忽略某个字段, 主要是在扫描response返回类型的时候
+			// 有时候不一定会为每个请求方法都定义一个返回的struct(大概是因为懒)
+			tag := reflect.StructTag(info.Tag)
+			tagStr := tag.Get("json")
+			if tagStr == "-" { // 忽略的json字段
+				continue
+			}
 		}
 		if field.Comment != nil {
 			info.Note = strings.TrimSpace(field.Comment.Text())
@@ -115,6 +124,10 @@ func (a *structAnalys) structFieldInfo(astPkg *ast.Package, sinfo *ast.StructTyp
 				case *ast.Ident:
 					a.dealIdent(astPkg, x1, &info)
 				}
+			case *ast.InterfaceType:
+				info.Type = "Interface"
+			case *ast.ArrayType:
+				info.Type = "Array"
 			}
 		case *ast.StarExpr:
 			switch x := exp.X.(type) {
@@ -158,10 +171,11 @@ func (a *structAnalys) structFieldInfo(astPkg *ast.Package, sinfo *ast.StructTyp
 		}
 
 		if len(info.Type) == 0 {
-			panic(fmt.Sprintf("can not deal the type : %v", field.Type))
+			mylog.Errorf("can not deal the type : %v", field.Type)
 		}
 
 		items = append(items, info)
+
 	}
 	return items
 }

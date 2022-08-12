@@ -6,6 +6,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"path"
 	"strings"
 
 	"github.com/xxjwxc/public/tools"
@@ -101,4 +102,37 @@ func (o *myFile) SaveOne(file *multipart.FileHeader) (string, error) {
 
 	_, err = io.Copy(out, src)
 	return o.path + filename, err
+}
+
+// SaveOrigin 原始保存一个
+func (o *myFile) SaveOrigin(file *multipart.FileHeader, dir string) (string, error) {
+	filename := file.Filename
+	_path := path.Join(o.path, dir)
+	if o.isRelative {
+		_path = path.Join(tools.GetCurrentDirectory(), _path)
+	}
+	if !strings.HasSuffix(_path, "/") {
+		_path += "/"
+	}
+
+	if !tools.CheckFileIsExist(_path) {
+		if err := tools.BuildDir(_path); err != nil { //创建文件夹
+			return "", err
+		}
+	}
+
+	src, err := file.Open()
+	if err != nil {
+		return "", err
+	}
+	defer src.Close()
+
+	out, err := os.OpenFile(path.Join(_path, filename), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
+	if err != nil {
+		return "", err
+	}
+	defer out.Close()
+
+	_, err = io.Copy(out, src)
+	return path.Join(o.path, dir, filename), err
 }

@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 
 	"github.com/xxjwxc/public/mylog"
 )
@@ -15,7 +16,7 @@ import (
 func CheckFileIsExist(filename string) bool {
 	var exist = true
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
-		mylog.Debug(filename + " not exist")
+		mylog.Debug(err)
 		exist = false
 	}
 	return exist
@@ -60,7 +61,7 @@ func GetPathFiles(absDir string) (re []string) {
 // GetModelPath 获取程序运行目录
 func GetModelPath() string {
 	dir, _ := os.Getwd()
-	return dir
+	return strings.Replace(dir, "\\", "/", -1)
 }
 
 // GetCurrentDirectory 获取exe所在目录
@@ -69,7 +70,7 @@ func GetCurrentDirectory() string {
 	exPath := filepath.Dir(dir)
 	// fmt.Println(exPath)
 
-	return exPath
+	return strings.Replace(exPath, "\\", "/", -1)
 }
 
 // SaveToFile 写入文件
@@ -117,4 +118,32 @@ func ReadFile(fname string) (src []string) {
 	}
 
 	return src
+}
+
+// MoveFile 移动文件或文件夹(/结尾)
+func MoveFile(from, to string) error {
+	// if !CheckFileIsExist(to) {
+	// 	BuildDir(to)
+	// }
+	return os.Rename(from, to)
+}
+
+func CopyFile(src, des string) error {
+	if !CheckFileIsExist(des) {
+		BuildDir(des)
+	}
+	srcFile, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer srcFile.Close()
+
+	desFile, err := os.Create(des)
+	if err != nil {
+		return err
+	}
+	defer desFile.Close()
+
+	_, err = io.Copy(desFile, srcFile)
+	return err
 }

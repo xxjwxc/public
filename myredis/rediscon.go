@@ -172,7 +172,7 @@ func (mc *base) Dial() (redis.Conn, error) {
 }
 
 func (mc *base) DO(con redis.Conn, commandName string, args ...interface{}) (reply interface{}, err error) {
-	if dev.IsDev() {
+	if dev.IsDev() && mc.conf.isLog {
 		cmd := commandName
 		for _, v := range args {
 			cmd += fmt.Sprintf(" %v", v)
@@ -181,15 +181,13 @@ func (mc *base) DO(con redis.Conn, commandName string, args ...interface{}) (rep
 				break
 			}
 		}
-		if mc.conf.isLog {
-			mylog.Infof("redis req :%v \n", cmd)
-		}
+		mylog.Infof("redis req :%v \n", cmd)
 	}
 
 	if con != nil {
 		reply, err = con.Do(commandName, args...)
 		// show log
-		if dev.IsDev() {
+		if dev.IsDev() && mc.conf.isLog {
 			tmp := ""
 			switch reply := reply.(type) {
 			case []byte:
@@ -202,9 +200,8 @@ func (mc *base) DO(con redis.Conn, commandName string, args ...interface{}) (rep
 			if len(tmp) > 100 {
 				tmp = tmp[:100]
 			}
-			if mc.conf.isLog {
-				mylog.Infof("redis resp:%v,%v \n", tmp, err)
-			}
+			mylog.Infof("redis resp:%v,%v \n", tmp, err)
+
 		}
 		return
 	}

@@ -20,13 +20,14 @@ func (lg DbLog) Write(p []byte) (n int, err error) {
 }
 
 // GetDBlog 获取默认logger
-func GetDBlog() logger.Interface {
+func GetDBlog(ignoreRecordNotFoundError bool) logger.Interface {
 	newLogger := logger.New(
 		log.New(DbLog{}, "\r\n", log.LstdFlags), // io writer
 		logger.Config{
-			SlowThreshold: time.Second,  // 慢 SQL 阈值
-			LogLevel:      logger.Error, // Log level
-			Colorful:      false,        // 禁用彩色打印
+			SlowThreshold:             time.Second,               // 慢 SQL 阈值
+			LogLevel:                  logger.Error,              // Log level
+			IgnoreRecordNotFoundError: ignoreRecordNotFoundError, // 忽略ErrRecordNotFound（记录未找到）错误
+			Colorful:                  false,                     // 禁用彩色打印
 		},
 	)
 	return newLogger

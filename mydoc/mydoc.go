@@ -24,7 +24,7 @@ func NewDoc(group string) *model {
 }
 
 // 添加一个
-func (m *model) AddOne(group string, routerPath string, methods []string, note string, req, resp *StructInfo) {
+func (m *model) AddOne(group, methodName, routerPath string, methods []string, note string, req, resp *StructInfo) {
 	if m.MP[group] == nil {
 		m.MP[group] = make(map[string]DocModel)
 	}
@@ -37,6 +37,7 @@ func (m *model) AddOne(group string, routerPath string, methods []string, note s
 		Note:       note,
 		Req:        req,
 		Resp:       resp,
+		MethodName: methodName,
 	}
 }
 
@@ -81,7 +82,7 @@ func (m *model) GenSwagger(outPath string) {
 	}
 
 	jsonsrc := doc.GetAPIString()
-	mylog.Infof("output swagger doc: %v", outPath+"swagger.md")
+	mylog.Infof("output swagger doc: %v", outPath+"swagger.json")
 	tools.WriteFile(outPath+"swagger.json", []string{jsonsrc}, true)
 }
 
@@ -112,6 +113,7 @@ func (m *model) GenMarkdown(outPath string) {
 
 			sub.Methods = v1.Methods
 			sub.Note = v1.Note
+			sub.InterfaceName = v1.MethodName
 			sub.RouterPath = buildRelativePath(myswagger.GetHost(), buildRelativePath(m.Group, v1.RouterPath))
 			tmp.Item = append(tmp.Item, sub)
 		}
