@@ -32,10 +32,10 @@ func OnDealTimeOut(t time.Duration, fun mydef.ParamsCallFunc, parms ...interface
 }
 
 /*
-	每月事件
-	day : 几号
-	hour, min, sec : 几点(当天的0点偏移秒数)
-	callback : 时间回调
+每月事件
+day : 几号
+hour, min, sec : 几点(当天的0点偏移秒数)
+callback : 时间回调
 */
 func OnPeMonth(day int, hour, min, sec int, callback func()) {
 	go func() {
@@ -51,9 +51,9 @@ func OnPeMonth(day int, hour, min, sec int, callback func()) {
 }
 
 /*
-	每天事件
-	hour, min, sec : 几点(当天的0点偏移秒数)
-	callback : 时间回调
+每天事件
+hour, min, sec : 几点(当天的0点偏移秒数)
+callback : 时间回调
 */
 func OnPeDay(hour, min, sec int, callback func()) {
 	go func() {
@@ -68,6 +68,28 @@ func OnPeDay(hour, min, sec int, callback func()) {
 				callback()
 			}
 			next = time.Now().AddDate(0, 0, 1) // 下一天
+		}
+	}()
+}
+
+/*
+每小时事件
+min, sec : 几分(当天的0点偏移秒数)
+callback : 时间回调
+*/
+func OnPeHour(min, sec int, callback func()) {
+	go func() {
+		next := tools.GetHour0(time.Now().Unix())
+		for {
+			next = time.Date(next.Year(), next.Month(), next.Day(), next.Hour(), min, sec, 0, next.Location())
+			mylog.Infof("next pe hour on:%v", tools.GetTimeStr(next))
+			if next.After(time.Now()) {
+				t := time.NewTimer(time.Until(next))
+				log.Println("next time callback:", next)
+				<-t.C
+				callback()
+			}
+			next = time.Now().Add(1 * time.Hour) // 下一小时
 		}
 	}()
 }
