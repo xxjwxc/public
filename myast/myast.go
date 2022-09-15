@@ -59,7 +59,7 @@ func (a *structAnalys) ParserStruct(astPkg *ast.Package, structName string) (inf
 								}
 
 								info.Name = structName
-								info.Items = a.structFieldInfo(astPkg, st)
+								info.Items = a.structFieldInfo(astPkg, st, info.Name)
 								return
 							}
 						}
@@ -71,7 +71,7 @@ func (a *structAnalys) ParserStruct(astPkg *ast.Package, structName string) (inf
 	return nil
 }
 
-func (a *structAnalys) structFieldInfo(astPkg *ast.Package, sinfo *ast.StructType) (items []mydoc.ElementInfo) {
+func (a *structAnalys) structFieldInfo(astPkg *ast.Package, sinfo *ast.StructType, structName string) (items []mydoc.ElementInfo) {
 	if sinfo == nil || sinfo.Fields == nil {
 		return
 	}
@@ -116,13 +116,13 @@ func (a *structAnalys) structFieldInfo(astPkg *ast.Package, sinfo *ast.StructTyp
 			case *ast.SelectorExpr: // 非本文件包
 				a.dealSelectorExpr(x, &info, importMP)
 			case *ast.Ident:
-				a.dealIdent(astPkg, x, &info)
+				a.dealIdent(astPkg, x, &info, structName)
 			case *ast.StarExpr:
 				switch x1 := x.X.(type) {
 				case *ast.SelectorExpr: // 非本文件包
 					a.dealSelectorExpr(x1, &info, importMP)
 				case *ast.Ident:
-					a.dealIdent(astPkg, x1, &info)
+					a.dealIdent(astPkg, x1, &info, structName)
 				}
 			case *ast.InterfaceType:
 				info.Type = "Interface"
@@ -134,10 +134,10 @@ func (a *structAnalys) structFieldInfo(astPkg *ast.Package, sinfo *ast.StructTyp
 			case *ast.SelectorExpr: // 非本文件包
 				a.dealSelectorExpr(x, &info, importMP)
 			case *ast.Ident:
-				a.dealIdent(astPkg, x, &info)
+				a.dealIdent(astPkg, x, &info, structName)
 			}
 		case *ast.Ident: // 本文件
-			a.dealIdent(astPkg, exp, &info)
+			a.dealIdent(astPkg, exp, &info, structName)
 		case *ast.MapType: // map
 			key := ""
 			value := ""
@@ -196,9 +196,11 @@ func (a *structAnalys) dealSelectorExpr(exp *ast.SelectorExpr, info *mydoc.Eleme
 	}
 }
 
-func (a *structAnalys) dealIdent(astPkg *ast.Package, exp *ast.Ident, info *mydoc.ElementInfo) { // 本文件
+func (a *structAnalys) dealIdent(astPkg *ast.Package, exp *ast.Ident, info *mydoc.ElementInfo, structName string) { // 本文件
 	info.Type = exp.Name
 	if !tools.IsInternalType(info.Type) { // 非基础类型
-		info.TypeRef = a.ParserStruct(astPkg, info.Type)
+		if structName != info.Type {
+			info.TypeRef = a.ParserStruct(astPkg, info.Type)
+		}
 	}
 }
