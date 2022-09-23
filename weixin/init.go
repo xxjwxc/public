@@ -44,6 +44,8 @@ type WxTools interface {
 
 	SendCustomMsg(msg CustomMsg) error // 发送客服消息
 	// ----------------------------------------------------
+
+	GetJsSign(url string) (*WxJsSign, error) // js-sdk 授权
 }
 
 // New 新建及 初始化配置信息

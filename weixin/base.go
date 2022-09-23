@@ -1,13 +1,17 @@
 package weixin
 
 import (
+	"crypto/sha1"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/bitly/go-simplejson"
+	"github.com/usthooz/gutil"
 	"github.com/xxjwxc/public/message"
 	"github.com/xxjwxc/public/mycache"
 	"github.com/xxjwxc/public/myhttp"
@@ -122,6 +126,7 @@ func (_wx *wxTools) GetJsTicket() (ticket string, err error) {
 	if err == nil {
 		return
 	}
+	err = nil
 
 	accessToken, e := _wx.GetAccessToken()
 	if e != nil {
@@ -276,4 +281,24 @@ func (_wx *wxTools) SetGuideConfig(guideConfig GuideConfig) error {
 	}
 
 	return nil
+}
+
+// GetJsSign js-sdk 授权
+func (_wx *wxTools) GetJsSign(url string) (*WxJsSign, error) {
+	jsTicket, err := _wx.GetJsTicket()
+	if err != nil {
+		return nil, err
+	}
+	// splite url
+	urlSlice := strings.Split(url, "#")
+	jsSign := &WxJsSign{
+		Appid:     _wx.wxInfo.AppID,
+		Noncestr:  gutil.RandString(16),
+		Timestamp: strconv.FormatInt(time.Now().UTC().Unix(), 10),
+		Url:       urlSlice[0],
+	}
+	h := sha1.New()
+	h.Write([]byte(fmt.Sprintf("jsapi_ticket=%s&noncestr=%s&timestamp=%s&url=%s", jsTicket, jsSign.Noncestr, jsSign.Timestamp, url)))
+	jsSign.Signature = fmt.Sprintf("%x", h.Sum(nil))
+	return jsSign, nil
 }

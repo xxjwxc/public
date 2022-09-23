@@ -162,3 +162,12 @@ type GuideAutoReply struct {
 	Content string `json:"content"` // 新客户关注自动回复内容,图片填mediaid,获取方式同图片素材,小程序卡片填下面请求demo中字段的json格式
 	Msgtype int    `json:"msgtype"` // 1表示文字，2表示图片，3表示小程序卡片
 }
+
+// WxJsSign
+type WxJsSign struct {
+	Appid     string `json:"appid"`
+	Noncestr  string `json:"noncestr"`
+	Timestamp string `json:"timestamp"`
+	Url       string `json:"url"`
+	Signature string `json:"signature"`
+}

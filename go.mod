@@ -25,6 +25,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.0.0
 	github.com/syndtr/goleveldb v1.0.0
+	github.com/usthooz/gutil v0.0.0-20220415021411-9948fc1f4e88
 	github.com/wenzhenxi/gorsa v0.0.0-20210524035706-528c7050d703
 	github.com/xxjwxc/gowp v0.0.0-20200603130651-4d7368b0e285
 	go.uber.org/atomic v1.7.0 // indirect
