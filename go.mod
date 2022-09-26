@@ -18,7 +18,6 @@ require (
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/jroimartin/gocui v0.4.0
 	github.com/kardianos/service v1.2.1
-	github.com/muesli/cache2go v0.0.0-20200423001931-a100c5aac93f
 	github.com/nicksnyder/go-i18n/v2 v2.0.3
 	github.com/nsqio/go-nsq v1.0.8
 	github.com/olivere/elastic v6.2.31+incompatible

@@ -1,12 +1,12 @@
 /*
- key/value 内存缓存，支持基于超时的自动无效功能
+key/value 内存缓存，支持基于超时的自动无效功能
 */
 package mycache
 
 import (
 	"time"
 
-	"github.com/muesli/cache2go"
+	"github.com/xxjwxc/public/mycache/cache2go"
 	"github.com/xxjwxc/public/serializing"
 )
 
@@ -20,7 +20,6 @@ type CacheIFS interface {
 	Clear() error                                                         // 清空
 	Close() (err error)                                                   // 关闭连接
 }
-
 
 // MyCache 内存缓存
 type MyCache struct {
@@ -47,7 +46,7 @@ func (mc *MyCache) Add(key interface{}, value interface{}, lifeSpan time.Duratio
 
 // Value 查找一个cache
 func (mc *MyCache) Value(key interface{}, value interface{}) error {
-	res, err := mc.cache.Value(key)
+	res, err := mc.cache.Peek(key)
 	if err == nil {
 		bt := res.Data().([]byte)
 		return decodeValue(bt, value)
