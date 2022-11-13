@@ -171,3 +171,56 @@ type WxJsSign struct {
 	Url       string `json:"url"`
 	Signature string `json:"signature"`
 }
+
+type WxGetUser struct {
+	Total int64         `json:"total"`
+	Count int64         `json:"count"`
+	Data  WxGetUserData `json:"data"`
+}
+
+type WxGetUserData struct {
+	Openid     []string `json:"openid"`
+	NextOpenid string   `json:"next_openid"`
+}
+
+type FreepublishiInfo struct { // 公众号文章
+	ArticleId        string `json:"article_id"`         // 成功发布的图文消息id
+	Title            string `json:"title"`              // 文章标题
+	Author           string `json:"author"`             // 作者
+	Digest           string `json:"digest"`             // 摘要
+	ContentSourceUrl string `json:"content_source_url"` // 图文消息的原文地址，即点击“阅读原文”后的URL
+	Url              string `json:"url"`                // 图文消息的URL
+	IsDeleted        bool   `json:"is_deleted"`         // 该图文是否被删除
+	UpdateTime       int64  `json:"update_time"`        // 更新时间
+}
+
+type FreepublishiInfoReq struct {
+	Offset    int64 `json:"offset"`
+	Count     int64 `json:"count"`
+	NoContent int64 `json:"no_content"`
+}
+
+type FreepublishiInfoResp struct {
+	TotalCount int                    `json:"total_count"`
+	ItemCount  int                    `json:"item_count"`
+	Item       []FreepublishiInfoItem `json:"item"`
+}
+
+type FreepublishiInfoItem struct {
+	ArticleId  string                  `json:"article_id"`  // 成功发布的图文消息id
+	UpdateTime int64                   `json:"update_time"` // 更新时间
+	Content    FreepublishiInfoContent `json:"content"`
+}
+
+type FreepublishiInfoContent struct {
+	NewsItem []FreepublishiInfoNewItem `json:"news_item"` // 成功发布的图文消息id
+}
+
+type FreepublishiInfoNewItem struct {
+	Title            string `json:"title"`              // 文章标题
+	Author           string `json:"author"`             // 作者
+	Digest           string `json:"digest"`             // 再要
+	ContentSourceUrl string `json:"content_source_url"` // 图文消息的原文地址，即点击“阅读原文”后的URL
+	Url              string `json:"url"`                // 图文消息的URL
+	IsDeleted        bool   `json:"is_deleted"`         // 该图文是否被删除
+}

@@ -108,4 +108,6 @@ const ( //消息id定义
 	OpTimeError               ErrCode = 1094 // 请不要平凡操作
 	EmptyError                ErrCode = 1095 // 数据为空
 	Unfollow                  ErrCode = 1096 // 用户已取消关注
+	HaveLink                  ErrCode = 1097 // 存在关联
+	StateError                ErrCode = 1098 // 状态错误
 )

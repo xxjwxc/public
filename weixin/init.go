@@ -33,7 +33,8 @@ type WxTools interface {
 	WxEnterprisePay(openID, tradeNO, desc, ipAddr string, amount int) bool                                    // 企业付款
 	GetShareQrcode(path string, scene, page string) (ret QrcodeRet)                                           // 获取小程序码
 	GetWxQrcode(path, page string, width int) (ret QrcodeRet)                                                 // 获取小程序二维码 （有限个）
-
+	GetAllOpenId() ([]string, error)                                                                          // 获取所有用户id
+	GetFreepublish(max int64) ([]FreepublishiInfo, error)                                                     // 获取成功发布列表，最大条数
 	// --------------------h5------------------------------
 	GetWebOauth(code string) (*AccessToken, error)                  // 授权
 	GetWebUserinfo(openid, accessToken string) (*WxUserinfo, error) // 获取用户信息

@@ -19,17 +19,19 @@ import (
 )
 
 const (
-	_getTicket      = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=wx_card&access_token="
-	_getJsurl       = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token="
-	_getToken       = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="
-	_getSubscribe   = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token="
-	_getTempMsg     = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="
-	_createMenu     = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token="
-	_deleteMenu     = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token="
-	_sendCustom     = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token="
-	_setGuideConfig = "https://api.weixin.qq.com/cgi-bin/guide/setguideconfig?access_token="
-	_cacheToken     = "wx_access_token"
-	_cacheTicket    = "weixin_card_ticket"
+	_getTicket       = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=wx_card&access_token="
+	_getJsurl        = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token="
+	_getToken        = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="
+	_getSubscribe    = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token="
+	_getTempMsg      = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="
+	_createMenu      = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token="
+	_deleteMenu      = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token="
+	_sendCustom      = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token="
+	_sendFreepublish = "https://api.weixin.qq.com/cgi-bin/freepublish/batchget?access_token="
+	_setGuideConfig  = "https://api.weixin.qq.com/cgi-bin/guide/setguideconfig?access_token="
+	_getUser         = "https://api.weixin.qq.com/cgi-bin/user/get?access_token="
+	_cacheToken      = "wx_access_token"
+	_cacheTicket     = "weixin_card_ticket"
 )
 
 // GetAccessToken 获取微信accesstoken
@@ -301,4 +303,81 @@ func (_wx *wxTools) GetJsSign(url string) (*WxJsSign, error) {
 	h.Write([]byte(fmt.Sprintf("jsapi_ticket=%s&noncestr=%s&timestamp=%s&url=%s", jsTicket, jsSign.Noncestr, jsSign.Timestamp, url)))
 	jsSign.Signature = fmt.Sprintf("%x", h.Sum(nil))
 	return jsSign, nil
+}
+
+// GetAllOpenId  获取用户列表
+func (_wx *wxTools) GetAllOpenId() ([]string, error) {
+	accessToken, err := _wx.GetAccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	nextOpenid := ""
+	var out []string
+
+	for {
+		url := _getUser + accessToken
+		if len(nextOpenid) > 0 {
+			url += fmt.Sprintf("&next_openid=%v", nextOpenid)
+		}
+		var tmp WxGetUser
+		b := myhttp.SendGet(url, "", &tmp)
+		if !b {
+			return nil, fmt.Errorf("GetAllOpenId error: res:%v", b)
+		}
+		out = append(out, tmp.Data.Openid...)
+		nextOpenid = tmp.Data.NextOpenid
+		if len(nextOpenid) == 0 {
+			break
+		}
+	}
+
+	return out, nil
+}
+
+// GetFreepublish  获取用户列表
+func (_wx *wxTools) GetFreepublish(max int64) (out []FreepublishiInfo, err error) {
+	accessToken, err := _wx.GetAccessToken()
+	if err != nil {
+		return nil, err
+	}
+	req := FreepublishiInfoReq{
+		Offset:    0,
+		Count:     20,
+		NoContent: 1,
+	}
+	if req.Count > max {
+		req.Count = max
+	}
+	for {
+		bo, _ := json.Marshal(req)
+		resb, _ := myhttp.OnPostJSON(_sendFreepublish+accessToken, string(bo))
+		var res FreepublishiInfoResp
+		json.Unmarshal(resb, &res)
+		if res.ItemCount == 0 {
+			break
+		}
+
+		for _, v := range res.Item {
+			var item FreepublishiInfo
+			item.ArticleId = v.ArticleId
+			item.UpdateTime = v.UpdateTime
+			for _, v := range v.Content.NewsItem {
+				item.Title = v.Title
+				item.Author = v.Author
+				item.Digest = v.Digest
+				item.ContentSourceUrl = v.ContentSourceUrl
+				item.Url = v.Url
+				item.IsDeleted = v.IsDeleted
+				out = append(out, item)
+			}
+		}
+		if len(out) >= int(max) {
+			break
+		}
+		req.Offset = req.Count
+		req.Count += 20
+	}
+
+	return out, nil
 }
