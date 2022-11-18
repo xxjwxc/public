@@ -29,6 +29,7 @@ const (
 	_sendCustom      = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token="
 	_sendFreepublish = "https://api.weixin.qq.com/cgi-bin/freepublish/batchget?access_token="
 	_setGuideConfig  = "https://api.weixin.qq.com/cgi-bin/guide/setguideconfig?access_token="
+	_setGetMaterial  = "https://api.weixin.qq.com/cgi-bin/material/get_material?access_token="
 	_getUser         = "https://api.weixin.qq.com/cgi-bin/user/get?access_token="
 	_cacheToken      = "wx_access_token"
 	_cacheTicket     = "weixin_card_ticket"
@@ -335,7 +336,7 @@ func (_wx *wxTools) GetAllOpenId() ([]string, error) {
 	return out, nil
 }
 
-// GetFreepublish  获取用户列表
+// GetFreepublish  获取成功发布列表
 func (_wx *wxTools) GetFreepublish(max int64) (out []FreepublishiInfo, err error) {
 	accessToken, err := _wx.GetAccessToken()
 	if err != nil {
@@ -368,6 +369,7 @@ func (_wx *wxTools) GetFreepublish(max int64) (out []FreepublishiInfo, err error
 				item.Digest = v.Digest
 				item.ContentSourceUrl = v.ContentSourceUrl
 				item.Url = v.Url
+				item.ThumbMediaId = v.ThumbMediaId
 				item.IsDeleted = v.IsDeleted
 				out = append(out, item)
 			}
@@ -380,4 +382,28 @@ func (_wx *wxTools) GetFreepublish(max int64) (out []FreepublishiInfo, err error
 	}
 
 	return out, nil
+}
+
+// GetMaterial  获取素材地址
+func (_wx *wxTools) GetMaterial(mediaId string) (string, error) {
+	accessToken, err := _wx.GetAccessToken()
+	if err != nil {
+		return "", err
+	}
+	req := MediaIdReq{
+		MediaId: mediaId,
+	}
+
+	bo, _ := json.Marshal(req)
+	resb, _ := myhttp.OnPostJSON(_setGetMaterial+accessToken, string(bo))
+	var res MediaResp
+	json.Unmarshal(resb, &res)
+	if len(res.DownUrl) > 0 {
+		return res.DownUrl, nil
+	}
+	if len(res.NewsItemS) > 0 {
+		return res.NewsItemS[0].Url, nil
+	}
+
+	return "", nil
 }

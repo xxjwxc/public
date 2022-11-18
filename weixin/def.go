@@ -190,6 +190,7 @@ type FreepublishiInfo struct { // 公众号文章
 	Digest           string `json:"digest"`             // 摘要
 	ContentSourceUrl string `json:"content_source_url"` // 图文消息的原文地址，即点击“阅读原文”后的URL
 	Url              string `json:"url"`                // 图文消息的URL
+	ThumbMediaId     string `json:"thumb_media_id"`     //  图文消息的封面图片素材id（一定是永久MediaID）
 	IsDeleted        bool   `json:"is_deleted"`         // 该图文是否被删除
 	UpdateTime       int64  `json:"update_time"`        // 更新时间
 }
@@ -222,5 +223,22 @@ type FreepublishiInfoNewItem struct {
 	Digest           string `json:"digest"`             // 再要
 	ContentSourceUrl string `json:"content_source_url"` // 图文消息的原文地址，即点击“阅读原文”后的URL
 	Url              string `json:"url"`                // 图文消息的URL
+	ThumbMediaId     string `json:"thumb_media_id"`     //  图文消息的封面图片素材id（一定是永久MediaID）
 	IsDeleted        bool   `json:"is_deleted"`         // 该图文是否被删除
+}
+
+type MediaIdReq struct {
+	MediaId string `json:"media_id"` // 永久素材id
+}
+
+type MediaResp struct {
+	Title     string     `json:"title"`     // 素材标题
+	DownUrl   string     `json:"down_url"`  // 素材下载地址
+	NewsItemS []NewsItem `json:"news_item"` //
+}
+
+type NewsItem struct {
+	Title            string `json:"title"`              // 素材标题
+	Url              string `json:"url"`                // 图文页的URL
+	ContentSourceUrl string `json:"content_source_url"` // 图文消息的原文地址，即点击“阅读原文”后的URL
 }
