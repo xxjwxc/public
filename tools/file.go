@@ -100,6 +100,24 @@ func WriteFile(fname string, src []string, isClear bool) bool {
 	return true
 }
 
+// WriteFile 写入文件
+func WriteFileEx(fname string, src []byte, isClear bool) bool {
+	flag := os.O_CREATE | os.O_WRONLY | os.O_TRUNC
+	if !isClear {
+		flag = os.O_CREATE | os.O_RDWR | os.O_APPEND
+	}
+	f, err := os.OpenFile(fname, flag, 0666)
+	if err != nil {
+		mylog.Error(err)
+		return false
+	}
+	defer f.Close()
+
+	f.Write(src)
+
+	return true
+}
+
 // ReadFile 读取文件
 func ReadFile(fname string) (src []string) {
 	f, err := os.OpenFile(fname, os.O_RDONLY, 0666)

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"path"
 	"strconv"
 	"strings"
 	"time"
@@ -14,8 +15,10 @@ import (
 	"github.com/usthooz/gutil"
 	"github.com/xxjwxc/public/message"
 	"github.com/xxjwxc/public/mycache"
+	"github.com/xxjwxc/public/myglobal"
 	"github.com/xxjwxc/public/myhttp"
 	"github.com/xxjwxc/public/mylog"
+	"github.com/xxjwxc/public/tools"
 )
 
 const (
@@ -397,7 +400,14 @@ func (_wx *wxTools) GetMaterial(mediaId string) (string, error) {
 	bo, _ := json.Marshal(req)
 	resb, _ := myhttp.OnPostJSON(_setGetMaterial+accessToken, string(bo))
 	var res MediaResp
-	json.Unmarshal(resb, &res)
+	fmt.Println(string(resb))
+	err = json.Unmarshal(resb, &res)
+	if err != nil {
+		id := fmt.Sprintf("/file/img/%v.jpg", myglobal.GetNode().GetID())
+		fileName := path.Join(tools.GetCurrentDirectory(), id)
+		tools.WriteFileEx(fileName, resb, true)
+		return id, nil
+	}
 	if len(res.DownUrl) > 0 {
 		return res.DownUrl, nil
 	}
