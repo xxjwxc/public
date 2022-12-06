@@ -33,6 +33,7 @@ const (
 	_sendFreepublish = "https://api.weixin.qq.com/cgi-bin/freepublish/batchget?access_token="
 	_setGuideConfig  = "https://api.weixin.qq.com/cgi-bin/guide/setguideconfig?access_token="
 	_setGetMaterial  = "https://api.weixin.qq.com/cgi-bin/material/get_material?access_token="
+	_getblacklist    = "https://api.weixin.qq.com/cgi-bin/tags/members/getblacklist?access_token="
 	_getUser         = "https://api.weixin.qq.com/cgi-bin/user/get?access_token="
 	_cacheToken      = "wx_access_token"
 	_cacheTicket     = "weixin_card_ticket"
@@ -400,7 +401,6 @@ func (_wx *wxTools) GetMaterial(mediaId string) (string, error) {
 	bo, _ := json.Marshal(req)
 	resb, _ := myhttp.OnPostJSON(_setGetMaterial+accessToken, string(bo))
 	var res MediaResp
-	fmt.Println(string(resb))
 	err = json.Unmarshal(resb, &res)
 	if err != nil {
 		id := fmt.Sprintf("/file/img/%v.jpg", myglobal.GetNode().GetID())
@@ -416,4 +416,21 @@ func (_wx *wxTools) GetMaterial(mediaId string) (string, error) {
 	}
 
 	return "", nil
+}
+
+// GetMaterial  获取素材地址
+func (_wx *wxTools) GetBlacklist(openid string) ([]string, string, error) {
+	accessToken, err := _wx.GetAccessToken()
+	if err != nil {
+		return nil, "", err
+	}
+	req := GetblacklistReq{
+		BeginOpenid: openid,
+	}
+
+	bo, _ := json.Marshal(req)
+	resb, _ := myhttp.OnPostJSON(_getblacklist+accessToken, string(bo))
+	var res GetblacklistResp
+	json.Unmarshal(resb, &res)
+	return res.Data.Openid, res.NextOpenid, nil
 }

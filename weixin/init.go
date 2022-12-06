@@ -36,6 +36,7 @@ type WxTools interface {
 	GetAllOpenId() ([]string, error)                                                                          // 获取所有用户id
 	GetFreepublish(max int64) ([]FreepublishiInfo, error)                                                     // 获取成功发布列表，最大条数
 	GetMaterial(mediaId string) (string, error)                                                               // 获取素材地址
+	GetBlacklist(openid string) ([]string, string, error)                                                     // 获取黑名单列表
 	// --------------------h5------------------------------
 	GetWebOauth(code string) (*AccessToken, error)                  // 授权
 	GetWebUserinfo(openid, accessToken string) (*WxUserinfo, error) // 获取用户信息

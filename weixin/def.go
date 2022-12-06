@@ -242,3 +242,18 @@ type NewsItem struct {
 	Url              string `json:"url"`                // 图文页的URL
 	ContentSourceUrl string `json:"content_source_url"` // 图文消息的原文地址，即点击“阅读原文”后的URL
 }
+
+type GetblacklistReq struct {
+	BeginOpenid string `json:"begin_openid"` // 开始的openid
+}
+
+type GetblacklistResp struct {
+	Total      int64      `json:"total"` // 总量
+	Count      int64      `json:"count"` // 素材下载地址
+	Data       OpenIDData `json:"data"`  //
+	NextOpenid string     `json:"next_openid"`
+}
+
+type OpenIDData struct {
+	Openid []string `json:"openid"`
+}
