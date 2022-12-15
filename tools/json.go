@@ -66,12 +66,11 @@ func JSONDecode(obj interface{}) string {
 }
 
 // GetJSONObj string convert to obj
-func GetJSONObj(str string, out interface{}) {
-	json.Unmarshal([]byte(str), out)
-	return
+func GetJSONObj(str string, out interface{}) error {
+	return json.Unmarshal([]byte(str), out)
 }
 
 // JSONEncode string convert to obj
-func JSONEncode(str string, out interface{}) {
-	GetJSONObj(str, out)
+func JSONEncode(str string, out interface{}) error {
+	return GetJSONObj(str, out)
 }

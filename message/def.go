@@ -110,4 +110,5 @@ const ( //消息id定义
 	Unfollow                  ErrCode = 1096 // 用户已取消关注
 	HaveLink                  ErrCode = 1097 // 存在关联
 	StateError                ErrCode = 1098 // 状态错误
+	LimitError                ErrCode = 1099 // 超限
 )
