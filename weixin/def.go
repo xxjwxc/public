@@ -257,3 +257,9 @@ type GetblacklistResp struct {
 type OpenIDData struct {
 	Openid []string `json:"openid"`
 }
+
+type UploadTmpFileResp struct {
+	Tp        string `json:"type"`
+	MediaId   string `json:"media_id"`
+	CreatedAt int64  `json:"created_at"`
+}

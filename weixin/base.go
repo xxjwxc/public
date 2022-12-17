@@ -35,6 +35,7 @@ const (
 	_setGetMaterial  = "https://api.weixin.qq.com/cgi-bin/material/get_material?access_token="
 	_getblacklist    = "https://api.weixin.qq.com/cgi-bin/tags/members/getblacklist?access_token="
 	_getUser         = "https://api.weixin.qq.com/cgi-bin/user/get?access_token="
+	_uploadTmpFile   = "https://api.weixin.qq.com/cgi-bin/media/upload?access_token="
 	_cacheToken      = "wx_access_token"
 	_cacheTicket     = "weixin_card_ticket"
 )
@@ -433,4 +434,23 @@ func (_wx *wxTools) GetBlacklist(openid string) ([]string, string, error) {
 	var res GetblacklistResp
 	json.Unmarshal(resb, &res)
 	return res.Data.Openid, res.NextOpenid, nil
+}
+
+// UploadTmpFile 上传临时文件
+// (tp:媒体文件类型，分别有图片（image）、语音（voice）、视频（video）和缩略图（thumb）)
+func (_wx *wxTools) UploadTmpFile(path, tp string) (string, error) {
+	accessToken, err := _wx.GetAccessToken()
+	if err != nil {
+		return "", err
+	}
+
+	url := fmt.Sprintf("%v%v&type=%v", _uploadTmpFile, accessToken, tp)
+	txt, err := myhttp.PostFile(path, "media", url)
+	if err != nil {
+		return "", err
+	}
+
+	var res UploadTmpFileResp
+	json.Unmarshal([]byte(txt), &res)
+	return res.MediaId, nil
 }

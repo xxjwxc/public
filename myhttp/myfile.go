@@ -18,7 +18,7 @@ import (
 	"github.com/xxjwxc/public/tools"
 )
 
-//UploadMoreFile 多文件上传,dir:空则使用文件后缀做dir
+// UploadMoreFile 多文件上传,dir:空则使用文件后缀做dir
 func UploadMoreFile(r *http.Request, dir string) (result bool, optionDirs []string) {
 	//接受post请求
 	if r.Method == "POST" {
@@ -71,7 +71,7 @@ func getFileName(exp string) string {
 	return fmt.Sprintf("%d%s.%s", tools.GetUtcTime(time.Now()), tools.GetRandomString(4), exp)
 }
 
-//获取文件后缀
+// 获取文件后缀
 func getFileType(exp string) string {
 	fileSuffix := path.Ext(exp) //获取文件后缀
 	if len(fileSuffix) > 1 {
@@ -80,8 +80,8 @@ func getFileType(exp string) string {
 	return ""
 }
 
-//PostFile 模拟客戶端文件上传
-//fieldname注意与服务器端保持一致
+// PostFile 模拟客戶端文件上传
+// fieldname 注意与服务器端保持一致
 func PostFile(filename, fieldname, targetURL string) (result string, e error) {
 	bodyBuf := &bytes.Buffer{}
 	bodyWriter := multipart.NewWriter(bodyBuf)
