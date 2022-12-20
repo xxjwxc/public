@@ -127,6 +127,10 @@ type CustomMsg struct {
 	Text    *CustomText  `json:"text,omitempty"`  //	文本类容
 	Voice   *CustomVoice `json:"voice,omitempty"` //	语音
 	Music   *CustomMusic `json:"music,omitempty"` //	音乐消息
+	Image   *CustomImage `json:"image,omitempty"` //	图片消息
+}
+type CustomImage struct {
+	MediaId string `json:"media_id"` //	图片
 }
 
 type CustomText struct {

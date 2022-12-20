@@ -15,7 +15,6 @@ import (
 	"github.com/usthooz/gutil"
 	"github.com/xxjwxc/public/message"
 	"github.com/xxjwxc/public/mycache"
-	"github.com/xxjwxc/public/myglobal"
 	"github.com/xxjwxc/public/myhttp"
 	"github.com/xxjwxc/public/mylog"
 	"github.com/xxjwxc/public/tools"
@@ -358,6 +357,7 @@ func (_wx *wxTools) GetFreepublish(max int64) (out []FreepublishiInfo, err error
 	for {
 		bo, _ := json.Marshal(req)
 		resb, _ := myhttp.OnPostJSON(_sendFreepublish+accessToken, string(bo))
+		fmt.Println(string(resb))
 		var res FreepublishiInfoResp
 		json.Unmarshal(resb, &res)
 		if res.ItemCount == 0 {
@@ -404,7 +404,7 @@ func (_wx *wxTools) GetMaterial(mediaId string) (string, error) {
 	var res MediaResp
 	err = json.Unmarshal(resb, &res)
 	if err != nil {
-		id := fmt.Sprintf("/file/img/%v.jpg", myglobal.GetNode().GetID())
+		id := fmt.Sprintf("/file/img/%v.jpg", mediaId)
 		fileName := path.Join(tools.GetCurrentDirectory(), id)
 		tools.WriteFileEx(fileName, resb, true)
 		return id, nil
