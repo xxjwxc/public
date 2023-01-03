@@ -4,6 +4,8 @@ key/value 内存缓存，支持基于超时的自动无效功能
 package mycache
 
 import (
+	"fmt"
+	"sync"
 	"time"
 
 	"github.com/xxjwxc/public/mycache/cache2go"
@@ -12,18 +14,21 @@ import (
 
 // CacheIFS 缓存操作接口
 type CacheIFS interface {
-	Destory()                                                             // 析构
-	Add(key interface{}, value interface{}, lifeSpan time.Duration) error // 添加一个元素
-	Value(key interface{}, value interface{}) error                       // 获取一个value
-	IsExist(key interface{}) bool                                         // 判断是否存在
-	Delete(key interface{}) error                                         // 删除一个
-	Clear() error                                                         // 清空
-	Close() (err error)                                                   // 关闭连接
+	Destory()                                                                       // 析构
+	Add(key interface{}, value interface{}, lifeSpan time.Duration) error           // 添加一个元素
+	Value(key interface{}, value interface{}) error                                 // 获取一个value
+	IsExist(key interface{}) bool                                                   // 判断是否存在
+	Delete(key interface{}) error                                                   // 删除一个
+	Clear() error                                                                   // 清空
+	Close() (err error)                                                             // 关闭连接
+	TryLock(key interface{}, value interface{}, lifeSpan time.Duration) (err error) //  试着加锁
+	Unlock(key interface{}) (err error)                                             // 解锁
 }
 
 // MyCache 内存缓存
 type MyCache struct {
 	cache *cache2go.CacheTable
+	mtx   sync.Mutex
 }
 
 // NewCache 初始化一个cache,cachename 缓存名字
@@ -79,6 +84,25 @@ func (mc *MyCache) Clear() error {
 // Close 清空表內容
 func (mc *MyCache) Close() error {
 	return nil
+}
+
+// TryLock 试着枷锁
+func (mc *MyCache) TryLock(key interface{}, value interface{}, lifeSpan time.Duration) (err error) {
+	mc.mtx.Lock()
+	defer mc.mtx.Unlock()
+	if mc.IsExist(key) { // 存在，枷锁失败
+		return fmt.Errorf("lock fail")
+	}
+
+	return mc.Add(key, value, lifeSpan)
+}
+
+// Unlock 试着解锁
+func (mc *MyCache) Unlock(key interface{}) (err error) {
+	mc.mtx.Lock()
+	defer mc.mtx.Unlock()
+
+	return mc.Delete(key)
 }
 
 func encodeValue(value interface{}) []byte {
