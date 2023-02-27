@@ -5,6 +5,7 @@ import (
 	"os"
 	"regexp"
 	"strings"
+	"unicode/utf8"
 )
 
 // CheckParam 检测参数
@@ -77,4 +78,8 @@ func IsKeywords(t string) bool {
 		}
 	}
 	return false
+}
+
+func IsUtf8(data []byte) bool {
+	return utf8.Valid(data)
 }
