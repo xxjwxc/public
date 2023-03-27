@@ -3,7 +3,7 @@ module github.com/xxjwxc/public
 go 1.14
 
 require (
-	github.com/ant0ine/go-json-rest v3.3.2+incompatible
+	github.com/apache/rocketmq-client-go/v2 v2.1.1
 	github.com/atotto/clipboard v0.1.2
 	github.com/axgle/mahonia v0.0.0-20180208002826-3358181d7394
 	github.com/bitly/go-simplejson v0.5.0
@@ -13,6 +13,7 @@ require (
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/gomodule/redigo v1.8.3
 	github.com/gookit/color v1.2.5
+	github.com/gorilla/websocket v1.4.0
 	github.com/jander/golog v0.0.0-20150917071935-954a5be801fc
 	github.com/jinzhu/gorm v1.9.12
 	github.com/jinzhu/now v1.1.5 // indirect
@@ -30,10 +31,9 @@ require (
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/zap v1.10.0
 	golang.org/x/crypto v0.1.0
-	golang.org/x/net v0.7.0
+	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/text v0.7.0
 	google.golang.org/grpc v1.29.1
-	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 	gopkg.in/eapache/queue.v1 v1.1.0
 	gopkg.in/go-with/wxpay.v1 v1.3.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
