@@ -31,8 +31,8 @@ require (
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/zap v1.10.0
 	golang.org/x/crypto v0.1.0
-	golang.org/x/net v0.7.0 // indirect
-	golang.org/x/text v0.7.0
+	golang.org/x/net v0.8.0 // indirect
+	golang.org/x/text v0.8.0
 	google.golang.org/grpc v1.29.1
 	gopkg.in/eapache/queue.v1 v1.1.0
 	gopkg.in/go-with/wxpay.v1 v1.3.0

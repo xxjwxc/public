@@ -118,6 +118,27 @@ func WriteFileEx(fname string, src []byte, isClear bool) bool {
 	return true
 }
 
+// ReadFileEx 读取文件
+func ReadFileEx(fname string) (src []byte) {
+	f, err := os.OpenFile(fname, os.O_RDONLY, 0666)
+	if err != nil {
+		return []byte{}
+	}
+	defer f.Close()
+
+	buff := make([]byte, 1024) // 55=该文本的长度
+
+	for {
+		lens, err := f.Read(buff)
+		if err == io.EOF || lens < 0 {
+			break
+		}
+		src = append(src, buff...)
+	}
+
+	return src
+}
+
 // ReadFile 读取文件
 func ReadFile(fname string) (src []string) {
 	f, err := os.OpenFile(fname, os.O_RDONLY, 0666)
