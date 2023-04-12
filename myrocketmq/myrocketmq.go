@@ -76,7 +76,9 @@ func (m *MyRocketProducer) SendMessage(topic string, tag string, msg []byte, lev
 		Body:  msg,
 	}
 
-	req.WithTag(tag)
+	if len(tag) > 0 {
+		req.WithTag(tag)
+	}
 	if level > 0 {
 		req.WithDelayTimeLevel(level) // 延迟级别
 	}
