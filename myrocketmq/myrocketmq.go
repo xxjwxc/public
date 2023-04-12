@@ -66,7 +66,7 @@ func NewProducer(host []string, group string, retry int) (*MyRocketProducer, err
 }
 
 // SendMessage 发送消息(level 代表延迟级别)
-func (m *MyRocketProducer) SendMessage(topic string, msg []byte, level int) error {
+func (m *MyRocketProducer) SendMessage(topic string, tag string, msg []byte, level int) error {
 	if m.producer == nil {
 		return message.GetError(message.StateError)
 	}
@@ -77,6 +77,7 @@ func (m *MyRocketProducer) SendMessage(topic string, msg []byte, level int) erro
 	}
 	if level > 0 {
 		req.WithDelayTimeLevel(level) // 延迟级别
+		req.WithTag(tag)
 	}
 
 	_, err := m.producer.SendSync(context.Background(), req)

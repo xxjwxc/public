@@ -8,6 +8,7 @@ import (
 
 func Test_NewAdmin(t *testing.T) {
 	topic := "xxjtest"
+	tag := "tagtest"
 	host := []string{"192.155.1.151:9876"}
 	group := "nlp_cmd_train"
 	adm, err := NewAdmin(host) //
@@ -18,7 +19,7 @@ func Test_NewAdmin(t *testing.T) {
 	fmt.Println(err)
 	go func() {
 		for {
-			pwd.SendMessage(topic, []byte("this is xxj test"), 0)
+			pwd.SendMessage(topic, tag, []byte("this is xxj test"), 0)
 			time.Sleep(1 * time.Second)
 		}
 
