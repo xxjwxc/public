@@ -65,7 +65,7 @@ require (
 	github.com/tidwall/pretty v1.2.0 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.1.0 // indirect
-	golang.org/x/image v0.0.0-20200430140353-33d19683fad8 // indirect
+	golang.org/x/image v0.5.0 // indirect
 	golang.org/x/net v0.8.0 // indirect
 	golang.org/x/sys v0.6.0 // indirect
 	golang.org/x/term v0.6.0 // indirect
