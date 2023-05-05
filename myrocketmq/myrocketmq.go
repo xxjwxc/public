@@ -29,11 +29,25 @@ func NewAdmin(host []string) (*MyRocketAdmin, error) {
 	return &MyRocketAdmin{admin: adm}, nil
 }
 
-func (m *MyRocketAdmin) CreateTopic(topic string) error {
+func (m *MyRocketAdmin) CreateTopic(topic string, readQueueNums int, writeQueueNums int) error {
 	if m.admin == nil {
 		return message.GetError(message.StateError)
 	}
-	return m.admin.CreateTopic(context.Background(), admin.WithTopicCreate(topic))
+	if readQueueNums <= 0 {
+		readQueueNums = 4
+	}
+	if writeQueueNums <= 0 {
+		writeQueueNums = 4
+	}
+	return m.admin.CreateTopic(context.Background(), admin.WithTopicCreate(topic), admin.WithReadQueueNums(readQueueNums), admin.WithWriteQueueNums(writeQueueNums))
+}
+
+func (m *MyRocketAdmin) FetchPublishMessageQueues(topic string) ([]*primitive.MessageQueue, error) {
+	if m.admin == nil {
+		return message.GetError(message.StateError)
+	}
+	
+	return m.admin.FetchPublishMessageQueues(context.Background(), admin.WithTopicCreate(topic))
 }
 
 func (m *MyRocketAdmin) Close() error {

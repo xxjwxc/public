@@ -147,4 +147,7 @@ const ( //消息id定义
 	AvatarNotFoundError         ErrCode = 2033 // 未找到可用的虚拟人
 	DomainUsedError             ErrCode = 2034 // 无效操作,空间存在正在使用的数据
 	DomainNotFoundError         ErrCode = 2035 // 未找到可用的租户空间
+	CheckResourceIntactWarning  ErrCode = 2036 // 请上传完整的角色模型
+	CheckSkeletonWarning        ErrCode = 2037 // 请上传角色骨骼
+	CheckAnimWarning            ErrCode = 2038 // 请上传角色动画
 )

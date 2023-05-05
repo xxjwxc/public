@@ -13,7 +13,9 @@ func Test_NewAdmin(t *testing.T) {
 	group := "nlp_cmd_train"
 	adm, err := NewAdmin(host) //
 	fmt.Println(err)
-	adm.CreateTopic(topic)
+	adm.CreateTopic(topic, 0, 0)
+
+	
 
 	pwd, err := NewProducer(host, group, 2) // 生产者
 	fmt.Println(err)
