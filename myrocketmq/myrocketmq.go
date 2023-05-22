@@ -44,10 +44,10 @@ func (m *MyRocketAdmin) CreateTopic(topic string, readQueueNums int, writeQueueN
 
 func (m *MyRocketAdmin) FetchPublishMessageQueues(topic string) ([]*primitive.MessageQueue, error) {
 	if m.admin == nil {
-		return message.GetError(message.StateError)
+		return nil, message.GetError(message.StateError)
 	}
-	
-	return m.admin.FetchPublishMessageQueues(context.Background(), admin.WithTopicCreate(topic))
+
+	return m.admin.FetchPublishMessageQueues(context.Background(), topic)
 }
 
 func (m *MyRocketAdmin) Close() error {

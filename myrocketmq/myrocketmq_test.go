@@ -15,8 +15,6 @@ func Test_NewAdmin(t *testing.T) {
 	fmt.Println(err)
 	adm.CreateTopic(topic, 0, 0)
 
-	
-
 	pwd, err := NewProducer(host, group, 2) // 生产者
 	fmt.Println(err)
 	go func() {
