@@ -22,11 +22,12 @@ func (mc *redisConPool) Destory() {
 }
 
 func (mc *redisConPool) GetRedisClient() redis.Conn {
-	mc.mtx.Lock()
 	if mc.pool == nil { // 创建连接
+		mc.mtx.Lock()
 		mc.pool = &redis.Pool{
-			MaxIdle:   mc.conf.maxIdle,
-			MaxActive: mc.conf.maxActive,
+			MaxIdle:     mc.conf.maxIdle,
+			MaxActive:   mc.conf.maxActive,
+			IdleTimeout: mc.conf.timeout,
 			Dial: func() (redis.Conn, error) {
 				return mc.Dial()
 			},
@@ -40,15 +41,10 @@ func (mc *redisConPool) GetRedisClient() redis.Conn {
 				return nil
 			},
 		}
+		mc.mtx.Unlock()
 	}
-	mc.mtx.Unlock()
 
-	con := mc.pool.Get()
-
-	if mc.conf.isLog {
-		mylog.Infof("ActiveCount:%v", mc.pool.ActiveCount())
-	}
-	return con
+	return mc.pool.Get()
 }
 
 // Ping 判断是否能ping通

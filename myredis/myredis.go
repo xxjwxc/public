@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/gomodule/redigo/redis"
+	"github.com/xxjwxc/public/mylog"
 )
 
 // RedisDial 操作
@@ -58,8 +59,8 @@ func InitRedis(ops ...Option) *MyRedis {
 		tmp.addrs = append(tmp.addrs, ":6379")
 	}
 
-	cnf.mtx.Lock()
-	defer cnf.mtx.Unlock()
+	// cnf.mtx.Lock()
+	// defer cnf.mtx.Unlock()
 	cnf.conf = tmp
 	return cnf
 }
@@ -69,21 +70,13 @@ func NewRedis(con *MyRedis) (dial RedisDial, err error) {
 	if con == nil {
 		con = DefaultConf()
 	}
-	con.once.Do(func() { // 创建连接
-		ReDialRedis(con)
-	})
 
-	return con.dial, nil
-}
-
-// ReDialRedis 重新连接redis
-func ReDialRedis(con *MyRedis) {
 	if con.dial != nil { // 清理，关闭连接
 		con.dial.Destory()
 	}
 
-	con.mtx.Lock()
-	defer con.mtx.Unlock()
+	// con.mtx.Lock()
+	// defer con.mtx.Unlock()
 
 	if con.conf.maxIdle == 0 { // 创建连接池
 		con.conf.maxIdle = 1
@@ -93,9 +86,39 @@ func ReDialRedis(con *MyRedis) {
 	con.dial = &redisConPool{
 		base: base{MyRedis: con},
 	}
+	con.pool = &redis.Pool{
+		MaxIdle:     con.conf.maxIdle,
+		MaxActive:   con.conf.maxActive,
+		IdleTimeout: con.conf.timeout,
+		Dial: func() (redis.Conn, error) {
+			con.mtx.Lock()
+			defer con.mtx.Unlock()
+			var _con redis.Conn
+			var err error
+			index := con.conf.addrIdex
+			_con, err = redis.Dial("tcp", con.conf.addrs[index], redis.DialClientName(con.conf.clientName),
+				redis.DialConnectTimeout(con.conf.timeout), redis.DialDatabase(con.conf.db),
+				redis.DialPassword(con.conf.pwd), redis.DialReadTimeout(con.conf.readTimeout), redis.DialWriteTimeout(con.conf.writeTimeout),
+			)
+			if err != nil {
+				mylog.Error(err)
+			}
 
-	// 创建单个连接
-	// con.dial = &redisConOlny{
-	// 	base: base{MyRedis: con},
-	// }
+			len := len(con.conf.addrs)
+			con.conf.addrIdex = (index + 1) % len
+			return _con, err
+
+		},
+		Wait: true,
+		TestOnBorrow: func(c redis.Conn, t time.Time) error {
+			_, err := c.Do("PING")
+			if err != nil {
+				mylog.Errorf("ping redis error: %s", err)
+				return err
+			}
+			return nil
+		},
+	}
+
+	return con.dial, nil
 }

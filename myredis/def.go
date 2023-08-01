@@ -15,7 +15,7 @@ type MyRedis struct {
 	// con  redis.Conn
 	pool *redis.Pool
 	mtx  sync.Mutex
-	once sync.Once
+	// once sync.Once
 	dial RedisDial
 	err  error
 }
