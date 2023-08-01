@@ -31,7 +31,7 @@ require (
 	go.uber.org/zap v1.10.0
 	golang.org/x/crypto v0.1.0
 	golang.org/x/text v0.8.0
-	google.golang.org/grpc v1.29.1
+	google.golang.org/grpc v1.53.0
 	gopkg.in/eapache/queue.v1 v1.1.0
 	gopkg.in/go-with/wxpay.v1 v1.3.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
@@ -40,7 +40,7 @@ require (
 )
 
 require (
-	github.com/cespare/xxhash/v2 v2.1.2 // indirect
+	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/emirpasic/gods v1.12.0 // indirect
 	github.com/golang/mock v1.3.1 // indirect
@@ -69,7 +69,7 @@ require (
 	golang.org/x/net v0.8.0 // indirect
 	golang.org/x/sys v0.6.0 // indirect
 	golang.org/x/term v0.6.0 // indirect
-	google.golang.org/genproto v0.0.0-20190819201941-24fa4b261c55 // indirect
-	google.golang.org/protobuf v1.26.0 // indirect
+	google.golang.org/genproto v0.0.0-20230110181048-76db0878b65f // indirect
+	google.golang.org/protobuf v1.28.1 // indirect
 	stathat.com/c/consistent v1.0.0 // indirect
 )
