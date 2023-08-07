@@ -23,6 +23,11 @@ type myLog interface {
 
 	TraceError(err error) error
 	Close()
+	Printf(string, ...interface{})
+}
+
+func GetLog() myLog {
+	return _log
 }
 
 // SetLog set log

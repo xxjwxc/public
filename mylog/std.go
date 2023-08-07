@@ -58,19 +58,19 @@ func (s *stdLog) Debugf(msg string, a ...interface{}) {
 	}
 }
 
-//Fatal 系统级错误
+// Fatal 系统级错误
 func (s *stdLog) Fatal(a ...interface{}) {
 	log.Output(2, color.Error.Render(getStr(a...)))
 	os.Exit(1)
 }
 
-//Fatalf 系统级错误
+// Fatalf 系统级错误
 func (s *stdLog) Fatalf(msg string, a ...interface{}) {
 	log.Output(2, color.Error.Render(fmt.Sprintf(msg, a...)))
 	os.Exit(1)
 }
 
-//JSON json输出
+// JSON json输出
 func (s *stdLog) JSON(a ...interface{}) {
 	for _, v := range a {
 		b, _ := json.MarshalIndent(v, "", "     ")
@@ -93,4 +93,9 @@ func (s *stdLog) ErrorString(a ...interface{}) {
 
 func (s *stdLog) Close() {
 
+}
+
+func (s *stdLog) Printf(msg string, a ...interface{}) {
+	log.Println(color.Error.Render(fmt.Sprintf(msg, a...)))
+	s.SaveError(fmt.Sprintf(msg, a...), "err")
 }

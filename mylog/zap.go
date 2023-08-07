@@ -115,19 +115,19 @@ func (z *zapLog) Debugf(msg string, a ...interface{}) {
 	}
 }
 
-//Fatal 系统级错误
+// Fatal 系统级错误
 func (z *zapLog) Fatal(a ...interface{}) {
 	z.logger.Fatal(getStr(a...))
 	os.Exit(1)
 }
 
-//Fatalf 系统级错误
+// Fatalf 系统级错误
 func (z *zapLog) Fatalf(msg string, a ...interface{}) {
 	z.logger.Fatal(fmt.Sprintf(msg, a...))
 	os.Exit(1)
 }
 
-//JSON json输出
+// JSON json输出
 func (z *zapLog) JSON(a ...interface{}) {
 	for _, v := range a {
 		b, _ := json.MarshalIndent(v, "", "     ")
@@ -144,4 +144,9 @@ func (z *zapLog) TraceError(err error) error {
 
 // Close close the logger
 func (z *zapLog) Close() {
+}
+
+func (z *zapLog) Printf(msg string, a ...interface{}) {
+	z.logger.Error(fmt.Sprintf(msg, a...))
+	z.SaveError(fmt.Sprintf(msg, a...), "err")
 }

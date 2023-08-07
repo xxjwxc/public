@@ -93,21 +93,15 @@ func NewRedis(con *MyRedis) (dial RedisDial, err error) {
 		Dial: func() (redis.Conn, error) {
 			con.mtx.Lock()
 			defer con.mtx.Unlock()
-			var _con redis.Conn
-			var err error
 			index := con.conf.addrIdex
-			_con, err = redis.Dial("tcp", con.conf.addrs[index], redis.DialClientName(con.conf.clientName),
-				redis.DialConnectTimeout(con.conf.timeout), redis.DialDatabase(con.conf.db),
-				redis.DialPassword(con.conf.pwd), redis.DialReadTimeout(con.conf.readTimeout), redis.DialWriteTimeout(con.conf.writeTimeout),
-			)
-			if err != nil {
-				mylog.Error(err)
-			}
 
 			len := len(con.conf.addrs)
 			con.conf.addrIdex = (index + 1) % len
-			return _con, err
 
+			return redis.Dial("tcp", con.conf.addrs[index], redis.DialClientName(con.conf.clientName),
+				redis.DialConnectTimeout(con.conf.timeout), redis.DialDatabase(con.conf.db),
+				redis.DialPassword(con.conf.pwd), redis.DialReadTimeout(con.conf.readTimeout), redis.DialWriteTimeout(con.conf.writeTimeout),
+			)
 		},
 		Wait: true,
 		TestOnBorrow: func(c redis.Conn, t time.Time) error {

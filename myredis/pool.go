@@ -24,6 +24,7 @@ func (mc *redisConPool) Destory() {
 func (mc *redisConPool) GetRedisClient() redis.Conn {
 	if mc.pool == nil { // 创建连接
 		mc.mtx.Lock()
+		defer mc.mtx.Unlock()
 		mc.pool = &redis.Pool{
 			MaxIdle:     mc.conf.maxIdle,
 			MaxActive:   mc.conf.maxActive,
@@ -41,7 +42,6 @@ func (mc *redisConPool) GetRedisClient() redis.Conn {
 				return nil
 			},
 		}
-		mc.mtx.Unlock()
 	}
 
 	return mc.pool.Get()
