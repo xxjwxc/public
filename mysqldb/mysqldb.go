@@ -23,14 +23,14 @@ type MySqlDB struct {
 }
 
 // OnInitDBOrm init MySqlDB
-func OnInitDBOrm(dataSourceName string, ignoreRecordNotFoundError bool) (orm *MySqlDB) {
+func OnInitDBOrm(dataSourceName string, maxIdleConns, maxOpenConns int, ignoreRecordNotFoundError bool) (orm *MySqlDB) {
 	orm = new(MySqlDB)
-	orm.OnGetDBOrm(dataSourceName, ignoreRecordNotFoundError)
+	orm.OnGetDBOrm(dataSourceName, maxIdleConns, maxOpenConns, ignoreRecordNotFoundError)
 	return
 }
 
 // OnGetDBOrm get gorm.db
-func (i *MySqlDB) OnGetDBOrm(dataSourceName string, ignoreRecordNotFoundError bool) *gorm.DB {
+func (i *MySqlDB) OnGetDBOrm(dataSourceName string, maxIdleConns, maxOpenConns int, ignoreRecordNotFoundError bool) *gorm.DB {
 	if i.DB == nil {
 		Default := logger.New(log.New(os.Stdout, "\r\n", log.LstdFlags), logger.Config{
 			SlowThreshold:             200 * time.Millisecond,
@@ -46,6 +46,13 @@ func (i *MySqlDB) OnGetDBOrm(dataSourceName string, ignoreRecordNotFoundError bo
 			mylog.Error(myerrors.Wrap(err, "Got error when connect database:"+dataSourceName))
 			return nil
 		}
+
+		sqlDB, _ := i.DB.DB()
+		// SetMaxIdleConns sets the maximum number of connections in the idle connection pool.
+		sqlDB.SetMaxIdleConns(maxIdleConns) // 空闲连接池中最大连接数
+
+		// SetMaxOpenConns sets the maximum number of open connections to the database.
+		sqlDB.SetMaxOpenConns(maxOpenConns) // 设置数据库的最大打开连接数。
 	}
 
 	// i.DB.SingularTable(true) //全局禁用表名复数
