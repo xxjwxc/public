@@ -4,10 +4,12 @@ import (
 	"errors"
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/xxjwxc/public/dev"
 	myerrors "github.com/xxjwxc/public/errors"
+	"gorm.io/driver/clickhouse"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 
@@ -37,9 +39,13 @@ func (i *MySqlDB) OnGetDBOrm(dataSourceName string, maxIdleConns, maxOpenConns i
 			LogLevel:                  logger.Warn,
 			IgnoreRecordNotFoundError: ignoreRecordNotFoundError,
 			Colorful:                  true,
-		})
+		}) //
+		dialector := mysql.Open(dataSourceName)
+		if strings.Contains(dataSourceName, "clickhouse") {
+			dialector = clickhouse.Open(dataSourceName)
+		}
 		var err error
-		i.DB, err = gorm.Open(mysql.Open(dataSourceName), &gorm.Config{PrepareStmt: false,
+		i.DB, err = gorm.Open(dialector, &gorm.Config{PrepareStmt: false,
 			NamingStrategy: schema.NamingStrategy{SingularTable: true}, // 全局禁用表名复数
 			Logger:         Default})                                   // logger.Default
 		if err != nil {
