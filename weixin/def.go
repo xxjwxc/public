@@ -98,6 +98,7 @@ type WxUserinfo struct {
 	Province   string `json:"province"`   // 用户所在省份
 	Country    string `json:"country"`    // 用户所在国家
 	Headimgurl string `json:"headimgurl"` // 头像地址
+	Unionid    string `json:"unionid"`    // 用户全局唯一标识
 	// Privilege  []string `json:"privilege"`  // 户特权信息，json 数组，如微信沃卡用户为（chinaunicom）
 }
 
