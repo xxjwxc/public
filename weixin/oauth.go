@@ -50,7 +50,12 @@ func (_wx *wxTools) GetWebOauth(code string) (*AccessToken, error) {
 }
 
 // GetWebUserinfo 获取用户信息
-func (_wx *wxTools) GetWebUserinfo(openid, accessToken string) (*WxUserinfo, error) {
+func (_wx *wxTools) GetWebUserinfo(openid string) (*WxUserinfo, error) {
+	accessToken, e := _wx.GetAccessToken()
+	if e != nil {
+		return nil, e
+	}
+
 	var url = "https://api.weixin.qq.com/sns/userinfo?access_token=" + accessToken + "&openid=" + openid + "&lang=zh_CN"
 
 	resp, e := http.Get(url)
@@ -67,4 +72,29 @@ func (_wx *wxTools) GetWebUserinfo(openid, accessToken string) (*WxUserinfo, err
 	var res WxUserinfo
 	json.Unmarshal(body, &res)
 	return &res, nil
+}
+
+// Getuserphonenumber 获取用户信息
+func (_wx *wxTools) Getuserphonenumber(code string) (string, error) { // 手机号获取凭证
+	accessToken, e := _wx.GetAccessToken()
+	if e != nil {
+		return "", e
+	}
+
+	var url = "https://api.weixin.qq.com/wxa/business/getuserphonenumber??access_token=" + accessToken + "&code=" + code
+
+	resp, e := http.Get(url)
+	if e != nil {
+		return "", e
+	}
+
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", e
+	}
+
+	var res WxPhoneResp
+	json.Unmarshal(body, &res)
+	return res.WxPhoneinfo.PhoneNumber, nil
 }

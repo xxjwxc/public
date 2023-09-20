@@ -268,3 +268,17 @@ type UploadTmpFileResp struct {
 	MediaId   string `json:"media_id"`
 	CreatedAt int64  `json:"created_at"`
 }
+
+// WxUserinfo 微信用户信息
+type WxPhoneResp struct {
+	Errcode     int         `json:"errcode"`
+	Errmsg      string      `json:"errmsg"`
+	WxPhoneinfo WxPhoneinfo `json:"phone_info"`
+}
+
+// WxUserinfo 微信用户信息
+type WxPhoneinfo struct {
+	PhoneNumber     string `json:"phoneNumber"`
+	PurePhoneNumber string `json:"purePhoneNumber"`
+	CountryCode     int    `json:"countryCode"`
+}
