@@ -1,7 +1,9 @@
 package weixin
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -83,11 +85,11 @@ func (_wx *wxTools) Getuserphonenumber(code string) (string, error) { // 手机�
 
 	var url = "https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=" + accessToken
 
-	code := map[string]interface{}{
-		"code": req.Code,
+	params := map[string]interface{}{
+		"code": code,
 	}
-	params, _ := json.Marshal(code)
-	resp, e := http.Post(url, "Content-Type", bytes.NewBuffer(params))
+	req, _ := json.Marshal(params)
+	resp, e := http.Post(url, "Content-Type", bytes.NewBuffer(req))
 	if e != nil {
 		return "", e
 	}
