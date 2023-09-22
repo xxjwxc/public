@@ -81,7 +81,7 @@ func (_wx *wxTools) Getuserphonenumber(code string) (string, error) { // 手机�
 		return "", e
 	}
 
-	var url = "https://api.weixin.qq.com/wxa/business/getuserphonenumber??access_token=" + accessToken + "&code=" + code
+	var url = "https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=" + accessToken + "&code=" + code
 
 	resp, e := http.Get(url)
 	if e != nil {
