@@ -89,7 +89,7 @@ func (_wx *wxTools) Getuserphonenumber(code string) (string, error) { // 手机�
 	params, _ := json.Marshal(code)
 	resp, e := http.Post(url, "Content-Type", bytes.NewBuffer(params))
 	if e != nil {
-		return nil, e
+		return "", e
 	}
 
 	defer resp.Body.Close()
