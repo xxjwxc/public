@@ -81,9 +81,13 @@ func (_wx *wxTools) Getuserphonenumber(code string) (string, error) { // 手机�
 		return "", e
 	}
 
-	var url = "https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=" + accessToken + "&code=" + code
+	var url = "https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=" + accessToken
 
-	resp, e := http.Get(url)
+	code := map[string]interface{}{
+		"code": req.Code,
+	}
+	params, _ := json.Marshal(code)
+	resp, e := http.Post(url, "Content-Type", bytes.NewBuffer(params))
 	if e != nil {
 		return "", e
 	}
@@ -96,5 +100,8 @@ func (_wx *wxTools) Getuserphonenumber(code string) (string, error) { // 手机�
 
 	var res WxPhoneResp
 	json.Unmarshal(body, &res)
+	if res.Errcode != 0 {
+		return "", fmt.Errorf(res.Errmsg)
+	}
 	return res.WxPhoneinfo.PhoneNumber, nil
 }
