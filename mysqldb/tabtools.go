@@ -2,6 +2,11 @@ package mysqldb
 
 import (
 	"fmt"
+	"regexp"
+	"time"
+
+	"github.com/xxjwxc/public/mylog"
+	"gorm.io/gorm"
 )
 
 // TabColumnInfo 表信息
@@ -116,6 +121,11 @@ func (t *TablesTools) RenameColumn(oldColumn, newColumn string) error {
 	return t.orm.Table(t.tabName).Migrator().RenameColumn(&TablesModel{}, oldColumn, newColumn)
 }
 
+// ColumnTypes 获取列属性
+func (t *TablesTools) ColumnTypes() ([]gorm.ColumnType, error) {
+	return t.orm.Table(t.tabName).Migrator().ColumnTypes(&TablesModel{})
+}
+
 // CreateIndex Indexes
 func (t *TablesTools) CreateIndex(column string) error {
 	return t.orm.Table(t.tabName).Migrator().CreateIndex(&TablesModel{}, column)
@@ -136,4 +146,188 @@ func (t *TablesTools) RenameIndex(oldColumn, newColumn string) error {
 	return t.orm.Table(t.tabName).Migrator().RenameIndex(&TablesModel{}, oldColumn, newColumn)
 }
 
-//
+type ColumnTypeInfo struct {
+	Name string
+	Type string
+}
+
+// RawInfo 列信息
+type RawInfo struct {
+	ColumnTypes []ColumnTypeInfo
+	Values      [][]interface{}
+}
+
+// Select 查询
+func (t *TablesTools) Select(DB *gorm.DB) (*RawInfo, error) {
+	colTypes, err := t.ColumnTypes()
+	if err != nil {
+		return nil, err
+	}
+
+	out := &RawInfo{}
+	for i, v := range colTypes {
+		out.ColumnTypes = append(out.ColumnTypes, ColumnTypeInfo{
+			Name: v.Name(),
+			Type: ColumnType(colTypes[i]),
+		})
+	}
+
+	rows, err := DB.Table(t.tabName).Rows()
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var values []interface{} //创建一个与列的数量相当的空接口
+		for _, v := range out.ColumnTypes {
+			deserialize(v.Type, &values)
+		}
+
+		err := rows.Scan(values...) //开始读行，Scan函数只接受指针变量
+		if err != nil {
+			return nil, err
+		}
+		out.Values = append(out.Values, values) //将单行所有列的键值对附加在总的返回值上（以行为单位）
+	}
+
+	return out, err
+}
+
+func deserialize(tp string, data *[]interface{}) interface{} {
+	switch tp {
+	case "int":
+		var tmp int
+		*data = append(*data, &tmp)
+	case "int64":
+		var tmp int64
+		*data = append(*data, &tmp)
+	case "string":
+		var tmp string
+		*data = append(*data, &tmp)
+	case "[]byte":
+		var tmp []byte
+		*data = append(*data, &tmp)
+	case "time":
+		var tmp time.Time
+		*data = append(*data, &tmp)
+	case "bool":
+		var tmp bool
+		*data = append(*data, &tmp)
+	case "float64":
+		var tmp float64
+		*data = append(*data, &tmp)
+	default:
+		mylog.Errorf("type (%v) not match in any way.maybe need to add on", tp)
+	}
+
+	return nil
+}
+
+// "VARCHAR", "TEXT", "NVARCHAR", "DECIMAL", "BOOL",
+// "INT", and "BIGINT".
+func ColumnType(t gorm.ColumnType) string {
+	tp, _ := t.ColumnType()
+	// Precise matching first.先精确匹配
+	if v, ok := TypeMysqlDicMp[tp]; ok {
+		return v
+	}
+
+	// Fuzzy Regular Matching.模糊正则匹配
+	for _, l := range TypeMysqlMatchList {
+		if ok, _ := regexp.MatchString(l.Key, tp); ok {
+			return l.Value
+		}
+	}
+
+	return tp
+}
+
+// TypeMysqlDicMp Accurate matching type.精确匹配类型
+var TypeMysqlDicMp = map[string]string{
+	"int":                "int",
+	"int unsigned":       "int",
+	"tinyint":            "int",
+	"tinyint unsigned":   "int",
+	"mediumint":          "int",
+	"mediumint unsigned": "int",
+
+	"smallint":          "int64",
+	"smallint unsigned": "int64",
+	"bigint":            "int64",
+	"bigint unsigned":   "int64",
+	"timestamp":         "int64",
+	"integer":           "int64",
+
+	"varchar":    "string",
+	"char":       "string",
+	"json":       "string",
+	"text":       "string",
+	"mediumtext": "string",
+	"longtext":   "string",
+	"tinytext":   "string",
+	"enum":       "string",
+	"nvarchar":   "string",
+
+	"bit(1)":     "[]byte",
+	"tinyblob":   "[]byte",
+	"blob":       "[]byte",
+	"mediumblob": "[]byte",
+	"longblob":   "[]byte",
+	"binary":     "[]byte",
+
+	"date":          "time",
+	"datetime":      "time",
+	"time":          "time",
+	"smalldatetime": "time", //sqlserver
+
+	"tinyint(1)":          "bool", // tinyint(1) 默认设置成bool
+	"tinyint(1) unsigned": "bool", // tinyint(1) 默认设置成bool
+
+	"double":          "float64",
+	"double unsigned": "float64",
+	"float":           "float64",
+	"float unsigned":  "float64",
+	"real":            "float64",
+	"numeric":         "float64",
+}
+
+// TypeMysqlMatchList Fuzzy Matching Types.模糊匹配类型
+var TypeMysqlMatchList = []struct {
+	Key   string
+	Value string
+}{
+	{`^(tinyint)[(]\d+[)] unsigned`, "int"},
+	{`^(smallint)[(]\d+[)] unsigned`, "int"},
+	{`^(int)[(]\d+[)] unsigned`, "int"},
+	{`^(tinyint)[(]\d+[)]`, "int"},
+	{`^(smallint)[(]\d+[)]`, "int"},
+	{`^(int)[(]\d+[)]`, "int"},
+	{`^(mediumint)[(]\d+[)]`, "int"},
+	{`^(mediumint)[(]\d+[)] unsigned`, "int"},
+	{`^(integer)[(]\d+[)]`, "int"},
+
+	{`^(bigint)[(]\d+[)] unsigned`, "int64"},
+	{`^(bigint)[(]\d+[)]`, "int64"},
+	{`^(timestamp)[(]\d+[)]`, "int64"},
+
+	{`^(float)[(]\d+,\d+[)] unsigned`, "float64"},
+	{`^(double)[(]\d+,\d+[)] unsigned`, "float64"},
+	{`^(decimal)[(]\d+,\d+[)]`, "float64"},
+	{`^(double)[(]\d+,\d+[)]`, "float64"},
+	{`^(float)[(]\d+,\d+[)]`, "float64"},
+
+	{`^(char)[(]\d+[)]`, "string"},
+	{`^(enum)[(](.)+[)]`, "string"},
+	{`^(varchar)[(]\d+[)]`, "string"},
+	{`^(text)[(]\d+[)]`, "string"},
+	{`^(set)[(][\s\S]+[)]`, "string"},
+
+	{`^(varbinary)[(]\d+[)]`, "[]byte"},
+	{`^(blob)[(]\d+[)]`, "[]byte"},
+	{`^(binary)[(]\d+[)]`, "[]byte"},
+	{`^(bit)[(]\d+[)]`, "[]byte"},
+	{`^(geometry)[(]\d+[)]`, "[]byte"},
+
+	{`^(datetime)[(]\d+[)]`, "time"},
+}
