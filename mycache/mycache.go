@@ -23,6 +23,7 @@ type CacheIFS interface {
 	Close() (err error)                                                             // 关闭连接
 	TryLock(key interface{}, value interface{}, lifeSpan time.Duration) (err error) //  试着加锁
 	Unlock(key interface{}) (err error)                                             // 解锁
+	GetKeyS(key interface{}) ([]string, error)                                      // 查询所有key
 }
 
 // MyCache 内存缓存
@@ -73,6 +74,11 @@ func (mc *MyCache) Delete(key interface{}) error {
 // GetCache2go 获取原始cache2go操作类
 func (mc *MyCache) GetCache2go() *cache2go.CacheTable {
 	return mc.cache
+}
+
+// GetKeyS 查询所有key
+func (mc *MyCache) GetKeyS(key interface{}) ([]string, error) {
+	return []string{}, nil
 }
 
 // Clear 清空表內容

@@ -147,7 +147,7 @@ func (mc *base) build() (con redis.Conn, err error) {
 	b := false
 	for i := 0; i < len; i++ {
 		index = (mc.conf.addrIdex + i) % len
-		con, err = redis.Dial("tcp", mc.conf.addrs[index], redis.DialClientName(mc.conf.clientName),
+		con, err = redis.Dial("tcp", mc.conf.addrs[index], // redis.DialClientName(mc.conf.clientName),
 			redis.DialConnectTimeout(mc.conf.timeout), redis.DialDatabase(mc.conf.db),
 			redis.DialPassword(mc.conf.pwd), redis.DialReadTimeout(mc.conf.readTimeout), redis.DialWriteTimeout(mc.conf.writeTimeout),
 		)
