@@ -3,6 +3,7 @@ module github.com/xxjwxc/public
 go 1.21.0
 
 require (
+	github.com/aliyun/aliyun-oss-go-sdk v2.2.9+incompatible
 	github.com/apache/rocketmq-client-go/v2 v2.1.2-0.20230412142645-25003f6f083d
 	github.com/atotto/clipboard v0.1.2
 	github.com/axgle/mahonia v0.0.0-20180208002826-3358181d7394
@@ -83,6 +84,7 @@ require (
 	golang.org/x/image v0.5.0 // indirect
 	golang.org/x/sys v0.9.0 // indirect
 	golang.org/x/term v0.9.0 // indirect
+	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac // indirect
 	google.golang.org/genproto v0.0.0-20220617124728-180714bec0ad // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
