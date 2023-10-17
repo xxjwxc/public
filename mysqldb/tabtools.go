@@ -15,6 +15,7 @@ type TabColumnInfo struct {
 	ColumnType string // 跟数据库一致
 	Len        string
 	NotNull    bool
+	Comment    string // 注释
 }
 
 type TablesModel struct {
@@ -102,7 +103,7 @@ func (t *TablesTools) AddColumn(column *TabColumnInfo) error {
 		_len = fmt.Sprintf("(%v)", column.Len)
 	}
 
-	sql := fmt.Sprintf("ALTER TABLE `%v` ADD COLUMN `%v` %v%v %v ;", t.tabName, column.ColumnName, column.ColumnType, _len, notnul)
+	sql := fmt.Sprintf("ALTER TABLE `%v` ADD COLUMN `%v` %v%v %v COMMENT '%v';", t.tabName, column.ColumnName, column.ColumnType, _len, notnul, column.Comment)
 	err := t.orm.Exec(sql).Error
 	if err != nil {
 		return err
