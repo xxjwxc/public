@@ -48,20 +48,24 @@ func (t *TablesTools) CreateTable(columns []*TabColumnInfo) error {
 	}
 
 	for _, v := range columns {
-		notnul := ""
-		if v.NotNull {
-			notnul = "NOT NULL"
-		}
-		_len := v.Len
-		if len(v.Len) > 0 {
-			_len = fmt.Sprintf("(%v)", v.Len)
-		}
-
-		sql := fmt.Sprintf("ALTER TABLE `%v` ADD COLUMN `%v` %v%v %v ;", t.tabName, v.ColumnName, v.ColumnType, _len, notnul)
-		err = t.orm.Exec(sql).Error
+		err := t.AddColumn(v)
 		if err != nil {
 			return err
 		}
+		// notnul := ""
+		// if v.NotNull {
+		// 	notnul = "NOT NULL"
+		// }
+		// _len := v.Len
+		// if len(v.Len) > 0 {
+		// 	_len = fmt.Sprintf("(%v)", v.Len)
+		// }
+
+		// sql := fmt.Sprintf("ALTER TABLE `%v` ADD COLUMN `%v` %v%v %v COMMENT '%v';", t.tabName, v.ColumnName, v.ColumnType, _len, notnul, v.Comment)
+		// err = t.orm.Exec(sql).Error
+		// if err != nil {
+		// 	return err
+		// }
 	}
 
 	return err
