@@ -34,6 +34,11 @@ func NewTabTools(orm *MySqlDB, tabName string) (*TablesTools, error) {
 	}, nil
 }
 
+// GetDB 获取db
+func (t *TablesTools) GetDB() *gorm.DB {
+	return t.orm.Table(t.tabName)
+}
+
 // CreateTable 创建表
 func (t *TablesTools) CreateTable(columns []*TabColumnInfo) error {
 	err := t.orm.Table(t.tabName).Set("gorm:table_options", "ENGINE=InnoDB").Migrator().CreateTable(&TablesModel{})
