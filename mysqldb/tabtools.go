@@ -157,9 +157,9 @@ func (t *TablesTools) RenameIndex(oldColumn, newColumn string) error {
 }
 
 type ColumnTypeInfo struct {
-	Name string
-	Type string
-	Desc string
+	Name    string
+	Type    string
+	Commont string
 }
 
 // RawInfo 列信息
@@ -179,9 +179,9 @@ func (t *TablesTools) Select(DB *gorm.DB) (*RawInfo, error) {
 	for i, v := range colTypes {
 		commont, _ := v.Comment()
 		out.ColumnTypes = append(out.ColumnTypes, ColumnTypeInfo{
-			Name: v.Name(),
-			Type: ColumnType(colTypes[i]),
-			Desc: commont,
+			Name:    v.Name(),
+			Type:    ColumnType(colTypes[i]),
+			Commont: commont,
 		})
 	}
 
