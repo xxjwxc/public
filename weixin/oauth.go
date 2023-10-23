@@ -52,13 +52,8 @@ func (_wx *wxTools) GetWebOauth(code string) (*AccessToken, error) {
 }
 
 // GetWebUserinfo 获取用户信息
-func (_wx *wxTools) GetWebUserinfo(openid string) (*WxUserinfo, error) {
-	accessToken, e := _wx.GetAccessToken()
-	if e != nil {
-		return nil, e
-	}
-
-	var url = "https://api.weixin.qq.com/sns/userinfo?access_token=" + accessToken + "&openid=" + openid + "&lang=zh_CN"
+func (_wx *wxTools) GetWebUserinfo(openid, snaccessToken string) (*WxUserinfo, error) {
+	var url = "https://api.weixin.qq.com/sns/userinfo?access_token=" + snaccessToken + "&openid=" + openid + "&lang=zh_CN"
 
 	resp, e := http.Get(url)
 	if e != nil {
@@ -83,7 +78,6 @@ func (_wx *wxTools) Getuserphonenumber(code string) (string, error) { // 手机�
 		return "", e
 	}
 
-	// ...
 	var url = "https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=" + accessToken
 
 	params := map[string]interface{}{

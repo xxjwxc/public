@@ -98,7 +98,7 @@ func NewRedis(con *MyRedis) (dial RedisDial, err error) {
 			len := len(con.conf.addrs)
 			con.conf.addrIdex = (index + 1) % len
 
-			return redis.Dial("tcp", con.conf.addrs[index], redis.DialClientName(con.conf.clientName),
+			return redis.Dial("tcp", con.conf.addrs[index], // redis.DialClientName(con.conf.clientName),
 				redis.DialConnectTimeout(con.conf.timeout), redis.DialDatabase(con.conf.db),
 				redis.DialPassword(con.conf.pwd), redis.DialReadTimeout(con.conf.readTimeout), redis.DialWriteTimeout(con.conf.writeTimeout),
 			)
