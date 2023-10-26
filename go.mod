@@ -32,7 +32,7 @@ require (
 	go.uber.org/zap v1.24.0
 	golang.org/x/crypto v0.10.0
 	golang.org/x/text v0.10.0
-	google.golang.org/grpc v1.47.0
+	google.golang.org/grpc v1.56.3
 	google.golang.org/protobuf v1.30.0
 	gopkg.in/eapache/queue.v1 v1.1.0
 	gopkg.in/go-with/wxpay.v1 v1.3.0
@@ -87,7 +87,7 @@ require (
 	golang.org/x/sys v0.9.0 // indirect
 	golang.org/x/term v0.9.0 // indirect
 	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac // indirect
-	google.golang.org/genproto v0.0.0-20220617124728-180714bec0ad // indirect
+	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	stathat.com/c/consistent v1.0.0 // indirect
 )
