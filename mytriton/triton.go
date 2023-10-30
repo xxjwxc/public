@@ -56,7 +56,7 @@ func (t *TritonInfo) ServerLive(ctx context.Context) (bool, error) {
 	return serverLiveResponse.Live, nil
 }
 
-func (t *TritonInfo) RequestFromText(ctx context.Context, text string, outTensorsName string) ([]float32, error) {
+func (t *TritonInfo) RequestFromText(ctx context.Context, name, text string, outTensorsName string) ([]byte, error) {
 	l := len(text)
 	b := make([]byte, 4)
 	binary.LittleEndian.PutUint16(b, uint16(l))
@@ -67,7 +67,7 @@ func (t *TritonInfo) RequestFromText(ctx context.Context, text string, outTensor
 
 	inferInputs := []*triton.ModelInferRequest_InferInputTensor{
 		{
-			Name:     "texts",
+			Name:     name,
 			Datatype: "BYTES",
 			Shape:    []int64{1, 1},
 		},
@@ -96,19 +96,39 @@ func (t *TritonInfo) RequestFromText(ctx context.Context, text string, outTensor
 		return nil, err
 	}
 
-	outputBytes0 := modelInferResponse.RawOutputContents[0]
+	return modelInferResponse.RawOutputContents[0], nil
+}
+
+func (t *TritonInfo) BytesToFloat32(outputBytes []byte) []float32 {
 	ff := 4
-	size := len(outputBytes0) / ff
+	size := len(outputBytes) / ff
 
 	outputData0 := make([]float32, size)
 	// outputData1 := make([]int64, outputSize)
 	for i := 0; i < size; i++ {
-		buf := bytes.NewBuffer(outputBytes0[i*ff : i*ff+ff])
+		buf := bytes.NewBuffer(outputBytes[i*ff : i*ff+ff])
 		var retval float32
 		binary.Read(buf, binary.LittleEndian, &retval)
 		outputData0[i] = retval
 	}
-	return outputData0, nil
+	return outputData0
+}
+
+func (t *TritonInfo) BytesToString(outputBytes []byte) (out []string) {
+	ff := 4
+	size := len(outputBytes)
+	i := 0
+	for i < size {
+		buf := bytes.NewBuffer(outputBytes[i : i+ff])
+		var _len int32
+		binary.Read(buf, binary.LittleEndian, &_len)
+		if _len < int32(size) {
+			out = append(out, string(outputBytes[i+ff:i+ff+int(_len)]))
+		}
+
+		i += ff + int(_len)
+	}
+	return
 }
 
 func (t *TritonInfo) RequestFromTexts(ctx context.Context, texts []string, outTensorsName string) ([]float32, error) {
