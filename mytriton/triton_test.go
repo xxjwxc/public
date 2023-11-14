@@ -8,13 +8,13 @@ import (
 )
 
 func TestMain(t *testing.T) {
-	triton, err := NewTritonServer("192.155.1.93:18001", "model_pipe", "", 10*time.Second)
+	triton, err := NewTritonServer("192.155.1.93:18001", "model_ensemble_pre", "", 10*time.Second)
 	if err != nil {
 		fmt.Println(err)
 	}
 	fmt.Println(triton.ServerLive(context.Background()))
-	out, _ := triton.RequestFromText(context.Background(), "texts", "两点钟,下午3点肉沫豆腐怎么做", "embeddings")
-	f32 := triton.BytesToFloat32(out)
+	out, _ := triton.RequestFromText(context.Background(), "texts", "你好", "sentence_embedding")
+	f32 := triton.BytesToFloat64(out)
 	fmt.Println(f32)
 }
 

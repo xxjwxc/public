@@ -114,6 +114,21 @@ func (t *TritonInfo) BytesToFloat32(outputBytes []byte) []float32 {
 	return outputData0
 }
 
+// func (t *TritonInfo) BytesToFloat64(outputBytes []byte) []float64 {
+// 	ff := 4
+// 	size := len(outputBytes) / ff
+
+// 	outputData0 := make([]float64, size)
+// 	// outputData1 := make([]int64, outputSize)
+// 	for i := 0; i < size; i++ {
+// 		buf := bytes.NewBuffer(outputBytes[i*ff : i*ff+ff])
+// 		var retval float32
+// 		binary.Read(buf, binary.LittleEndian, &retval)
+// 		outputData0[i] = float64(retval)
+// 	}
+// 	return outputData0
+// }
+
 func (t *TritonInfo) BytesToString(outputBytes []byte) (out []string) {
 	ff := 4
 	size := len(outputBytes)

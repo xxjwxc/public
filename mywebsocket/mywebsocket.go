@@ -4,12 +4,12 @@ package mywebsocket
 	说明：第一个包 初始化client唯一id。消息id为100
 */
 import (
-	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/xxjwxc/public/message"
+	"github.com/xxjwxc/public/mylog"
 )
 
 type ClientBody struct {
@@ -45,35 +45,11 @@ func NewWebSocket(url string, handlerFunc HandlerReadFunc, requestHeader http.He
 		done: make(chan struct{}),
 	}
 
-	// 	key := `-----BEGIN CERTIFICATE-----
-	// MIIBkTCCAT+gAwIBAgIQC+AfyVkg13ejxOIycKc6kzAKBggqhkjOPQQDAjASMRAw
-	// DgYDVQQKEwdBY21lIENvMB4XDTIzMDMxNTEzMTEzNVoXDTI0MDMxNDEzMTEzNVow
-	// EjEQMA4GA1UEChMHQWNtZSBDbzBOMBAGByqGSM49AgEGBSuBBAAhAzoABO5vPodF
-	// 2Gtpxm3e7uXQGbiA3d+hHR0KydxTxqZwnS5lAKO/EHYwHbQYrgI8jDuKi/ZRH3HN
-	// l+AXo4GBMH8wDgYDVR0PAQH/BAQDAgKkMBMGA1UdJQQMMAoGCCsGAQUFBwMBMA8G
-	// A1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFMLLs994lljKRKNUvsNTrmCsKvQVMCgG
-	// A1UdEQQhMB+CHXdlYmNhc3QzLXdzLXdlYi1sZi5kb3V5aW4uY29tMAoGCCqGSM49
-	// BAMCA0AAMD0CHQDzAgEPWy0AS2ovCju0r8IOII9rtiLqagHKL7ykAhwryu3E7hU1
-	// Jhhe7V5DyPrX0aPBAHYIP6NKHHcx
-	// -----END CERTIFICATE-----
-	// 	`
-	// 	certs := x509.NewCertPool()
-	// 	ok := certs.AppendCertsFromPEM([]byte(key))
-	// 	if !ok {
-	// 		log.Fatal("failed to parse root certificate")
-	// 	}
-	var dialer = &websocket.Dialer{
-		Proxy:             http.ProxyFromEnvironment,
-		HandshakeTimeout:  timeOut,
-		EnableCompression: true,
-		// TLSClientConfig:   &tls.Config{RootCAs: nil, InsecureSkipVerify: true},
-	}
-	// dialer.TLSClientConfig = &tls.Config{RootCAs: certs, InsecureSkipVerify: true}
 	var err error
 	var resp *http.Response
-	myWebSocket.conn, resp, err = dialer.Dial(url, requestHeader)
+	myWebSocket.conn, resp, err = websocket.DefaultDialer.Dial(url, requestHeader)
 	if err != nil {
-		fmt.Println(resp)
+		mylog.Error(resp)
 		return nil, err
 	}
 
@@ -88,9 +64,9 @@ func NewWebSocket(url string, handlerFunc HandlerReadFunc, requestHeader http.He
 	return myWebSocket, nil
 }
 
-func (wss *MyWebSocket) SendMessage(p []byte) error {
+func (wss *MyWebSocket) SendMessage(messageType int, p []byte) error {
 	if wss.conn != nil {
-		return wss.conn.WriteMessage(websocket.TextMessage, p)
+		return wss.conn.WriteMessage(messageType, p)
 	}
 
 	return message.GetError(message.EmptyError)
