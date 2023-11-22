@@ -74,7 +74,7 @@ func (_wx *wxTools) GetAccessToken() (accessToken string, err error) {
 			return
 		}
 		//保存缓存
-		_wx.cache.Add(_wx.client.AppId, &accessToken, time.Duration(7000)*time.Second)
+		_wx.cache.Add(_wx.client.AppId, accessToken, time.Duration(7000)*time.Second)
 		//------------------end
 	}
 	//----------------------end
