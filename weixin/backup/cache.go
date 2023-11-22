@@ -11,7 +11,7 @@ type Gocache struct {
 	mc *mycache.MyCache
 }
 
-//NewGocache create new cache2go
+// NewGocache create new cache2go
 func NewGocache(server string) *Gocache {
 	mc := mycache.NewCache(server)
 	return &Gocache{mc}
@@ -28,13 +28,13 @@ func (mem *Gocache) IsExist(key string) bool {
 	return mem.mc.IsExist(key)
 }
 
-//Set cached value with key and expire time.
+// Set cached value with key and expire time.
 func (mem *Gocache) Set(key string, val interface{}, timeout time.Duration) (err error) {
 	mem.mc.Add(key, val, timeout)
 	return nil
 }
 
-//Delete  value in memcache.
+// Delete  value in memcache.
 func (mem *Gocache) Delete(key string) error {
 	return mem.mc.Delete(key)
 }

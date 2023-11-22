@@ -39,12 +39,15 @@ const (
 	_cacheTicket     = "weixin_card_ticket"
 )
 
+func (_wx *wxTools) SetCache(cache mycache.CacheIFS) {
+	_wx.cache = cache
+}
+
 // GetAccessToken 获取微信accesstoken
 // 获取登录凭证
 func (_wx *wxTools) GetAccessToken() (accessToken string, err error) {
 	//先从缓存中获取 access_token
-	cache := mycache.NewCache(_cacheToken)
-	err = cache.Value(_wx.client.AppId, &accessToken)
+	err = _wx.cache.Value(_wx.client.AppId, &accessToken)
 	if err == nil {
 		return
 	}
@@ -71,7 +74,7 @@ func (_wx *wxTools) GetAccessToken() (accessToken string, err error) {
 			return
 		}
 		//保存缓存
-		cache.Add(_wx.client.AppId, &accessToken, time.Duration(7000)*time.Second)
+		_wx.cache.Add(_wx.client.AppId, &accessToken, time.Duration(7000)*time.Second)
 		//------------------end
 	}
 	//----------------------end
@@ -82,15 +85,13 @@ func (_wx *wxTools) GetAccessToken() (accessToken string, err error) {
 // clearAccessTokenCache 清除accesstoken缓存
 func (_wx *wxTools) clearAccessTokenCache() error {
 	//先从缓存中获取 access_token
-	cache := mycache.NewCache(_cacheToken)
-	return cache.Delete(_wx.client.AppId)
+	return _wx.cache.Delete(_wx.client.AppId)
 }
 
 // GetAPITicket 获取微信卡券ticket
 func (_wx *wxTools) GetAPITicket() (ticket string, err error) {
 	//先从缓存中获取
-	cache := mycache.NewCache(_cacheTicket)
-	err = cache.Value(_wx.client.AppId, &ticket)
+	err = _wx.cache.Value(_wx.client.AppId, &ticket)
 	if err == nil {
 		return
 	}
@@ -120,7 +121,7 @@ func (_wx *wxTools) GetAPITicket() (ticket string, err error) {
 	json.Unmarshal(body, &result)
 	ticket = result.Ticket
 	//保存缓存
-	cache.Add(_wx.client.AppId, ticket, 7000*time.Second)
+	_wx.cache.Add(_wx.client.AppId, ticket, 7000*time.Second)
 
 	return
 }

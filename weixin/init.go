@@ -2,6 +2,7 @@ package weixin
 
 import (
 	"github.com/xxjwxc/public/message"
+	"github.com/xxjwxc/public/mycache"
 	"github.com/xxjwxc/public/mylog"
 
 	"github.com/xxjwxc/public/tools"
@@ -22,6 +23,7 @@ var RootcaFileLoc = "/conf/cert/rootca.pem"
 
 // WxTools 微信操作类型
 type WxTools interface {
+	SetCache(cache mycache.CacheIFS)                                                                          // 设置缓存
 	GetAccessToken() (accessToken string, err error)                                                          // 获取登录凭证
 	GetAPITicket() (ticket string, err error)                                                                 // 获取微信卡券ticket
 	GetJsTicket() (ticket string, err error)                                                                  // 获取微信js ticket
@@ -61,6 +63,7 @@ func New(info WxInfo) (WxTools, error) {
 		keyFile:    tools.GetCurrentDirectory() + KeyFileLoc,
 		rootcaFile: tools.GetCurrentDirectory() + RootcaFileLoc,
 		client:     wxpay.NewClient(info.AppID, info.MchID, info.APIKey),
+		cache:      mycache.NewCache(_cacheToken),
 	}
 	err := t.client.WithCert(t.certFile, t.keyFile, t.rootcaFile)
 	if err != nil {

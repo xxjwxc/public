@@ -1,6 +1,9 @@
 package weixin
 
-import wxpay "gopkg.in/go-with/wxpay.v1"
+import (
+	"github.com/xxjwxc/public/mycache"
+	wxpay "gopkg.in/go-with/wxpay.v1"
+)
 
 // UserInfo 用户信息
 type UserInfo struct {
@@ -61,6 +64,7 @@ type wxTools struct {
 	certFile   string // 微信支付商户平台证书路径
 	keyFile    string
 	rootcaFile string
+	cache      mycache.CacheIFS
 }
 
 // QrcodeRet ...
@@ -69,13 +73,11 @@ type QrcodeRet struct {
 	Errmsg  string `json:"errmsg"`
 }
 
-//
 type wxPostdata struct {
 	Scene string `json:"scene"`
 	Page  string `json:"page"`
 }
 
-//
 type wxQrcodedata struct {
 	Path  string `json:"path"`  //路径
 	Width int    `json:"width"` //二维码宽度
