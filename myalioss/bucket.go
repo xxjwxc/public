@@ -118,3 +118,8 @@ func (b *Bucket) PutObjectFromBytes(from []byte, to string) error {
 	reader := bytes.NewReader(from)
 	return b.Bucket.PutObject(to, reader)
 }
+
+// IsObjectExist 判断文件是否存在
+func (b *Bucket) IsObjectExist(objectKey string) (bool, error) {
+	return b.Bucket.IsObjectExist(objectKey)
+}
