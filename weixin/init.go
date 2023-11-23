@@ -72,3 +72,21 @@ func New(info WxInfo) (WxTools, error) {
 	}
 	return t, nil
 }
+
+// New 新建及 初始化配置信息
+func NewWithCertFile(info WxInfo, certFileLoc, keyFileLoc, rootcaFileLoc string) (WxTools, error) {
+	t := &wxTools{
+		wxInfo:     info,
+		certFile:   certFileLoc,
+		keyFile:    keyFileLoc,
+		rootcaFile: rootcaFileLoc,
+		client:     wxpay.NewClient(info.AppID, info.MchID, info.APIKey),
+		cache:      mycache.NewCache(_cacheToken),
+	}
+	err := t.client.WithCert(t.certFile, t.keyFile, t.rootcaFile)
+	if err != nil {
+		mylog.Error(err)
+		return nil, err
+	}
+	return t, nil
+}
