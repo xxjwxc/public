@@ -173,3 +173,22 @@ func PostHeader(url, jsonstr string, header http.Header) ([]byte, error) {
 
 	return body, nil
 }
+
+// GetHeader get by head
+func GetHeader(url string, header http.Header) ([]byte, error) {
+	client := &http.Client{}
+	req, _ := http.NewRequest("GET", url, nil)
+	req.Header = header
+	resp, e := client.Do(req)
+	if e != nil {
+		return nil, e
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, e
+	}
+
+	return body, nil
+}
