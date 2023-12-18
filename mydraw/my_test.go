@@ -2,6 +2,7 @@ package mydraw
 
 import (
 	"fmt"
+	"image"
 	"testing"
 )
 
@@ -55,4 +56,14 @@ func TestMytest(t *testing.T) {
 		b = hdc.Save("./out.png")
 		fmt.Println(b)
 	}
+}
+
+func TestImg(t *testing.T) {
+	var hdc HDC
+	hdc.SetBg("./src.jpg")
+	img, _ := GetImg("./111.jpg")
+	img = Resize(img, 100, 0)
+	hdc.DrawImg(img, image.Point{100, 200})
+	b := hdc.Save("./out.png")
+	fmt.Println(b)
 }

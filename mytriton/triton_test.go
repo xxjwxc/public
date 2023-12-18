@@ -14,7 +14,7 @@ func TestMain(t *testing.T) {
 	}
 	fmt.Println(triton.ServerLive(context.Background()))
 	out, _ := triton.RequestFromText(context.Background(), "texts", "你好", "sentence_embedding")
-	f32 := triton.BytesToFloat64(out)
+	f32 := triton.BytesToFloat32(out)
 	fmt.Println(f32)
 }
 

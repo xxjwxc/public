@@ -13,12 +13,15 @@ require (
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/gomodule/redigo v2.0.0+incompatible
+	github.com/gonum/matrix v0.0.0-20181209220409-c518dec07be9
 	github.com/gookit/color v1.2.5
 	github.com/gorilla/websocket v1.4.2
 	github.com/jander/golog v0.0.0-20150917071935-954a5be801fc
 	github.com/jinzhu/gorm v1.9.12
 	github.com/jroimartin/gocui v0.4.0
 	github.com/kardianos/service v1.2.1
+	github.com/lucasb-eyer/go-colorful v1.2.0
+	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/nicksnyder/go-i18n/v2 v2.0.3
 	github.com/nsqio/go-nsq v1.0.8
 	github.com/olivere/elastic v6.2.31+incompatible
@@ -54,6 +57,10 @@ require (
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
+	github.com/gonum/blas v0.0.0-20181208220705-f22b278b28ac // indirect
+	github.com/gonum/floats v0.0.0-20181209220543-c233463c7e82 // indirect
+	github.com/gonum/internal v0.0.0-20181124074243-f884aa714029 // indirect
+	github.com/gonum/lapack v0.0.0-20181123203213-e4cdc5a0bff9 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/hashicorp/go-version v1.6.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
