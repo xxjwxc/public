@@ -13,14 +13,12 @@ require (
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/gomodule/redigo v2.0.0+incompatible
-	github.com/gonum/matrix v0.0.0-20181209220409-c518dec07be9
 	github.com/gookit/color v1.2.5
 	github.com/gorilla/websocket v1.4.2
 	github.com/jander/golog v0.0.0-20150917071935-954a5be801fc
 	github.com/jinzhu/gorm v1.9.12
 	github.com/jroimartin/gocui v0.4.0
 	github.com/kardianos/service v1.2.1
-	github.com/lucasb-eyer/go-colorful v1.2.0
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/nicksnyder/go-i18n/v2 v2.0.3
 	github.com/nsqio/go-nsq v1.0.8
@@ -33,8 +31,8 @@ require (
 	github.com/wenzhenxi/gorsa v0.0.0-20210524035706-528c7050d703
 	github.com/xxjwxc/gowp v0.0.0-20200603130651-4d7368b0e285
 	go.uber.org/zap v1.24.0
-	golang.org/x/crypto v0.10.0
-	golang.org/x/text v0.10.0
+	golang.org/x/crypto v0.17.0
+	golang.org/x/text v0.14.0
 	google.golang.org/grpc v1.56.3
 	google.golang.org/protobuf v1.30.0
 	gopkg.in/eapache/queue.v1 v1.1.0
@@ -57,10 +55,6 @@ require (
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
-	github.com/gonum/blas v0.0.0-20181208220705-f22b278b28ac // indirect
-	github.com/gonum/floats v0.0.0-20181209220543-c233463c7e82 // indirect
-	github.com/gonum/internal v0.0.0-20181124074243-f884aa714029 // indirect
-	github.com/gonum/lapack v0.0.0-20181123203213-e4cdc5a0bff9 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/hashicorp/go-version v1.6.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
@@ -91,8 +85,8 @@ require (
 	go.uber.org/multierr v1.9.0 // indirect
 	golang.org/x/image v0.5.0 // indirect
 	golang.org/x/net v0.10.0 // indirect
-	golang.org/x/sys v0.9.0 // indirect
-	golang.org/x/term v0.9.0 // indirect
+	golang.org/x/sys v0.15.0 // indirect
+	golang.org/x/term v0.15.0 // indirect
 	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac // indirect
 	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
