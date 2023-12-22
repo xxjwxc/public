@@ -128,8 +128,7 @@ func (_wx *wxTools) GetAPITicket() (ticket string, err error) {
 // GetJsTicket 获取微信js ticket
 func (_wx *wxTools) GetJsTicket() (ticket string, err error) {
 	//先从缓存中获取
-	cache := mycache.NewCache("weixin_js_ticket")
-	err = cache.Value("base", &ticket)
+	err = _wx.cache.Value("weixin_js_ticket", &ticket)
 	if err == nil {
 		return
 	}
@@ -156,11 +155,12 @@ func (_wx *wxTools) GetJsTicket() (ticket string, err error) {
 		err = e2
 		return
 	}
+	mylog.Error(string(body))
 	var result APITicket
 	json.Unmarshal(body, &result)
 	ticket = result.Ticket
 	//保存缓存
-	cache.Add("base", ticket, 7000*time.Second)
+	_wx.cache.Add("base", ticket, 7000*time.Second)
 
 	return
 }
