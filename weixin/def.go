@@ -172,11 +172,12 @@ type GuideAutoReply struct {
 
 // WxJsSign
 type WxJsSign struct {
-	Appid     string `json:"appid"`
-	Noncestr  string `json:"noncestr"`
-	Timestamp string `json:"timestamp"`
-	Url       string `json:"url"`
-	Signature string `json:"signature"`
+	Appid       string `json:"appid"`
+	Noncestr    string `json:"noncestr"`
+	Timestamp   string `json:"timestamp"`
+	Url         string `json:"url"`
+	Signature   string `json:"signature"`
+	JsapiTicket string `json:"jsapi_ticket"`
 }
 
 type WxGetUser struct {

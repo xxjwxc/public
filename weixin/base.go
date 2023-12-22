@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"path"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/bitly/go-simplejson"
@@ -298,12 +297,13 @@ func (_wx *wxTools) GetJsSign(url string) (*WxJsSign, error) {
 		return nil, err
 	}
 	// splite url
-	urlSlice := strings.Split(url, "#")
+	// urlSlice := strings.Split(url, "#")
 	jsSign := &WxJsSign{
-		Appid:     _wx.wxInfo.AppID,
-		Noncestr:  gutil.RandString(16),
-		Timestamp: strconv.FormatInt(time.Now().UTC().Unix(), 10),
-		Url:       urlSlice[0],
+		Appid:       _wx.wxInfo.AppID,
+		Noncestr:    gutil.RandString(16),
+		Timestamp:   strconv.FormatInt(time.Now().UTC().Unix(), 10),
+		Url:         url,
+		JsapiTicket: jsTicket,
 	}
 	h := sha1.New()
 	h.Write([]byte(fmt.Sprintf("jsapi_ticket=%s&noncestr=%s&timestamp=%s&url=%s", jsTicket, jsSign.Noncestr, jsSign.Timestamp, url)))
