@@ -64,6 +64,7 @@ func (_wx *wxTools) GetAccessToken() (accessToken string, err error) {
 		return "", err
 	}
 
+	mylog.Error(string(body))
 	//注入client ip
 	js, err := simplejson.NewJson(body)
 	if err == nil {
