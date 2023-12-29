@@ -64,7 +64,6 @@ func (_wx *wxTools) GetAccessToken() (accessToken string, err error) {
 		return "", err
 	}
 
-	mylog.Error(string(body))
 	//注入client ip
 	js, err := simplejson.NewJson(body)
 	if err == nil {
@@ -156,7 +155,6 @@ func (_wx *wxTools) GetJsTicket() (ticket string, err error) {
 		err = e2
 		return
 	}
-	mylog.Error(string(body))
 	var result APITicket
 	json.Unmarshal(body, &result)
 	ticket = result.Ticket
