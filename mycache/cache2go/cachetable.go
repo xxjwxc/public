@@ -277,6 +277,24 @@ func (table *CacheTable) NotFoundAdd(key interface{}, lifeSpan time.Duration, da
 
 // Value returns an item from the cache and marks it to be kept alive. You can
 // pass additional arguments to your DataLoader callback function.
+func (table *CacheTable) Refresh(key interface{}, lifeSpan time.Duration) error {
+	table.RLock()
+	r, ok := table.items[key]
+	table.RUnlock()
+
+	if ok {
+		// Update access counter and timestamp.
+		table.Add(key, lifeSpan, r.data)
+		r.KeepAlive()
+		// r.lifeSpan = lifeSpan
+		return nil
+	}
+
+	return ErrKeyNotFound
+}
+
+// Value returns an item from the cache and marks it to be kept alive. You can
+// pass additional arguments to your DataLoader callback function.
 func (table *CacheTable) Value(key interface{}, args ...interface{}) (*CacheItem, error) {
 	table.RLock()
 	r, ok := table.items[key]

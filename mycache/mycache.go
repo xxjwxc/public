@@ -24,6 +24,7 @@ type CacheIFS interface {
 	TryLock(key interface{}, value interface{}, lifeSpan time.Duration) (err error) //  试着加锁
 	Unlock(key interface{}) (err error)                                             // 解锁
 	GetKeyS(key interface{}) ([]string, error)                                      // 查询所有key
+	Refresh(key interface{}, lifeSpan time.Duration) error                          // 更新时间
 }
 
 // MyCache 内存缓存
@@ -109,6 +110,14 @@ func (mc *MyCache) Unlock(key interface{}) (err error) {
 	defer mc.mtx.Unlock()
 
 	return mc.Delete(key)
+}
+
+// Refresh 更新时间
+func (mc *MyCache) Refresh(key interface{}, lifeSpan time.Duration) error {
+	mc.mtx.Lock()
+	defer mc.mtx.Unlock()
+
+	return mc.cache.Refresh(key, lifeSpan)
 }
 
 func encodeValue(value interface{}) []byte {

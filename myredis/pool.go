@@ -175,3 +175,34 @@ func (mc *redisConPool) Do(commandName string, args ...interface{}) (reply inter
 func (mc *redisConPool) Close() (err error) {
 	return nil
 }
+
+// Refresh 更新时间
+func (mc *redisConPool) Refresh(key interface{}, lifeSpan time.Duration) error {
+	expire := "EXPIRE"
+	var args []interface{}
+	args = append(args, mc.getKey(key))
+	if lifeSpan > 0 {
+		if usePrecise(lifeSpan) {
+			expire = "PEXPIRE"
+			args = append(args, formatMs(lifeSpan))
+		} else {
+			expire = "EXPIRE"
+			args = append(args, formatSec(lifeSpan))
+		}
+	} else if lifeSpan == keepTTL {
+		expire = "EXPIRE"
+		args = append(args, 2147483647)
+	}
+
+	con := mc.GetRedisClient()
+	defer con.Close()
+	repy, err := mc.DO(con, expire, args...)
+	if mc.conf.isLog {
+		mylog.Info(redis.String(repy, err))
+	}
+
+	if err != nil {
+		mylog.Error(err)
+	}
+	return err
+}

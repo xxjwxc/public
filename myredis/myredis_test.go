@@ -16,7 +16,14 @@ func Test_cache(t *testing.T) {
 
 	fmt.Println(err)
 	aaa := "ccccc"
-	res.Add("aaaa", aaa, 20*time.Second)
+	res.Add("aaaa", aaa, 2*time.Second)
+	res.Refresh("aaaa", -1)
+	for i := 0; i < 10; i++ {
+		aaa = ""
+		err := res.Value("aaaa", &aaa)
+		fmt.Println(err, aaa)
+		time.Sleep(1 * time.Second)
+	}
 	res.Close()
 	res.Add("bbbb", aaa, 0)
 	res.Close()

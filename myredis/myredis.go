@@ -22,6 +22,7 @@ type RedisDial interface {
 	Do(commandName string, args ...interface{}) (reply interface{}, err error)      // 一次操作
 	TryLock(key interface{}, value interface{}, lifeSpan time.Duration) (err error) //  试着加锁
 	Unlock(key interface{}) (err error)                                             // 解锁
+	Refresh(key interface{}, lifeSpan time.Duration) error                          // 更新时间
 }
 
 // DefaultConf ...
