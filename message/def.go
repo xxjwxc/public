@@ -150,4 +150,5 @@ const ( //消息id定义
 	CheckResourceIntactWarning  ErrCode = 2036 // 请上传完整的角色模型
 	CheckSkeletonWarning        ErrCode = 2037 // 请上传角色骨骼
 	CheckAnimWarning            ErrCode = 2038 // 请上传角色动画
+	NotMatching                 ErrCode = 2039 // 未匹配到
 )
