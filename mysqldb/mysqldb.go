@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/xxjwxc/clickhouse"
 	"github.com/xxjwxc/public/dev"
 	myerrors "github.com/xxjwxc/public/errors"
-	"gorm.io/driver/clickhouse"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 
