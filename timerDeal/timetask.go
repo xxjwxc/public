@@ -57,6 +57,13 @@ callback : 时间回调
 */
 func OnPeDay(hour, min, sec int, callback func()) {
 	go func() {
+		defer func() {
+			defer func() {
+				if err := recover(); err != nil {
+					mylog.Error("recover OnPeDay", err)
+				}
+			}()
+		}()
 		next := tools.GetDay0(time.Now().Unix())
 		for {
 			next = time.Date(next.Year(), next.Month(), next.Day(), hour, min, sec, 0, next.Location())
