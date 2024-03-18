@@ -154,4 +154,5 @@ const ( //消息id定义
 	DeviceUnauthorized          ErrCode = 2040 // 设备未授权
 	AICountIsZero               ErrCode = 2041 // 无AI扩写数据
 	NoFAQQuestion               ErrCode = 2042 // 请先录入FAQ
+	WordLimitError              ErrCode = 2043 // 字数超限
 )
