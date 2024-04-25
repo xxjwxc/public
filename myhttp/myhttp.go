@@ -42,7 +42,7 @@ func OnGetJSON(url, params string) string {
 	defer resp.Body.Close()
 	body1, err1 := ioutil.ReadAll(resp.Body)
 	if err1 != nil {
-		mylog.Error(err1)
+		mylog.Error(url, err1)
 		return ""
 	}
 
