@@ -152,4 +152,10 @@ const ( //消息id定义
 	CheckAnimWarning            ErrCode = 2038 // 请上传角色动画
 	NotMatching                 ErrCode = 2039 // 未匹配到
 	DeviceUnauthorized          ErrCode = 2040 // 设备未授权
+	AICountIsZero               ErrCode = 2041 // 无AI扩写数据
+	NoFAQQuestion               ErrCode = 2042 // 请先录入FAQ
+	WordLimitError              ErrCode = 2043 // 字数超限
+	InValidDelByTemp            ErrCode = 2044 // 该母版正在被使用，无法删除。
+	InValidDelByVersion         ErrCode = 2045 // 该版本正在被使用，无法删除。
+	InValidDelByScene           ErrCode = 2046 // 该场景正在被使用，无法删除。
 )
