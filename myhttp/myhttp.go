@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/xxjwxc/public/mylog"
 )
@@ -44,6 +45,28 @@ func OnGetJSON(url, params string) string {
 	if err1 != nil {
 		mylog.Error(url, err1)
 		return ""
+	}
+
+	return string(body1)
+}
+
+// OnGetJSON2 发送get 请求
+func OnGetJSON2(url, params string) string {
+	//解析这个 URL 并确保解析没有出错。
+	var urls = url
+	if len(params) > 0 {
+		urls += "?" + params
+	}
+	resp, err := http.Get(urls)
+	if err != nil {
+		return ""
+	}
+	defer resp.Body.Close()
+	body1, err1 := ioutil.ReadAll(resp.Body)
+	if err1 != nil {
+		mylog.Error(url, err1)
+		time.Sleep(3 * time.Second)
+		return OnGetJSON(url, params) // 重试
 	}
 
 	return string(body1)
