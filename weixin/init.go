@@ -48,8 +48,9 @@ type WxTools interface {
 	DeleteMenu() error                                                // 删除自定义菜单
 	SetGuideConfig(guideConfig GuideConfig) error                     // 快捷回复与关注自动回复
 
-	SendCustomMsg(msg CustomMsg) error             // 发送客服消息
-	UploadTmpFile(path, tp string) (string, error) //上传临时文件(tp:媒体文件类型，分别有图片（image）、语音（voice）、视频（video）和缩略图（thumb）)
+	GetH5Qrcode(expireSeconds int, actionName string, aceneId int) (string, error) // h5获取临时二维码
+	SendCustomMsg(msg CustomMsg) error                                             // 发送客服消息
+	UploadTmpFile(path, tp string) (string, error)                                 //上传临时文件(tp:媒体文件类型，分别有图片（image）、语音（voice）、视频（video）和缩略图（thumb）)
 	// ----------------------------------------------------
 
 	GetJsSign(url string) (*WxJsSign, error) // js-sdk 授权
