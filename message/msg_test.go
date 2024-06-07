@@ -15,5 +15,5 @@ func Test_sing(t *testing.T) {
 	var test Test
 	test.State = true
 	test.Error = ""
-	fmt.Println(GetSuccessMsg(NormalMessageID))
+	fmt.Println(GetSuccessMsg(ExcelExportLimit))
 }

@@ -158,4 +158,6 @@ const ( //消息id定义
 	InValidDelByTemp            ErrCode = 2044 // 该母版正在被使用，无法删除。
 	InValidDelByVersion         ErrCode = 2045 // 该版本正在被使用，无法删除。
 	InValidDelByScene           ErrCode = 2046 // 该场景正在被使用，无法删除。
+	ExcelExportLimit            ErrCode = 2047 // 一次最多导出10万条交互记录，请缩小筛选范围
+	ExcelImportError            ErrCode = 2048 // Excel导入失败
 )
