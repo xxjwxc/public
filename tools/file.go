@@ -2,6 +2,7 @@ package tools
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -119,24 +120,28 @@ func WriteFileEx(fname string, src []byte, isClear bool) bool {
 }
 
 // ReadFileEx 读取文件
-func ReadFileEx(fname string) (src []byte) {
+func ReadFileEx(fname string) []byte {
 	f, err := os.OpenFile(fname, os.O_RDONLY, 0666)
 	if err != nil {
 		return []byte{}
 	}
 	defer f.Close()
 
-	buff := make([]byte, 1024) // 55=该文本的长度
-
-	for {
-		lens, err := f.Read(buff)
-		if err == io.EOF || lens < 0 {
-			break
-		}
-		src = append(src, buff...)
+	stat, err := f.Stat()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
-	return src
+	size := stat.Size()
+	data := make([]byte, size)
+
+	_, err = f.Read(data)
+	if err != nil {
+		return []byte{}
+	}
+
+	return data
 }
 
 // ReadFile 读取文件
