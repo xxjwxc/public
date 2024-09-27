@@ -160,4 +160,6 @@ const ( //消息id定义
 	InValidDelByScene           ErrCode = 2046 // 该场景正在被使用，无法删除。
 	ExcelExportLimit            ErrCode = 2047 // 一次最多导出10万条交互记录，请缩小筛选范围
 	ExcelImportError            ErrCode = 2048 // Excel导入失败
+	DocQaPairGenError           ErrCode = 2049 // 正在生成辅助问答对，请等待完成后再进行训练
+	DocQaPairNotGenError        ErrCode = 2050 // 请先生成辅助问答对
 )
