@@ -28,8 +28,16 @@ func BuildDir(absDir string) error {
 	return os.MkdirAll(path.Dir(absDir), os.ModePerm) //生成多级目录
 }
 
-// DeleteFile 删除文件或文件夹
+// DeleteFile 删除文件或文件夹(软删除.不会真正删除.添加后缀.bak)
 func DeleteFile(absDir string) error {
+	absDir = strings.TrimSuffix(absDir, "\\")
+	absDir = strings.TrimSuffix(absDir, "/")
+	return os.Rename(absDir, absDir+".bak")
+	// return os.RemoveAll(absDir)
+}
+
+// DeleteFile 删除文件或文件夹(硬删除)
+func DeleteAbs(absDir string) error {
 	return os.RemoveAll(absDir)
 }
 
