@@ -198,6 +198,9 @@ func (_wx *wxTools) SendWebTemplateMsg(msg TempWebMsg) error {
 			if res.Errcode == 43004 {
 				return message.GetError(message.Unfollow)
 			}
+			if res.Errcode == 43101 {
+				return message.GetError(message.RefuseError)
+			}
 			mylog.Errorf("SendWebTemplateMsg error: openid:%v,res:%v", msg.Touser, res)
 		}
 	}

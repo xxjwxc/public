@@ -111,6 +111,7 @@ const ( //消息id定义
 	HaveLink                  ErrCode = 1097 // 存在关联
 	StateError                ErrCode = 1098 // 状态错误
 	LimitError                ErrCode = 1099 // 超限
+	RefuseError               ErrCode = 1100 // 拒绝
 
 	UserNameFormatError         ErrCode = 2001 // 用户名格式错误
 	AvatarUsedError             ErrCode = 2002 // 无效操作,存在使用中的虚拟人
