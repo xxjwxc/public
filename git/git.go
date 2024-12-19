@@ -28,6 +28,15 @@ func NewGitLabController(url, token string) (*GitTools, error) {
 	return &GitTools{gitLabClient: git}, nil
 }
 
+// GetUser 获取用户信息
+func (g *GitTools) GetUser() (*gitlab.User, error) {
+	u, _, err := g.gitLabClient.Users.CurrentUser()
+	if err != nil {
+		return nil, err
+	}
+	return u, nil
+}
+
 // GetALLProjects 获取所有项目
 func (g *GitTools) GetALLProjects() ([]*gitlab.Project, error) {
 	lbo := &gitlab.ListProjectsOptions{ListOptions: gitlab.ListOptions{Page: 1, PerPage: 50}}
