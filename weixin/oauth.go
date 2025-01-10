@@ -48,6 +48,10 @@ func (_wx *wxTools) GetWebOauth(code string) (*AccessToken, error) {
 
 	var res AccessToken
 	json.Unmarshal(body, &res)
+	if res.Openid == "" {
+		mylog.Error(string(body))
+		return nil, fmt.Errorf("GetWebOauth error:%v", string(body))
+	}
 	return &res, nil
 }
 
