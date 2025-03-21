@@ -21,7 +21,7 @@ const ( //消息id定义
 
 	ParameterInvalid          ErrCode = 1001 // 参数无效
 	AppidParameterInvalid     ErrCode = 1002 // appid参数无效
-	EncryptCheckError         ErrCode = 1003 // 密文校验失败,aa
+	EncryptCheckError         ErrCode = 1003 // 密文校验失败
 	UserNameDoNotExist        ErrCode = 1004 // 用户名不存在或密码错误
 	DuplicateKeyError         ErrCode = 1005 // 键值对重复
 	InValidOp                 ErrCode = 1007 // 无效操作
