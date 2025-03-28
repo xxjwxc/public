@@ -41,6 +41,10 @@ func (t *TritonInfo) Close() {
 	t.conn.Close()
 }
 
+func (t *TritonInfo) GetClient() triton.GRPCInferenceServiceClient {
+	return t.client
+}
+
 // ServerLive 心跳检测
 func (t *TritonInfo) ServerLive(ctx context.Context) (bool, error) {
 	// Create context for our request with 10 second timeout
@@ -203,4 +207,18 @@ func (t *TritonInfo) RequestFromTexts(ctx context.Context, texts []string, outTe
 		outputData0[i] = retval
 	}
 	return outputData0, nil
+}
+
+// 封装字符串为 Triton 的 BYTES 格式
+func (t *TritonInfo) EncodeStringsToBytes(inputData []string) []byte {
+	var buffer bytes.Buffer
+	for _, str := range inputData {
+		// 写入字符串长度（4 字节，小端序）
+		length := uint32(len(str))
+		binary.Write(&buffer, binary.LittleEndian, length)
+
+		// 写入字符串内容
+		buffer.Write([]byte(str))
+	}
+	return buffer.Bytes()
 }
