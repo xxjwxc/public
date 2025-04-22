@@ -1,9 +1,12 @@
 package tools
 
 import (
-	"encoding/json"
+	// "encoding/json"
+
 	"io/ioutil"
 	"net/http"
+
+	"github.com/bytedance/sonic"
 )
 
 // JSONToForm tag json str to form
@@ -15,7 +18,7 @@ func JSONToForm(r *http.Request) {
 			if len(value[0]) == 0 {
 				delete(r.Form, key)
 				var m map[string]string
-				if err := json.Unmarshal([]byte(key), &m); err == nil {
+				if err := sonic.Unmarshal([]byte(key), &m); err == nil {
 					for k, v := range m {
 						r.Form[k] = []string{v}
 					}
@@ -28,7 +31,7 @@ func JSONToForm(r *http.Request) {
 	bodyStr := string(body)
 	if len(bodyStr) > 0 {
 		var m map[string]string
-		if err := json.Unmarshal(body, &m); err == nil {
+		if err := sonic.Unmarshal(body, &m); err == nil {
 			for k, v := range m {
 				r.Form[k] = []string{v}
 			}
@@ -53,9 +56,9 @@ func JSONToForm(r *http.Request) {
 func GetJSONStr(obj interface{}, isFormat bool) string {
 	var b []byte
 	if isFormat {
-		b, _ = json.MarshalIndent(obj, "", "     ")
+		b, _ = sonic.MarshalIndent(obj, "", "     ")
 	} else {
-		b, _ = json.Marshal(obj)
+		b, _ = sonic.Marshal(obj)
 	}
 	return string(b)
 }
@@ -67,7 +70,7 @@ func JSONDecode(obj interface{}) string {
 
 // GetJSONObj string convert to obj
 func GetJSONObj(str string, out interface{}) error {
-	return json.Unmarshal([]byte(str), out)
+	return sonic.Unmarshal([]byte(str), out)
 }
 
 // JSONEncode string convert to obj

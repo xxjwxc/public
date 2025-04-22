@@ -153,3 +153,25 @@ func IsHan(str string) bool {
 	}
 	return false
 }
+
+// IsImageUrl 判断字符串是否是图片地址
+func IsImageUrl(url string) bool {
+	// 检查是否包含 http 或 https 前缀
+	if !strings.HasPrefix(url, "http://") && !strings.HasPrefix(url, "https://") {
+		return false
+	}
+
+	// 定义常见的图片后缀
+	imageExtensions := []string{".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".svg"}
+	// 转换为小写，避免大小写问题
+	url = strings.ToLower(url)
+
+	// 检查是否以任意图片后缀结尾
+	for _, ext := range imageExtensions {
+		if strings.HasSuffix(url, ext) {
+			return true
+		}
+	}
+
+	return false
+}
