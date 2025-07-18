@@ -2,7 +2,6 @@ package tools
 
 import (
 	"bufio"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -17,7 +16,6 @@ import (
 func CheckFileIsExist(filename string) bool {
 	var exist = true
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
-		mylog.Debug(err)
 		exist = false
 	}
 	return exist
@@ -129,26 +127,15 @@ func WriteFileEx(fname string, src []byte, isClear bool) bool {
 
 // ReadFileEx 读取文件
 func ReadFileEx(fname string) []byte {
-	f, err := os.OpenFile(fname, os.O_RDONLY, 0666)
-	if err != nil {
-		return []byte{}
-	}
-	defer f.Close()
-
-	stat, err := f.Stat()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
-	size := stat.Size()
-	data := make([]byte, size)
-
-	_, err = f.Read(data)
-	if err != nil {
+	if !CheckFileIsExist(fname) {
 		return []byte{}
 	}
 
+	data, err := os.ReadFile(fname) // 使用 os.ReadFile (Go 1.16+)
+	if err != nil {
+		mylog.Error(err)
+		return []byte{}
+	}
 	return data
 }
 

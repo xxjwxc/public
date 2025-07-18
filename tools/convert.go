@@ -206,3 +206,20 @@ func isPunct(r rune) bool {
 
 	return false
 }
+
+func StringToInt(str string) int {
+	i, _ := strconv.Atoi(str)
+	return i
+}
+
+func StringToInt64(str string) int64 {
+	int64, _ := strconv.ParseInt(str, 10, 64)
+	return int64
+}
+
+func Abs(in int) int {
+	if in < 0 {
+		return -in
+	}
+	return in
+}
