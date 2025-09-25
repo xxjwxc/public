@@ -23,6 +23,11 @@ args:回调接口传入的参数
 */
 func OnDealTimeOut(t time.Duration, fun mydef.ParamsCallFunc, parms ...interface{}) {
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				mylog.Error("recover OnPeDay", err)
+			}
+		}()
 		ticker := time.NewTicker(t)
 		<-ticker.C
 		mylog.Debug("timer 执行.....")
@@ -39,6 +44,11 @@ callback : 时间回调
 */
 func OnPeMonth(day int, hour, min, sec int, callback func()) {
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				mylog.Error("recover OnPeDay", err)
+			}
+		}()
 		for {
 			next := time.Now().AddDate(0, 1, 0)
 			next = time.Date(next.Year(), next.Month(), day, hour, min, sec, 0, next.Location())
@@ -58,11 +68,9 @@ callback : 时间回调
 func OnPeDay(hour, min, sec int, callback func()) {
 	go func() {
 		defer func() {
-			defer func() {
-				if err := recover(); err != nil {
-					mylog.Error("recover OnPeDay", err)
-				}
-			}()
+			if err := recover(); err != nil {
+				mylog.Error("recover OnPeDay", err)
+			}
 		}()
 		next := tools.GetDay0(time.Now().Unix())
 		for {
@@ -86,6 +94,11 @@ callback : 时间回调
 */
 func OnPeHour(min, sec int, callback func()) {
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				mylog.Error("recover OnPeDay", err)
+			}
+		}()
 		next := tools.GetHour0(time.Now().Unix())
 		for {
 			next = time.Date(next.Year(), next.Month(), next.Day(), next.Hour(), min, sec, 0, next.Location())
