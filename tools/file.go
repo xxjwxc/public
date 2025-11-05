@@ -186,3 +186,8 @@ func CopyFile(src, des string) error {
 	_, err = io.Copy(desFile, srcFile)
 	return err
 }
+
+// RenameFile 重命名文件或文件夹
+func RenameFile(oldname, newname string) error {
+	return os.Rename(oldname, newname)
+}

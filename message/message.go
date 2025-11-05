@@ -1,5 +1,5 @@
 /*
-	消息定义接口
+消息定义接口
 */
 package message
 
@@ -80,7 +80,7 @@ func GetError(code ErrCode) error {
 	return status.Errorf(codes.Code(code), code.String())
 }
 
-//GetErrorStrMsg 获取错误消息 参数(int,string)
+// GetErrorStrMsg 获取错误消息 参数(int,string)
 func GetErrorStrMsg(err error) (msg MessageBody) {
 	msg.State = false
 	gerr := status.Convert(err)
