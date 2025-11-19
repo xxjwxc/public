@@ -5,7 +5,6 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-	"path"
 	"path/filepath"
 	"strings"
 
@@ -23,7 +22,7 @@ func CheckFileIsExist(filename string) bool {
 
 // BuildDir 创建目录
 func BuildDir(absDir string) error {
-	return os.MkdirAll(path.Dir(absDir), os.ModePerm) //生成多级目录
+	return os.MkdirAll(absDir, os.ModePerm) //生成多级目录
 }
 
 // DeleteFile 删除文件或文件夹(软删除.不会真正删除.添加后缀.bak)
