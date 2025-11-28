@@ -163,4 +163,5 @@ const ( //消息id定义
 	ExcelImportError            ErrCode = 2048 // Excel导入失败
 	DocQaPairGenError           ErrCode = 2049 // 正在生成辅助问答对，请等待完成后再进行训练
 	DocQaPairNotGenError        ErrCode = 2050 // 请先生成辅助问答对
+	HaveClear                   ErrCode = 2051 // 已清理
 )

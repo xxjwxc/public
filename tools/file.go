@@ -22,7 +22,16 @@ func CheckFileIsExist(filename string) bool {
 
 // BuildDir 创建目录
 func BuildDir(absDir string) error {
-	return os.MkdirAll(absDir, os.ModePerm) //生成多级目录
+	// 提取目录部分
+	dir := filepath.Dir(absDir)
+
+	// 如果目录为空（如传入的是当前目录下的文件），则使用当前目录
+	if dir == "." || dir == "" {
+		dir = "."
+	}
+
+	// 创建目录
+	return os.MkdirAll(dir, os.ModePerm)
 }
 
 // DeleteFile 删除文件或文件夹(软删除.不会真正删除.添加后缀.bak)

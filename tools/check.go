@@ -20,9 +20,9 @@ func CheckParam(params ...string) bool {
 
 // IsPhone 判断是否是手机号
 func IsPhone(mobileNum string) bool {
-	tmp := `^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$`
-	reg := regexp.MustCompile(tmp)
-	return reg.MatchString(mobileNum)
+	// 正则表达式：以1开头，第二位是3-9，总共11位数字
+	matched, _ := regexp.MatchString(`^1[3-9]\d{9}$`, mobileNum)
+	return matched
 }
 
 // IsMail 判断用户是否是邮件用户
