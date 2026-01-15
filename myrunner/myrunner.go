@@ -73,21 +73,7 @@ func (r *Runner) UpdateTaskArgs(index int, args ...interface{}) error {
 }
 
 func (r *Runner) run() error {
-	// 设置为运行状态
-	r.mu.Lock()
-	if r.running {
-		r.mu.Unlock()
-		return ErrRunning
-	}
-	r.running = true
-	r.mu.Unlock()
-
-	defer func() {
-		r.mu.Lock()
-		r.running = false
-		r.mu.Unlock()
-	}()
-
+	// 执行所有任务
 	for _, task := range r.tasks {
 		if r.isInterrupt() {
 			return ErrInterruput
@@ -113,15 +99,38 @@ func (r *Runner) Start() error {
 	//希望接收哪些系统信号
 	signal.Notify(r.interrupt, os.Interrupt) //如果有系统中断的信号，发给r.interrupt
 
+	// 先检查运行状态，如果已经在运行，直接返回ErrRunning
+	r.mu.Lock()
+	if r.running {
+		r.mu.Unlock()
+		return ErrRunning
+	}
+	// 标记为运行状态，防止其他调用进入
+	r.running = true
+	r.mu.Unlock()
+
+	// 使用局部的complete通道，避免多个调用共享同一个通道
+	complete := make(chan error)
+
 	go func() {
-		r.complete <- r.run()
+		defer func() {
+			// 确保在goroutine结束时释放运行状态
+			r.mu.Lock()
+			r.running = false
+			r.mu.Unlock()
+		}()
+		complete <- r.run()
 	}()
 
 	timeoutChan := time.After(r.timeout)
 	select {
-	case err := <-r.complete:
+	case err := <-complete:
 		return err
 	case <-timeoutChan:
+		// 超时后需要释放运行状态
+		r.mu.Lock()
+		r.running = false
+		r.mu.Unlock()
 		return ErrTimeOut
 	}
 }
@@ -131,15 +140,38 @@ func (r *Runner) RunNow() error {
 	//希望接收哪些系统信号
 	signal.Notify(r.interrupt, os.Interrupt) //如果有系统中断的信号，发给r.interrupt
 
+	// 先检查运行状态，如果已经在运行，直接返回ErrRunning
+	r.mu.Lock()
+	if r.running {
+		r.mu.Unlock()
+		return ErrRunning
+	}
+	// 标记为运行状态，防止其他调用进入
+	r.running = true
+	r.mu.Unlock()
+
+	// 使用局部的complete通道，避免多个调用共享同一个通道
+	complete := make(chan error)
+
 	go func() {
-		r.complete <- r.run()
+		defer func() {
+			// 确保在goroutine结束时释放运行状态
+			r.mu.Lock()
+			r.running = false
+			r.mu.Unlock()
+		}()
+		complete <- r.run()
 	}()
 
 	timeoutChan := time.After(r.timeout)
 	select {
-	case err := <-r.complete:
+	case err := <-complete:
 		return err
 	case <-timeoutChan:
+		// 超时后需要释放运行状态
+		r.mu.Lock()
+		r.running = false
+		r.mu.Unlock()
 		return ErrTimeOut
 	}
 }

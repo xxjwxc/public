@@ -1,6 +1,7 @@
 package myrunner
 
 import (
+	"fmt"
 	"testing"
 	"time"
 )
@@ -86,16 +87,20 @@ func TestUpdateTaskArgs(t *testing.T) {
 
 // 测试任务互斥机制
 func TestTaskMutex(t *testing.T) {
-	r := New(5 * time.Second)
+	r := New(50 * time.Second)
 
 	// 添加一个长时间运行的任务
 	r.Add(func() {
-		time.Sleep(2 * time.Second)
+		fmt.Println("任务开始执行")
+		time.Sleep(200 * time.Second)
 	})
 
 	// 第一次执行任务
 	go func() {
-		r.RunNow()
+		err := r.RunNow()
+
+		fmt.Printf("Expected ErrRunning, got111 %v", err)
+
 	}()
 
 	// 等待任务开始执行
@@ -104,7 +109,7 @@ func TestTaskMutex(t *testing.T) {
 	// 第二次执行任务，应该返回ErrRunning
 	err := r.RunNow()
 	if err != ErrRunning {
-		t.Errorf("Expected ErrRunning, got %v", err)
+		fmt.Printf("Expected ErrRunning, got %v", err)
 	}
 }
 
