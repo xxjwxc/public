@@ -126,7 +126,7 @@ func (_wx *wxTools) GetAPITicket() (ticket string, err error) {
 }
 
 // GetJsTicket 获取微信js ticket
-func (_wx *wxTools) GetJsTicket() (ticket string, err error) {
+func (_wx *wxTools) GetJsTicket() (ticket APITicket, err error) {
 	accessToken, e := _wx.GetAccessToken()
 	if e != nil {
 		mylog.Error(e)
@@ -148,9 +148,8 @@ func (_wx *wxTools) GetJsTicket() (ticket string, err error) {
 		err = e2
 		return
 	}
-	var result APITicket
-	json.Unmarshal(body, &result)
-	ticket = result.Ticket
+
+	json.Unmarshal(body, &ticket)
 	return
 }
 
@@ -287,7 +286,7 @@ func (_wx *wxTools) SetGuideConfig(guideConfig GuideConfig) error {
 
 // GetJsSign js-sdk 授权
 func (_wx *wxTools) GetJsSign(url string) (*WxJsSign, error) {
-	jsTicket, err := _wx.GetJsTicket()
+	ticket, err := _wx.GetJsTicket()
 	if err != nil {
 		return nil, err
 	}
@@ -298,10 +297,11 @@ func (_wx *wxTools) GetJsSign(url string) (*WxJsSign, error) {
 		Noncestr:    gutil.RandString(16),
 		Timestamp:   strconv.FormatInt(time.Now().UTC().Unix(), 10),
 		Url:         url,
-		JsapiTicket: jsTicket,
+		JsapiTicket: ticket.Ticket,
+		ExpiresIn:   ticket.ExpiresIn,
 	}
 	h := sha1.New()
-	h.Write([]byte(fmt.Sprintf("jsapi_ticket=%s&noncestr=%s&timestamp=%s&url=%s", jsTicket, jsSign.Noncestr, jsSign.Timestamp, url)))
+	h.Write([]byte(fmt.Sprintf("jsapi_ticket=%s&noncestr=%s&timestamp=%s&url=%s", ticket.Ticket, jsSign.Noncestr, jsSign.Timestamp, url)))
 	jsSign.Signature = fmt.Sprintf("%x", h.Sum(nil))
 	return jsSign, nil
 }

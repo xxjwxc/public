@@ -26,7 +26,7 @@ type WxTools interface {
 	SetCache(cache mycache.CacheIFS)                                                                          // 设置缓存
 	GetAccessToken() (accessToken string, err error)                                                          // 获取登录凭证
 	GetAPITicket() (ticket string, err error)                                                                 // 获取微信卡券ticket
-	GetJsTicket() (ticket string, err error)                                                                  // 获取微信js ticket
+	GetJsTicket() (ticket APITicket, err error)                                                               // 获取微信js ticket
 	SendTemplateMsg(msg TempMsg) bool                                                                         // 发送订阅消息
 	SmallAppOauth(jscode string) string                                                                       // 小程序授权
 	SmallAppUnifiedorder(openID string, price int64, priceBody, orderID, clientIP string) message.MessageBody // 小程序统一下单接口

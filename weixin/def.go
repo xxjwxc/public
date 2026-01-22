@@ -178,6 +178,7 @@ type WxJsSign struct {
 	Url         string `json:"url"`
 	Signature   string `json:"signature"`
 	JsapiTicket string `json:"jsapi_ticket"`
+	ExpiresIn   int    `json:"expires_in"`
 }
 
 type WxGetUser struct {
