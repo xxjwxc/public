@@ -31,9 +31,15 @@ func GetLocalIP() (ip string) {
 		mylog.Error(err)
 		return
 	}
+	// 定义链路本地地址范围（169.254.0.0/16）
+	_, linkLocal, err := net.ParseCIDR("169.254.0.0/16")
+	if err != nil {
+		mylog.Error(err)
+		return
+	}
 	for _, a := range addrs {
 		if ipnet, ok := a.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
-			if ipnet.IP.To4() != nil {
+			if ipnet.IP.To4() != nil && !linkLocal.Contains(ipnet.IP) {
 				ip = ipnet.IP.String()
 				break
 			}
