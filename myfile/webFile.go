@@ -1,6 +1,8 @@
 package myfile
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"fmt"
 	"io"
 	"mime/multipart"
@@ -135,4 +137,31 @@ func (o *myFile) SaveOrigin(file *multipart.FileHeader, dir string) (string, err
 
 	_, err = io.Copy(out, src)
 	return path.Join(o.path, dir, filename), err
+}
+
+// GetFileMD5 获取文件的MD5值
+// filePath: 文件路径
+// 返回: MD5字符串, 错误信息
+func GetFileMD5(filePath string) (string, error) {
+	// 打开文件
+	file, err := os.Open(filePath)
+	if err != nil {
+		return "", err
+	}
+	defer file.Close() // 函数结束时关闭文件
+
+	// 创建MD5哈希对象
+	hash := md5.New()
+
+	// 分块读取文件并写入哈希器（高效处理大文件）
+	_, err = io.Copy(hash, file)
+	if err != nil {
+		return "", err
+	}
+
+	// 计算哈希值并转为十六进制字符串
+	md5Bytes := hash.Sum(nil)
+	md5Str := hex.EncodeToString(md5Bytes)
+
+	return md5Str, nil
 }
