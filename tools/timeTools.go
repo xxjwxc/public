@@ -176,6 +176,11 @@ func GetDayStr(tm time.Time) string {
 	return FormatTime(tm, "2006-01-02")
 }
 
+// GetZeroTime 设置空时间
+func GetZeroTime() time.Time {
+	return StrToTime("1970-01-01", "2006-01-02", time.Local)
+}
+
 // Time json marsh 重写
 type Time struct {
 	time.Time
