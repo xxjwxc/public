@@ -78,3 +78,18 @@ func (wss *MyWebSocket) Close() {
 		wss.conn.Close()
 	}
 }
+
+// Ping 发送 WebSocket Ping 控制帧
+func (wss *MyWebSocket) Ping() error {
+	if wss.conn != nil {
+		return wss.conn.WriteControl(websocket.PingMessage, []byte{}, time.Now().Add(5*time.Second))
+	}
+	return message.GetError(message.EmptyError)
+}
+
+// SetPongHandler 设置 Pong 响应处理器
+func (wss *MyWebSocket) SetPongHandler(h func(appData string) error) {
+	if wss.conn != nil {
+		wss.conn.SetPongHandler(h)
+	}
+}
