@@ -17,7 +17,7 @@ func (s *ServiceTools) IsStart(name string) (st int, err error) {
 	}
 	defer m.Disconnect()
 
-	sv, err := m.OpenService(name) 
+	sv, err := m.OpenService(name)
 	if err != nil {
 		return 0, err
 	}

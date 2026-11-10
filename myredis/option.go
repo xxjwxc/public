@@ -68,8 +68,8 @@ func WithClientName(name string) Option {
 	})
 }
 
-func WithLog(isLog bool) Option{
+func WithLog(isLog bool) Option {
 	return optionFunc(func(o *redisOptions) {
 		o.isLog = isLog
-	})	
+	})
 }

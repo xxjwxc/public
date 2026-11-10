@@ -18,7 +18,7 @@ func OnGetBaseInfo(t_str string) (ec EcOption) {
 }
 
 /*
-	获取基础柱状图
+获取基础柱状图
 */
 func OnGetBarInfo(ecToolTip EcToolTip) (ec EcOption) {
 	ec = OnGetBaseInfo("bar")

@@ -70,7 +70,8 @@ type config struct {
 	customProxyFuncValue func(*url.URL) (*url.URL, error)
 }
 
-func (conf config) String() string {
+// String 使用指针接收者,避免拷贝内含 sync.Once 的 config 结构体
+func (conf *config) String() string {
 	return fmt.Sprintf("[endpoint:%s, signature:%s, pathStyle:%v, region:%s"+
 		"\nconnectTimeout:%d, socketTimeout:%dheaderTimeout:%d, idleConnTimeout:%d"+
 		"\nmaxRetryCount:%d, maxConnsPerHost:%d, sslVerify:%v, maxRedirectCount:%d]",

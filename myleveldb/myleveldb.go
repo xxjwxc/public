@@ -138,7 +138,7 @@ func (L *MyLevelDB) Find(values *[]Param, args ...string) (b bool) {
 }
 
 // Add 添加数据
-//注意：只支持基础类型
+// 注意：只支持基础类型
 func (L *MyLevelDB) Add(key string, value interface{}) bool {
 	if L.DB != nil {
 		by, err := tools.EncodeByte(value)
@@ -157,7 +157,7 @@ func (L *MyLevelDB) Add(key string, value interface{}) bool {
 }
 
 // AddList 添加一组数据(比一个一个添加速度快很多)
-//注意：只支持基础类型
+// 注意：只支持基础类型
 func (L *MyLevelDB) AddList(array []Param) bool {
 	if L.DB != nil {
 		batch := new(leveldb.Batch)

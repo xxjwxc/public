@@ -14,14 +14,12 @@ import (
 	"github.com/olivere/elastic"
 )
 
-//
 type MyElastic struct {
 	Client *elastic.Client
 	Err    error
 	Ctx    context.Context
 }
 
-//
 func OnInitES(url string) MyElastic {
 	var es MyElastic
 	es.Ctx = context.Background()
@@ -78,8 +76,8 @@ func (es *MyElastic) CreateIndex(index_name, mapping string) (result bool) {
 }
 
 /*
-	排序查询
-	返回json数据集合
+排序查询
+返回json数据集合
 */
 func (es *MyElastic) SortQuery(index_name string, builder []elastic.Sorter, query []elastic.Query) (bool, []string) {
 
@@ -118,11 +116,11 @@ func (es *MyElastic) SortQuery(index_name string, builder []elastic.Sorter, quer
 }
 
 /*
-   排序查询
-   返回原始Hit
-   builder：排序
-   agg：聚合 类似group_by sum
-   query：查询
+排序查询
+返回原始Hit
+builder：排序
+agg：聚合 类似group_by sum
+query：查询
 */
 func (es *MyElastic) SortQueryReturnHits(index_name string, from, size int, builder []elastic.Sorter, query []elastic.Query) (bool, []*elastic.SearchHit) {
 

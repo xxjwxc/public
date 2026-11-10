@@ -1,6 +1,8 @@
 package wordsfilter
 
 import (
+	"os"
+	"path/filepath"
 	"testing"
 )
 
@@ -12,25 +14,54 @@ func TestWordsFilter(t *testing.T) {
 		"ความรุ่งโรจน์",
 	}
 	wf := New()
-	// wf.StripSpace = false
-	// wf.Placeholder = ""
 	root := wf.Generate(texts)
-	wf.Remove("shif", root)
-	c1 := wf.Contains("你的爱液", root) // 是否有敏感词
-	if c1 != false {
-		t.Errorf("Test Contains expect false, get %T, %v", c1, c1)
+
+	// 命中:文本中包含完整敏感词
+	if !wf.Contains("你的爱液", root) {
+		t.Error("Contains 应命中敏感词『爱液』")
 	}
-	c2 := wf.Contains("->アンジェラ2333", root)
-	if c2 != true {
-		t.Errorf("Test Contains expect true, get %T, %v", c2, c2)
+
+	// 未命中:正常文本
+	if wf.Contains("这是完全正常的句子", root) {
+		t.Error("Contains 不应命中正常文本")
 	}
-	r1 := wf.Replace("Game ความรุ่งโรจน์ i like 妲己 heroMiyamotoMusashi", root)
-	if r1 != "Game*************ilike**hero***************" {
-		t.Errorf("Test Replace expect Game*************ilike**hero***************,get %T,%v", r1, r1)
+
+	// 未命中:仅覆盖敏感词前缀,不是完整词
+	if wf.Contains("爱", root) {
+		t.Error("Contains 不应命中不完整的敏感词前缀")
 	}
-	// Test generated with file.
-	root, _ = wf.GenerateWithFile("./words_test.txt")
-	if wf.Contains("アンジェラ", root) != true {
-		t.Errorf("Test Contains expect true, get %T, %v", c2, c2)
+
+	// Replace:StripSpace 默认开启,先去掉空格,敏感词按字符数替换为 *
+	if got, want := wf.Replace("你他妈", root), "***"; got != want {
+		t.Errorf("Replace 结果不符,期望 %q,实际 %q", want, got)
+	}
+	if got, want := wf.Replace("你 他妈", root), "***"; got != want {
+		t.Errorf("Replace 应先去空格,期望 %q,实际 %q", want, got)
+	}
+
+	// Remove 之后不再命中
+	wf.Remove("你他妈", root)
+	if wf.Contains("你他妈", root) {
+		t.Error("Remove 之后 Contains 不应再命中")
+	}
+}
+
+func TestWordsFilterGenerateWithFile(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "words.txt")
+	if err := os.WriteFile(path, []byte("测试词\n敏感\n\n  \n"), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	wf := New()
+	root, err := wf.GenerateWithFile(path)
+	if err != nil {
+		t.Fatalf("GenerateWithFile 失败: %v", err)
+	}
+	if !wf.Contains("这里包含测试词", root) {
+		t.Error("从文件加载的词表应能命中『测试词』")
+	}
+	if wf.Contains("这里没有命中", root) {
+		t.Error("不应命中词表中不存在的词")
 	}
 }

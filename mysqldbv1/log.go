@@ -24,12 +24,10 @@ var LogFormatter = func(values ...interface{}) (messages []interface{}) {
 	return
 }
 
-//
 type DbLog struct {
 	gorm.Logger
 }
 
-//
 func (db DbLog) Print(values ...interface{}) {
 	msg := LogFormatter(values...)
 	str := fmt.Sprint(msg...)

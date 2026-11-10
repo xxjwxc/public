@@ -42,9 +42,12 @@ func OnGetPen(fontPath string, R, G, B, A uint8) (pen Pen, b bool) {
 }
 
 func GetImg(imagePath string) (img image.Image, err error) {
-	file, _ := os.Open(imagePath)
+	file, err := os.Open(imagePath)
+	if err != nil {
+		return nil, err
+	}
 	defer file.Close()
-	//var err error
+
 	img, _, err = image.Decode(file)
 	if err != nil {
 		fmt.Println("err = ", err)
@@ -75,9 +78,13 @@ type HDC struct {
 }
 
 func (h *HDC) SetBg(imagePath string) bool {
-	file, _ := os.Open(imagePath)
+	file, err := os.Open(imagePath)
+	if err != nil {
+		fmt.Println("err = ", err)
+		return false
+	}
 	defer file.Close()
-	//var err error
+
 	img, _, err := image.Decode(file)
 	if err != nil {
 		fmt.Println("err = ", err)

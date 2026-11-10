@@ -42,16 +42,17 @@ type Element struct {
 
 // Param API 路径 paths 和操作在 API 规范的全局部分定义
 type Param struct {
-	Tags        []string                     `json:"tags"`                  // 分组标记
-	Summary     string                       `json:"summary"`               // 摘要
-	Description string                       `json:"description"`           // 描述
-	OperationID string                       `json:"operationId,omitempty"` // 操作id
-	Consumes    []string                     `json:"consumes"`              // Parameter content type
-	Produces    []string                     `json:"produces"`              // Response content type
-	Parameters  []Element                    `json:"parameters"`            // 请求参数
-	Responses   map[string]Resp 			 `json:"responses"`             // 返回参数
-	Security    interface{}                 `json:"security,omitempty"`    // 认证信息
+	Tags        []string        `json:"tags"`                  // 分组标记
+	Summary     string          `json:"summary"`               // 摘要
+	Description string          `json:"description"`           // 描述
+	OperationID string          `json:"operationId,omitempty"` // 操作id
+	Consumes    []string        `json:"consumes"`              // Parameter content type
+	Produces    []string        `json:"produces"`              // Response content type
+	Parameters  []Element       `json:"parameters"`            // 请求参数
+	Responses   map[string]Resp `json:"responses"`             // 返回参数
+	Security    interface{}     `json:"security,omitempty"`    // 认证信息
 }
+
 // 为返回的类型的文档加入描述
 type Resp struct {
 	Description string                 `json:"description"`

@@ -18,11 +18,11 @@ type singleRule struct {
 }
 
 /*
- newSingleRule 初始化一个条单组用户访问控制控制策略,例：
- 	vc := newSingleRule(time.Minute*30, 50) 或者 vc := newSingleRule(time.Minute*30, 50, 1000)
-	它表示:
-	在30分钟内每个用户最多允许访问50次,并且我们预计在这30分钟内大致有1000个用户会访问我们的网站
-	1000为可选字段，此参数可默认不填写，主要是用于提升性能，类似于声明切片时的cap,绝大部分情况下无需关注此参数。
+	 newSingleRule 初始化一个条单组用户访问控制控制策略,例：
+	 	vc := newSingleRule(time.Minute*30, 50) 或者 vc := newSingleRule(time.Minute*30, 50, 1000)
+		它表示:
+		在30分钟内每个用户最多允许访问50次,并且我们预计在这30分钟内大致有1000个用户会访问我们的网站
+		1000为可选字段，此参数可默认不填写，主要是用于提升性能，类似于声明切片时的cap,绝大部分情况下无需关注此参数。
 */
 func newSingleRule(defaultExpiration time.Duration, numberOfAllowedAccesses int, estimatedNumberOfOnlineUserNum ...int) *singleRule {
 	// 规范化numberOfAllowedAccesses

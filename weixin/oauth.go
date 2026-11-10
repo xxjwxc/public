@@ -3,9 +3,8 @@ package weixin
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
+	"errors"
 	"io/ioutil"
-	"net/http"
 
 	"github.com/xxjwxc/public/mylog"
 )
@@ -15,7 +14,7 @@ func (_wx *wxTools) SmallAppOauth(jscode string) string {
 	var url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + _wx.wxInfo.AppID + "&secret=" +
 		_wx.wxInfo.AppSecret + "&js_code=" + jscode + "&grant_type=authorization_code&trade_type=JSAPI"
 
-	resp, e := http.Get(url)
+	resp, e := httpGet(url)
 	if e != nil {
 		mylog.Error(e)
 		return ""
@@ -24,7 +23,7 @@ func (_wx *wxTools) SmallAppOauth(jscode string) string {
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		mylog.Error(e)
+		mylog.Error(err)
 		return ""
 	}
 	return string(body)
@@ -35,7 +34,7 @@ func (_wx *wxTools) GetWebOauth(code string) (*AccessToken, error) {
 	var url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + _wx.wxInfo.AppID + "&secret=" +
 		_wx.wxInfo.AppSecret + "&code=" + code + "&grant_type=authorization_code"
 
-	resp, e := http.Get(url)
+	resp, e := httpGet(url)
 	if e != nil {
 		return nil, e
 	}
@@ -43,7 +42,7 @@ func (_wx *wxTools) GetWebOauth(code string) (*AccessToken, error) {
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, e
+		return nil, err
 	}
 
 	var res AccessToken
@@ -60,7 +59,7 @@ func (_wx *wxTools) GetWebOauth(code string) (*AccessToken, error) {
 func (_wx *wxTools) GetWebUserinfo(openid, snaccessToken string) (*WxUserinfo, error) {
 	var url = "https://api.weixin.qq.com/sns/userinfo?access_token=" + snaccessToken + "&openid=" + openid + "&lang=zh_CN"
 
-	resp, e := http.Get(url)
+	resp, e := httpGet(url)
 	if e != nil {
 		return nil, e
 	}
@@ -68,11 +67,14 @@ func (_wx *wxTools) GetWebUserinfo(openid, snaccessToken string) (*WxUserinfo, e
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, e
+		return nil, err
 	}
 
 	var res WxUserinfo
-	json.Unmarshal(body, &res)
+	if err = json.Unmarshal(body, &res); err != nil {
+		mylog.Error(err, string(body))
+		return nil, err
+	}
 	return &res, nil
 }
 
@@ -89,7 +91,7 @@ func (_wx *wxTools) Getuserphonenumber(code string) (string, error) { // 手机�
 		"code": code,
 	}
 	req, _ := json.Marshal(params)
-	resp, e := http.Post(url, "Content-Type", bytes.NewBuffer(req))
+	resp, e := httpPost(url, "Content-Type", bytes.NewBuffer(req))
 	if e != nil {
 		return "", e
 	}
@@ -97,13 +99,16 @@ func (_wx *wxTools) Getuserphonenumber(code string) (string, error) { // 手机�
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return "", e
+		return "", err
 	}
 
 	var res WxPhoneResp
-	json.Unmarshal(body, &res)
+	if err = json.Unmarshal(body, &res); err != nil {
+		mylog.Error(err, string(body))
+		return "", err
+	}
 	if res.Errcode != 0 {
-		return "", fmt.Errorf(res.Errmsg)
+		return "", errors.New(res.Errmsg)
 	}
 	return res.WxPhoneinfo.PhoneNumber, nil
 }

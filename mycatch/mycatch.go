@@ -1,10 +1,10 @@
 /*
-  错误信息日志记录(panic信息，不可度量的)
-  注意：每个 goroutine  开始部分都需要写上:defer mycatch.Dmp()
-  类似于
-	go func(){
-		defer mycatch.Dmp()
-	}()
+	  错误信息日志记录(panic信息，不可度量的)
+	  注意：每个 goroutine  开始部分都需要写上:defer mycatch.Dmp()
+	  类似于
+		go func(){
+			defer mycatch.Dmp()
+		}()
 */
 package mycatch
 

@@ -235,7 +235,7 @@ type SetObjectMetadataInput struct {
 	HttpHeader
 }
 
-//SetObjectMetadataOutput is the result of SetObjectMetadata function
+// SetObjectMetadataOutput is the result of SetObjectMetadata function
 type SetObjectMetadataOutput struct {
 	BaseModel
 	MetadataDirective       MetadataDirectiveType

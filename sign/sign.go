@@ -52,7 +52,7 @@ func getOne(appKey string) (sign Sign_client_tbl) {
 }
 
 /*
- 生成验签
+生成验签
 */
 func OnGetSign(appkey string, parm ...interface{}) string {
 	// var sign Sign_client_tbl
@@ -81,7 +81,7 @@ func OnGetSign(appkey string, parm ...interface{}) string {
 }
 
 /*
- 开始验签
+开始验签
 */
 func OnCheckSign(appkey, signature string, parm ...interface{}) bool {
 	return strings.EqualFold(signature, OnGetSign(appkey, parm))

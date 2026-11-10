@@ -24,7 +24,7 @@ func init() {
 
 }
 
-//发消息
+// 发消息
 func ProduceMsg(topic string, message []byte) bool {
 
 	if producer == nil {
@@ -51,8 +51,8 @@ func ProduceMsg(topic string, message []byte) bool {
 	return false
 }
 
-//单个nsqd处理消息
-//index 表示consumer 索引(用于开关使用)
+// 单个nsqd处理消息
+// index 表示consumer 索引(用于开关使用)
 func StartConsumeMsg(index int, topic, channel, nsqd string, handler nsq.Handler) bool {
 	StopConsumeMsgByIndex(index)
 	//第一次初始化 进入
@@ -88,7 +88,7 @@ func GetConsumeSize() int {
 	return len(consumerMap)
 }
 
-//停止消费
+// 停止消费
 func StopConsumeMsgByIndex(index int) {
 	if consumerMap[index] != nil {
 		consumerMap[index].Stop()
@@ -105,7 +105,7 @@ func StopConsumeMsgByIndex(index int) {
 	}
 }
 
-//停止某个topic下全部消费
+// 停止某个topic下全部消费
 func StopConsumeMsgByTopic(topic string) {
 	v, ok := cosumerTopics[topic]
 	if ok {
@@ -121,7 +121,7 @@ func StopConsumeMsgByTopic(topic string) {
 	cosumerTopics[topic] = temp
 }
 
-//停止所有topic的全部消费
+// 停止所有topic的全部消费
 func StopAllConsumeMsg() {
 	cosumerTopics = make(map[string][]int)
 	size := GetConsumeSize()

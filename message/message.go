@@ -26,7 +26,9 @@ type MessageBody struct {
 
 // GetError 获取错误信息(grpc)
 func (m MessageBody) GetError() error {
-	return status.Errorf(codes.Code(m.Code), m.Error)
+	// 错误文本来自业务/外部输入,必须作为参数传入,不能当作格式串使用,
+	// 否则文本中的 % 会被 fmt 解析,导致输出被污染(%!x(MISSING))。
+	return status.Errorf(codes.Code(m.Code), "%s", m.Error)
 }
 
 // func init() {
@@ -77,19 +79,23 @@ func GetSuccessMsg(codes ...ErrCode) (msg MessageBody) {
 
 // GetError 获取错误信息(grpc)
 func GetError(code ErrCode) error {
-	return status.Errorf(codes.Code(code), code.String())
+	return status.Errorf(codes.Code(code), "%s", code.String())
 }
 
 // GetErrorStrMsg 获取错误消息 参数(int,string)
 func GetErrorStrMsg(err error) (msg MessageBody) {
 	msg.State = false
-	gerr := status.Convert(err)
-	if gerr != nil {
-		msg.Code = int(gerr.Code())
-		msg.Error = gerr.Message()
-	} else {
-		msg.Error = err.Error()
+	if err == nil {
+		return
 	}
+	// status.Convert 对 nil 与非 grpc 错误都会返回非 nil 的 *Status,
+	// 因此通过 FromError 判断是否为真正的 grpc 状态错误。
+	if s, ok := status.FromError(err); ok {
+		msg.Code = int(s.Code())
+		msg.Error = s.Message()
+		return
+	}
+	msg.Error = err.Error()
 	return
 }
 

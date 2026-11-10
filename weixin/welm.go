@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 type WeLMInfoReq struct {
@@ -65,14 +66,20 @@ func (w *weLM) GetAnswer(quest string) string {
 	w.info.Prompt = fmt.Sprintf(`问题：%v
 	回答：`, quest)
 
-	postData, _ := json.Marshal(w.info)
-	client := &http.Client{}
-	req, _ := http.NewRequest("POST", "https://welm.weixin.qq.com/v1/completions", bytes.NewReader(postData))
+	postData, err := json.Marshal(w.info)
+	if err != nil {
+		return ""
+	}
+	req, err := http.NewRequest("POST", "https://welm.weixin.qq.com/v1/completions", bytes.NewReader(postData))
+	if err != nil {
+		return ""
+	}
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Content-Type", "application/json;charset=utf-8")
 	req.Header.Add("Authorization", w.authorization)
-	resp, e := client.Do(req)
-	if e != nil {
+	client := &http.Client{Timeout: 30 * time.Second}
+	resp, err := client.Do(req)
+	if err != nil {
 		return ""
 	}
 	defer resp.Body.Close()
@@ -84,7 +91,9 @@ func (w *weLM) GetAnswer(quest string) string {
 	// mylog.Debug(string(body))
 
 	var out WeLMInfoResp
-	json.Unmarshal(body, &out)
+	if err = json.Unmarshal(body, &out); err != nil {
+		return ""
+	}
 	if len(out.Choices) > 0 {
 		return out.Choices[0].Text
 	}

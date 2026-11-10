@@ -30,7 +30,10 @@ type CacheIFS interface {
 // MyCache 内存缓存
 type MyCache struct {
 	cache *cache2go.CacheTable
-	mtx   sync.Mutex
+	// mtx 保留字段以兼容旧的 MyCache 字面量构造方式。
+	// 缓存操作本身是线程安全的(cache2go 内部自带读写锁),
+	// 且 TryLock 已改为原子操作,不再依赖该互斥量。
+	mtx sync.Mutex
 }
 
 // NewCache 初始化一个cache,cachename 缓存名字
@@ -47,18 +50,26 @@ func (mc *MyCache) Destory() {
 
 // Add 添加一个缓存,lifeSpan:缓存时间，0表示永不超时
 func (mc *MyCache) Add(key interface{}, value interface{}, lifeSpan time.Duration) error {
-	mc.cache.Add(key, lifeSpan, encodeValue(value))
+	data, err := encodeValue(value)
+	if err != nil {
+		return err
+	}
+	mc.cache.Add(key, lifeSpan, data)
 	return nil
 }
 
 // Value 查找一个cache
 func (mc *MyCache) Value(key interface{}, value interface{}) error {
 	res, err := mc.cache.Peek(key)
-	if err == nil {
-		bt := res.Data().([]byte)
-		return decodeValue(bt, value)
+	if err != nil {
+		return err
 	}
-	return err
+	// 使用安全断言:通过 GetCache2go 写入非 []byte 数据时不再 panic
+	bt, ok := res.Data().([]byte)
+	if !ok {
+		return fmt.Errorf("mycache: key[%v] 缓存值类型为 %T,不是 []byte", key, res.Data())
+	}
+	return decodeValue(bt, value)
 }
 
 // IsExist 	判断key是否存在
@@ -94,35 +105,31 @@ func (mc *MyCache) Close() error {
 }
 
 // TryLock 试着枷锁
+// 使用 NotFoundAdd 完成"不存在才写入"的原子操作,避免先 Exists 再 Add 的竞态
 func (mc *MyCache) TryLock(key interface{}, value interface{}, lifeSpan time.Duration) (err error) {
-	mc.mtx.Lock()
-	defer mc.mtx.Unlock()
-	if mc.IsExist(key) { // 存在，枷锁失败
+	data, err := encodeValue(value)
+	if err != nil {
+		return err
+	}
+	if !mc.cache.NotFoundAdd(key, lifeSpan, data) { // 已存在，枷锁失败
 		return fmt.Errorf("lock fail")
 	}
-
-	return mc.Add(key, value, lifeSpan)
+	return nil
 }
 
 // Unlock 试着解锁
 func (mc *MyCache) Unlock(key interface{}) (err error) {
-	mc.mtx.Lock()
-	defer mc.mtx.Unlock()
-
-	return mc.Delete(key)
+	_, err = mc.cache.Delete(key)
+	return err
 }
 
 // Refresh 更新时间
 func (mc *MyCache) Refresh(key interface{}, lifeSpan time.Duration) error {
-	mc.mtx.Lock()
-	defer mc.mtx.Unlock()
-
 	return mc.cache.Refresh(key, lifeSpan)
 }
 
-func encodeValue(value interface{}) []byte {
-	data, _ := serializing.Encode(value)
-	return data
+func encodeValue(value interface{}) ([]byte, error) {
+	return serializing.Encode(value)
 }
 
 func decodeValue(in []byte, out interface{}) (err error) {

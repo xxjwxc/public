@@ -25,15 +25,20 @@ func (mc *redisConPool) TryLock(key interface{}, value interface{}, lifeSpan tim
 	con := mc.GetRedisClient()
 	defer con.Close()
 	repy, err := mc.DO(con, "SET", args...)
-	_, err = redis.String(repy, err)
+	res, err := redis.String(repy, err)
 	if err != nil {
+		// SET ... NX 未命中时 Redis 返回 nil,redigo 转成 redis.ErrNil,
+		// 语义上是"锁已被占用",不应与连接异常混为一谈
+		if err == redis.ErrNil {
+			return ErrLockFail
+		}
 		return err
 	}
 
 	if mc.conf.isLog {
-		mylog.Info(redis.String(repy, err))
+		mylog.Info(res)
 	}
-	return err
+	return nil
 }
 
 func (mc *redisConPool) Unlock(key interface{}) (err error) {

@@ -10,12 +10,12 @@ type TimerDeal struct {
 	f_d_timeout time.Duration
 }
 
-//增加一个回调
+// 增加一个回调
 func (t *TimerDeal) AddOneCall(f func()) {
 	t.f_list = append(t.f_list, f)
 }
 
-//设置超时时间
+// 设置超时时间
 func (t *TimerDeal) SetCallBackTimer(d time.Duration) {
 	t.f_d_timeout = d
 }

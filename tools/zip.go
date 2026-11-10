@@ -76,8 +76,8 @@ func Unzip(archive, target string) error {
 }
 
 // Compress 压缩文件
-//files 文件数组，可以是不同dir下的文件或者文件夹
-//dest 压缩文件存放地址
+// files 文件数组，可以是不同dir下的文件或者文件夹
+// dest 压缩文件存放地址
 func Compress(files []*os.File, dest string) error {
 	d, _ := os.Create(dest)
 	defer d.Close()

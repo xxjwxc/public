@@ -1,9 +1,14 @@
 package mylog
 
-var _log myLog
+import "sync/atomic"
+
+// _logPtr 保存当前日志实现。
+// 使用 atomic.Pointer 而非普通包级变量,避免 SetLog 与日志写调用之间产生数据竞争。
+var _logPtr atomic.Pointer[myLog]
 
 func init() {
-	_log = GetDefaultStd()
+	l := myLog(GetDefaultStd())
+	_logPtr.Store(&l)
 }
 
 type myLog interface {
@@ -26,76 +31,81 @@ type myLog interface {
 	Printf(string, ...interface{})
 }
 
+// GetLog 获取当前日志实现
 func GetLog() myLog {
-	return _log
+	if p := _logPtr.Load(); p != nil {
+		return *p
+	}
+	return GetDefaultStd()
 }
 
 // SetLog set log
 func SetLog(log myLog) {
-	_log = log
+	_logPtr.Store(&log)
 }
 
 // Info info level debug
 func Info(a ...interface{}) {
-	_log.Info(a...)
+	GetLog().Info(a...)
 }
 
 // Infof info level debug
 func Infof(msg string, a ...interface{}) {
-	_log.Infof(msg, a...)
+	GetLog().Infof(msg, a...)
 }
 
 // Error 记录错误信息
 func Error(a ...interface{}) {
-	_log.Error(a...)
+	GetLog().Error(a...)
 }
 
 // Errorf 记录错误信息
 func Errorf(msg string, a ...interface{}) {
-	_log.Errorf(msg, a...)
+	GetLog().Errorf(msg, a...)
 }
 
 // Debug level debug
 func Debug(a ...interface{}) {
-	_log.Debug(a...)
+	GetLog().Debug(a...)
 }
 
 // Debugf level debug
 func Debugf(msg string, a ...interface{}) {
-	_log.Debugf(msg, a...)
+	GetLog().Debugf(msg, a...)
 }
 
 // Fatal level fatal
 func Fatal(a ...interface{}) {
-	_log.Fatal(a...)
+	GetLog().Fatal(a...)
 }
 
 // Fatalf level fatal
 func Fatalf(msg string, a ...interface{}) {
-	_log.Fatal(a...)
+	// 原实现误传 a...,丢失了格式串 msg
+	GetLog().Fatalf(msg, a...)
 }
 
 // JSON json info
 func JSON(a ...interface{}) {
-	_log.JSON(a...)
+	GetLog().JSON(a...)
 }
 
 // TraceError return trace of error
 func TraceError(err error) error {
-	return _log.TraceError(err)
+	return GetLog().TraceError(err)
 }
 
 // SaveError return trace of error
 func SaveError(errstring, flag string) {
-	_log.SaveError(errstring, flag)
+	GetLog().SaveError(errstring, flag)
 }
 
 // Panic return trace of error
 func Panic(a ...interface{}) {
-	_log.Panic(a...)
+	GetLog().Panic(a...)
 }
 
 // ErrorString 打印错误信息
 func ErrorString(a ...interface{}) {
-	_log.ErrorString(a...)
+	GetLog().ErrorString(a...)
 }

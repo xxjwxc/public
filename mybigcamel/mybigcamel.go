@@ -12,8 +12,8 @@ device_id 对应 DeviceID create_time 对应 CreateTime location 对应 Location
 */
 
 /*
-	转换为大驼峰命名法则
-	首字母大写，“_” 忽略后大写
+转换为大驼峰命名法则
+首字母大写，“_” 忽略后大写
 */
 func Marshal(name string) string {
 	if name == "" {

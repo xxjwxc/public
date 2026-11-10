@@ -1,6 +1,7 @@
 package myredis
 
 import (
+	"errors"
 	"sync"
 	"time"
 
@@ -8,6 +9,11 @@ import (
 )
 
 const keepTTL = -1
+
+// ErrLockFail 加锁失败(key 已被占用)。
+// SET key value NX 未命中时 Redis 返回 nil,redigo 会转成 redis.ErrNil,
+// 这里统一包装成明确的业务错误,便于调用方区分"锁被占用"和"连接异常"。
+var ErrLockFail = errors.New("lock fail")
 
 // MyRedis redis配置项
 type MyRedis struct {

@@ -13,6 +13,16 @@ import (
 	"github.com/xxjwxc/public/mylog"
 )
 
+// DefaultTimeout 默认 http 请求超时时间。为 0 表示不限制超时(与旧版本行为一致)。
+// 调用方可按需修改,如 myhttp.DefaultTimeout = 10*time.Second
+var DefaultTimeout = 30 * time.Second
+
+// newHTTPClient 创建一个带默认超时的 http 客户端。
+// 底层复用 http.DefaultTransport,因此连接池在各次请求间共享。
+func newHTTPClient() *http.Client {
+	return &http.Client{Timeout: DefaultTimeout}
+}
+
 // OnPostJSON 发送修改密码
 func OnPostJSON(url, jsonstr string) ([]byte, error) {
 	//解析这个 URL 并确保解析没有出错。
@@ -111,7 +121,7 @@ func SendGetEx(url string, reponse interface{}) bool {
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		mylog.Error(e)
+		mylog.Error(err)
 		return false
 	}
 	//mylog.Debug(string(body))
@@ -142,20 +152,26 @@ func OnPostForm(url string, data url.Values) (body []byte) {
 // SendPost 发送POST请求
 func SendPost(requestBody interface{}, responseBody interface{}, url string) error {
 	postData, err := json.Marshal(requestBody)
-	client := &http.Client{}
-	req, _ := http.NewRequest("POST", url, bytes.NewReader(postData))
+	if err != nil {
+		return err
+	}
+	req, err := http.NewRequest("POST", url, bytes.NewReader(postData))
+	if err != nil {
+		return err
+	}
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Content-Type", "application/json;charset=utf-8")
 	//	req.Header.Add("Authorization", authorization)
-	resp, e := client.Do(req)
-	if e != nil {
-		return e
+	client := newHTTPClient()
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return e
+		return err
 	}
 	// mylog.Debug(string(body))
 
@@ -181,18 +197,21 @@ func WriteJSON(w http.ResponseWriter, msg interface{}) {
 // PostHeader post by head
 func PostHeader(url, jsonstr string, header http.Header) ([]byte, error) {
 	postData := bytes.NewBuffer([]byte(jsonstr))
-	client := &http.Client{}
-	req, _ := http.NewRequest("POST", url, postData)
+	req, err := http.NewRequest("POST", url, postData)
+	if err != nil {
+		return nil, err
+	}
 	req.Header = header
-	resp, e := client.Do(req)
-	if e != nil {
-		return nil, e
+	client := newHTTPClient()
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, e
+		return nil, err
 	}
 
 	return body, nil
@@ -200,18 +219,21 @@ func PostHeader(url, jsonstr string, header http.Header) ([]byte, error) {
 
 // GetHeader get by head
 func GetHeader(url string, header http.Header) ([]byte, error) {
-	client := &http.Client{}
-	req, _ := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
 	req.Header = header
-	resp, e := client.Do(req)
-	if e != nil {
-		return nil, e
+	client := newHTTPClient()
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, e
+		return nil, err
 	}
 
 	return body, nil

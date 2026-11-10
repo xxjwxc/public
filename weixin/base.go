@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"net/http"
 	"path"
 	"strconv"
 	"time"
@@ -53,7 +52,7 @@ func (_wx *wxTools) GetAccessToken() (accessToken string, err error) {
 
 	var url = _getToken + _wx.wxInfo.AppID + "&secret=" + _wx.wxInfo.AppSecret
 
-	resp, err := http.Get(url)
+	resp, err := httpGet(url)
 	if err != nil {
 		return "", err
 	}
@@ -103,7 +102,7 @@ func (_wx *wxTools) GetAPITicket() (ticket string, err error) {
 	}
 	var url = _getTicket + accessToken
 
-	resp, e1 := http.Get(url)
+	resp, e1 := httpGet(url)
 	if e1 != nil {
 		mylog.Error(e1)
 		err = e1
@@ -135,7 +134,7 @@ func (_wx *wxTools) GetJsTicket() (ticket APITicket, err error) {
 	}
 	var url = _getJsurl + accessToken
 
-	resp, e1 := http.Get(url)
+	resp, e1 := httpGet(url)
 	if e1 != nil {
 		mylog.Error(e1)
 		err = e1

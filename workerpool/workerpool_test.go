@@ -9,7 +9,7 @@ import (
 	"github.com/xxjwxc/public/errors"
 )
 
-//template
+// template
 func TestWorkerPoolStart(t *testing.T) {
 	wp := workpool.New(10)    //Set the maximum number of threads，设置最大线程数
 	for i := 0; i < 20; i++ { //Open 20 requests 开启20个请求
@@ -28,8 +28,8 @@ func TestWorkerPoolStart(t *testing.T) {
 	fmt.Println("down")
 }
 
-//Support for error return
-//支持错误返回
+// Support for error return
+// 支持错误返回
 func TestWorkerPoolError(t *testing.T) {
 	wp := workpool.New(10) //Set the maximum number of threads，设置最大线程数
 	for i := 0; i < 20; i++ {
@@ -56,8 +56,8 @@ func TestWorkerPoolError(t *testing.T) {
 	fmt.Println("down")
 }
 
-//Determine whether completion (non-blocking) is placed in the workpool and wait for execution results
-//放到工作池里面 且等待执行结果
+// Determine whether completion (non-blocking) is placed in the workpool and wait for execution results
+// 放到工作池里面 且等待执行结果
 func TestWorkerPoolDoWait(t *testing.T) {
 	wp := workpool.New(5) //Set the maximum number of threads，设置最大线程数
 	for i := 0; i < 10; i++ {
@@ -84,8 +84,8 @@ func TestWorkerPoolDoWait(t *testing.T) {
 	fmt.Println("down")
 }
 
-//Determine whether it is complete (non-blocking)
-//判断是否完成 (非阻塞)
+// Determine whether it is complete (non-blocking)
+// 判断是否完成 (非阻塞)
 func TestWorkerPoolIsDone(t *testing.T) {
 	wp := workpool.New(5) //Set the maximum number of threads，设置最大线程数
 	for i := 0; i < 10; i++ {
